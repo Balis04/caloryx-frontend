@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")!).render(
       clientId="pP4n4k7SZQXlKJutFIRBxx4VEdFhYdIV"
       authorizationParams={{
         redirect_uri: window.location.origin + "/auth-redirect",
-        audience: "https://caloryx-api",
+        audience: "https://caloriex-api",
         scope: "openid profile email offline_access",
       }}
       useRefreshTokens={true}

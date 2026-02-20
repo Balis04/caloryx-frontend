@@ -14,34 +14,71 @@ interface UserResponse {
 }
 
 export default function ProfilePage() {
-  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const {
+    getAccessTokenSilently,
+    loginWithRedirect,
+    isAuthenticated,
+    isLoading,
+    logout,
+  } = useAuth0();
+
   useEffect(() => {
     const loadUser = async () => {
-      const token = await getAccessTokenSilently();
+      if (isLoading) return;
 
-      const res = await fetch("/api/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        navigate("/onboarding");
+      if (!isAuthenticated) {
+        await loginWithRedirect({
+          appState: { returnTo: "/profile" },
+        });
         return;
       }
 
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
+      try {
+        const token = await getAccessTokenSilently();
+
+        const res = await fetch("/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.status === 404) {
+          navigate("/onboarding", { replace: true });
+          return;
+        }
+
+        if (!res.ok) {
+          logout({
+            logoutParams: { returnTo: window.location.origin },
+          });
+          return;
+        }
+
+        const data = await res.json();
+        setUser(data);
+      } catch {
+        logout({
+          logoutParams: { returnTo: window.location.origin },
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadUser();
-  }, [getAccessTokenSilently, navigate]);
+  }, [
+    getAccessTokenSilently,
+    loginWithRedirect,
+    isAuthenticated,
+    isLoading,
+    navigate,
+    logout,
+  ]);
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (!user) return null;

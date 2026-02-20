@@ -3,7 +3,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 export default function AuthRedirect() {
-  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently, logout } =
+    useAuth0();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,27 +12,33 @@ export default function AuthRedirect() {
       if (isLoading) return;
       if (!isAuthenticated) return;
 
-      const token = await getAccessTokenSilently();
+      try {
+        const token = await getAccessTokenSilently();
 
-      const res = await fetch("/api/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        const res = await fetch("/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (res.status === 404) {
-        navigate("/onboarding", { replace: true });
-        return;
-      }
+        if (res.status === 404) {
+          navigate("/onboarding", { replace: true });
+          return;
+        }
 
-      if (res.ok) {
-        navigate("/profile", { replace: true });
-        return;
+        if (res.ok) {
+          navigate("/profile", { replace: true });
+          return;
+        }
+      } catch {
+        logout({
+          logoutParams: { returnTo: window.location.origin },
+        });
       }
     };
 
     run();
-  }, [isAuthenticated, getAccessTokenSilently, navigate, isLoading]);
+  }, [isAuthenticated, getAccessTokenSilently, navigate, isLoading, logout]);
 
   return <div>Loading...</div>;
 }
