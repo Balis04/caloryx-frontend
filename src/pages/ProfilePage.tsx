@@ -14,73 +14,28 @@ interface UserResponse {
 }
 
 export default function ProfilePage() {
-  const navigate = useNavigate();
-
+  const { getAccessTokenSilently } = useAuth0();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const {
-    getAccessTokenSilently,
-    loginWithRedirect,
-    isAuthenticated,
-    isLoading,
-    logout,
-  } = useAuth0();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadUser = async () => {
-      if (isLoading) return;
+      const token = await getAccessTokenSilently();
 
-      if (!isAuthenticated) {
-        await loginWithRedirect({
-          appState: { returnTo: "/profile" },
-        });
-        return;
-      }
+      const res = await fetch("/api/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      try {
-        const token = await getAccessTokenSilently();
-
-        const res = await fetch("/api/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.status === 404) {
-          navigate("/onboarding", { replace: true });
-          return;
-        }
-
-        if (!res.ok) {
-          logout({
-            logoutParams: { returnTo: window.location.origin },
-          });
-          return;
-        }
-
-        const data = await res.json();
-        setUser(data);
-      } catch {
-        logout({
-          logoutParams: { returnTo: window.location.origin },
-        });
-      } finally {
-        setLoading(false);
-      }
+      const data = await res.json();
+      setUser(data);
+      setLoading(false);
     };
 
     loadUser();
-  }, [
-    getAccessTokenSilently,
-    loginWithRedirect,
-    isAuthenticated,
-    isLoading,
-    navigate,
-    logout,
-  ]);
+  }, [getAccessTokenSilently]);
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div>Loading...</div>;
   if (!user) return null;
 
   return (
