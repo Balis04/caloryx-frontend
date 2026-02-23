@@ -14,26 +14,41 @@ interface UserResponse {
 }
 
 export default function ProfilePage() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, logout } = useAuth0();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadUser = async () => {
-      const token = await getAccessTokenSilently();
+      try {
+        const token = await getAccessTokenSilently();
 
-      const res = await fetch("/api/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const res = await fetch("/api/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
+        if (res.status === 404) {
+          navigate("/register", { replace: true });
+          return;
+        }
+
+        if (!res.ok) {
+          logout({ logoutParams: { returnTo: window.location.origin } });
+          return;
+        }
+
+        const data = await res.json();
+        setUser(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to load profile", error);
+        logout({ logoutParams: { returnTo: window.location.origin } });
+      }
     };
 
     loadUser();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, navigate, logout]);
 
   if (loading) return <div>Loading...</div>;
   if (!user) return null;
