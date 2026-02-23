@@ -1,4 +1,3 @@
-// guards/RequireOnboarding.tsx
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate } from "react-router-dom";
@@ -12,36 +11,51 @@ export default function RequireOnboarding({
 }: {
   children: React.ReactNode;
 }) {
-  const { getAccessTokenSilently } = useAuth0();
-  const [status, setStatus] = useState<"loading" | "needsRegister" | "ok">(
-    "loading"
-  );
+  const { getAccessTokenSilently, logout } = useAuth0();
+  const [status, setStatus] = useState<
+    "loading" | "needsRegister" | "ok" | "error"
+  >("loading");
 
   useEffect(() => {
     const check = async () => {
-      const token = await getAccessTokenSilently();
+      try {
+        const token = await getAccessTokenSilently();
 
-      const res = await fetch("/account/needs-register", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const res = await fetch("/account/needs-register", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      const data: AccountResponse = await res.json();
+        if (res.status === 401 || res.status === 403) {
+          logout({
+            logoutParams: { returnTo: window.location.origin },
+          });
+          return;
+        }
 
-      if (data.hasProfile) {
-        setStatus("ok");
-      } else {
-        setStatus("needsRegister");
+        if (!res.ok) {
+          console.error("Onboarding check failed:", res.status, res.statusText);
+          setStatus("error");
+          return;
+        }
+
+        const data: AccountResponse = await res.json();
+
+        setStatus(data.hasProfile ? "ok" : "needsRegister");
+      } catch (error) {
+        console.error("Failed to check onboarding status", error);
+        setStatus("error");
       }
     };
 
     check();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, logout]);
 
   if (status === "loading") return <div>Loading...</div>;
 
-  if (status === "needsRegister") {
-    return <Navigate to="/register" replace />;
-  }
+  if (status === "error")
+    return <div>Something went wrong. Please refresh.</div>;
+
+  if (status === "needsRegister") return <Navigate to="/register" replace />;
 
   return <>{children}</>;
 }

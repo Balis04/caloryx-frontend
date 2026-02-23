@@ -21,15 +21,24 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const loadUser = async () => {
-      const token = await getAccessTokenSilently();
+      try {
+        const token = await getAccessTokenSilently();
 
-      const res = await fetch("/api/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+        const res = await fetch("/api/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
+        if (!res.ok) {
+          throw new Error("Failed to load profile");
+        }
+
+        const data = await res.json();
+        setUser(data);
+      } catch (e) {
+        console.error("Profile load failed:", e);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadUser();

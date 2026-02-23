@@ -9,8 +9,28 @@ import CaloriePage from "./pages/CaloriePage";
 
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
 function App() {
+  const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
+
+  useEffect(() => {
+    const validateToken = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        await getAccessTokenSilently();
+      } catch {
+        logout({
+          logoutParams: { returnTo: window.location.origin },
+        });
+      }
+    };
+
+    validateToken();
+  }, [isAuthenticated, getAccessTokenSilently, logout]);
+
   return (
     <>
       <Navbar />

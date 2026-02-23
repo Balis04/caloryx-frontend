@@ -15,10 +15,8 @@ export default function AuthRedirect() {
     const run = async () => {
       if (isLoading) return;
 
-      // ha nem autholt, itt általában nincs teendő
-      // (ha ez az oldal csak auth után érhető el, akkor oké)
       if (!isAuthenticated) {
-        return; // várjuk meg amíg Auth0 feldolgozza a callbacket
+        return;
       }
 
       try {
@@ -31,12 +29,10 @@ export default function AuthRedirect() {
         });
 
         if (res.status === 401) {
-          // debug: inkább írd ki és állj meg
           console.error("401 from backend - token likely invalid/missing");
           return;
         }
 
-        // ha token hibás / expired / backend 401 → logout
         if (!res.ok) {
           logout({ logoutParams: { returnTo: window.location.origin } });
           return;
