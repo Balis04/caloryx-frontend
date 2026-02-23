@@ -17,14 +17,14 @@ export default function EditProfilePage() {
     const loadUser = async () => {
       const token = await getAccessTokenSilently();
 
-      const res = await fetch("/api/me", {
+      const res = await fetch("/api/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!res.ok) {
-        navigate("/onboarding");
+        navigate("/register", { replace: true });
         return;
       }
 
