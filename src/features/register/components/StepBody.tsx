@@ -1,5 +1,6 @@
-import type { ActivityLevel, RegisterFormData } from "../types/register.types";
-import { ACTIVITY_OPTIONS } from "../constants/register.options";
+import type { RegisterFormData } from "../types/register.types";
+import { ACTIVITY_OPTIONS } from "@/shared/constants/user-options";
+import type { ActivityLevel } from "@/shared/types/profile.types";
 
 export function StepBody(props: {
   data: RegisterFormData;

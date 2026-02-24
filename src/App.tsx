@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import RegisterPage from "./features/register/pages/RegisterPage";
-import EditProfilePage from "./pages/EditProfilePage";
-import ProfilePage from "./pages/ProfilePage";
+import EditProfilePage from "./features/profile/pages/EditProfilePage";
+import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirect from "./pages/AuthRedirect";
 import CaloriePage from "./pages/CaloriePage";
 

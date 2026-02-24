@@ -1,7 +1,9 @@
-export type Gender = "MALE" | "FEMALE";
-export type ActivityLevel = "SEDENTARY" | "LIGHT" | "MODERATE" | "ACTIVE";
-export type Goal = "CUT" | "MAINTAIN" | "BULK";
-export type UserRole = "USER" | "TRAINER";
+import type {
+  ActivityLevel,
+  Goal,
+  UserRole,
+  Gender,
+} from "@/shared/types/profile.types";
 
 export type SetFieldFn = <K extends keyof RegisterFormData>(
   key: K,

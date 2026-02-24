@@ -1,9 +1,9 @@
-import type { RegisterFormData, UserRole } from "../types/register.types";
 import {
   GENDER_OPTIONS,
   USER_ROLE_OPTIONS,
-} from "../constants/register.options";
-import type { Gender } from "../types/register.types";
+} from "@/shared/constants/user-options";
+import type { UserRole, Gender } from "@/shared/types/profile.types";
+import type { RegisterFormData } from "../types/register.types";
 
 export function StepBasic(props: {
   data: RegisterFormData;
