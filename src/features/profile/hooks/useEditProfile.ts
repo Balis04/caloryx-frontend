@@ -1,23 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import type { ProfileResponse } from "../types/profile.types";
-
-export type ProfileEditData = Omit<
-  ProfileResponse,
-  | "heightCm"
-  | "startWeightKg"
-  | "actualWeightKg"
-  | "targetWeightKg"
-  | "weeklyGoalKg"
-  | "role"
-> & {
-  heightCm: string;
-  startWeightKg: string;
-  actualWeightKg: string;
-  targetWeightKg: string;
-  weeklyGoalKg: string;
-  userRole: ProfileResponse["role"];
-};
+import type { ProfileEditData } from "../types/profile.types";
+import { useNavigate } from "react-router-dom";
 
 const initialProfileData: ProfileEditData = {
   fullName: "",
@@ -39,6 +24,8 @@ export const useEditProfile = () => {
   const [userProfile, setUserProfile] =
     useState<ProfileEditData>(initialProfileData);
 
+  const navigate = useNavigate();
+
   const setField = useCallback(
     <K extends keyof ProfileEditData>(key: K, value: ProfileEditData[K]) => {
       setUserProfile((prev) => ({ ...prev, [key]: value }));
@@ -54,7 +41,7 @@ export const useEditProfile = () => {
       });
 
       if (!res.ok) {
-        window.location.replace("/register");
+        navigate("/register");
         return;
       }
 
@@ -78,7 +65,7 @@ export const useEditProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, navigate]);
 
   const saveUserProfile = async () => {
     try {
@@ -110,9 +97,38 @@ export const useEditProfile = () => {
   };
 
   const canSave = useMemo(() => {
-    return Object.values(userProfile).every(
-      (value) => value !== "" && value !== null && value !== undefined
+    const requiredFields: (keyof ProfileEditData)[] = [
+      "fullName",
+      "birthDate",
+      "gender",
+      "userRole",
+      "heightCm",
+      "startWeightKg",
+      "actualWeightKg",
+      "targetWeightKg",
+      "weeklyGoalKg",
+      "activityLevel",
+      "goal",
+    ];
+
+    const allFilled = requiredFields.every(
+      (key) => userProfile[key] !== "" && userProfile[key] !== null
     );
+    if (!allFilled) return false;
+
+    const birthDate = new Date(userProfile.birthDate);
+    const isDateValid =
+      birthDate >= new Date("1900-01-01") && birthDate <= new Date();
+    if (!isDateValid) return false;
+
+    const isStatsValid =
+      Number(userProfile.heightCm) > 0 &&
+      Number(userProfile.startWeightKg) > 0 &&
+      Number(userProfile.actualWeightKg) > 0 &&
+      Number(userProfile.targetWeightKg) > 0 &&
+      Number(userProfile.weeklyGoalKg) >= 0;
+
+    return isStatsValid;
   }, [userProfile]);
 
   return { loading, userProfile, setField, loadUser, saveUserProfile, canSave };

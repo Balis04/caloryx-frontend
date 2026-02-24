@@ -42,6 +42,7 @@ export const PhysicalStatsSection = ({
         <Input
           id="heightCm"
           type="number"
+          min="0.1"
           value={userProfile.heightCm}
           onChange={(e) => setField("heightCm", e.target.value)}
         />
@@ -54,6 +55,7 @@ export const PhysicalStatsSection = ({
             id="startWeightKg"
             type="number"
             step="0.1"
+            min="0.1"
             value={userProfile.startWeightKg}
             onChange={(e) => setField("startWeightKg", e.target.value)}
           />
@@ -66,6 +68,7 @@ export const PhysicalStatsSection = ({
             id="actualWeightKg"
             type="number"
             step="0.1"
+            min="0.1"
             value={userProfile.actualWeightKg}
             onChange={(e) => setField("actualWeightKg", e.target.value)}
             className="border-blue-200 focus-visible:ring-blue-500"
@@ -79,6 +82,7 @@ export const PhysicalStatsSection = ({
             id="targetWeightKg"
             type="number"
             step="0.1"
+            min="0.1"
             value={userProfile.targetWeightKg}
             onChange={(e) => setField("targetWeightKg", e.target.value)}
             className="border-green-100 focus-visible:ring-green-600"
@@ -90,6 +94,7 @@ export const PhysicalStatsSection = ({
             id="weeklyGoalKg"
             type="number"
             step="0.1"
+            min="0"
             value={userProfile.weeklyGoalKg}
             onChange={(e) => setField("weeklyGoalKg", e.target.value)}
           />

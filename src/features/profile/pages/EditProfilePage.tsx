@@ -51,10 +51,7 @@ export default function EditProfilePage() {
           </CardHeader>
 
           <CardContent className="space-y-4 py-2">
-            {" "}
-            {/* Csökkentett space-y */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-4 items-start">
-              {/* Bal oldal */}
               <div className="space-y-4">
                 <BasicInfoSection
                   userProfile={userProfile}
@@ -62,7 +59,6 @@ export default function EditProfilePage() {
                 />
               </div>
 
-              {/* Jobb oldal */}
               <div className="space-y-4">
                 <PhysicalStatsSection
                   userProfile={userProfile}

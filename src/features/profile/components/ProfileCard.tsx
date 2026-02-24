@@ -13,6 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { User, Target, Activity, Edit3 } from "lucide-react";
+import {
+  getProgressMessage,
+  calculateProgress,
+  formatWeeklyGoal,
+} from "../utils/profile.utils";
 
 import {
   GENDER_OPTIONS,
@@ -30,13 +35,10 @@ export default function ProfileCard({ profile }: Props) {
   const navigate = useNavigate();
 
   const formattedDate = new Date(profile.birthDate).toLocaleDateString("hu-HU");
-  const totalToLose = profile.startWeightKg - profile.targetWeightKg;
-  const lostSoFar = profile.startWeightKg - profile.actualWeightKg;
-  const progressValue =
-    totalToLose > 0 ? Math.min((lostSoFar / totalToLose) * 100, 100) : 0;
+  const message = getProgressMessage(profile);
+  const progressValue = calculateProgress(profile);
 
   return (
-    // Megnövelt szélesség (max-w-4xl), hogy asztalon kiférjen 2 oszlopban
     <Card className="w-full max-w-4xl shadow-xl border-t-4 border-t-primary">
       <CardHeader className="py-4 border-b">
         <div className="flex justify-between items-center">
@@ -51,9 +53,7 @@ export default function ProfileCard({ profile }: Props) {
       </CardHeader>
 
       <CardContent className="pt-6 space-y-6">
-        {/* Responsive Grid: Mobilan 1 oszlop, LG mérettől 2 oszlop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
-          {/* BAL OLDAL: Személyes és alapvető fizikai adatok */}
           <div className="space-y-4">
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -92,7 +92,6 @@ export default function ProfileCard({ profile }: Props) {
             </div>
           </div>
 
-          {/* JOBB OLDAL: Célok és Haladás */}
           <div className="space-y-6">
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -104,7 +103,7 @@ export default function ProfileCard({ profile }: Props) {
               />
               <ProfileField
                 label="Heti cél"
-                value={`${profile.weeklyGoalKg} kg`}
+                value={formatWeeklyGoal(profile.goal, profile.weeklyGoalKg)}
               />
               <ProfileField
                 label="Cél típusa"
@@ -112,23 +111,20 @@ export default function ProfileCard({ profile }: Props) {
               />
             </div>
 
-            {/* Haladás szekció kártyaszerűen kiemelve */}
             <div className="bg-slate-50 p-4 rounded-xl border space-y-3">
               <div className="flex justify-between items-end">
-                <span className="text-xs font-bold text-muted-foreground uppercase">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Haladás
                 </span>
-                <span className="text-lg font-black text-primary">
+                <span className="text-lg font-black text-primary leading-none">
                   {progressValue.toFixed(0)}%
                 </span>
               </div>
-              <Progress value={progressValue} className="h-2.5" />
-              <p className="text-[11px] text-center text-muted-foreground leading-tight">
-                {lostSoFar > 0
-                  ? `Gratulálunk, már ${lostSoFar.toFixed(
-                      1
-                    )} kg-ot fogytál az indulás óta!`
-                  : "Minden nagy utazás az első lépéssel kezdődik!"}
+
+              <Progress value={progressValue} className="h-2.5 w-full" />
+
+              <p className="text-[11px] text-center text-muted-foreground leading-tight italic pt-1">
+                {message}
               </p>
             </div>
           </div>
