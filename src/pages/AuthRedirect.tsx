@@ -22,7 +22,7 @@ export default function AuthRedirect() {
       try {
         const token = await getAccessTokenSilently();
 
-        const res = await fetch("/account/needs-register", {
+        const res = await fetch("/account/has-profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
