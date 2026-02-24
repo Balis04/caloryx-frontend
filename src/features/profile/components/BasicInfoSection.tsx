@@ -11,10 +11,11 @@ import {
   GENDER_OPTIONS,
   USER_ROLE_OPTIONS,
 } from "@/shared/constants/user-options";
+import { User } from "lucide-react";
 import type { UserRole, Gender } from "@/shared/types/profile.types";
 import type { ProfileEditData } from "../types/profile.types";
 
-interface BasicInfoProps {
+interface Props {
   userProfile: ProfileEditData;
   setField: <K extends keyof ProfileEditData>(
     key: K,
@@ -22,20 +23,23 @@ interface BasicInfoProps {
   ) => void;
 }
 
-export const BasicInfoSection = ({ userProfile, setField }: BasicInfoProps) => (
+export const BasicInfoSection = ({ userProfile, setField }: Props) => (
   <div className="space-y-4">
-    <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-      Alapadatok
-    </h2>
+    <div className="flex items-center gap-2 border-b pb-2">
+      <User className="w-4 h-4 text-muted-foreground" />
+      <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+        Alapadatok
+      </h3>
+    </div>
 
-    <div className="grid gap-4">
+    <div className="grid gap-4 pt-2">
       <div className="grid gap-2">
         <Label htmlFor="fullName">Teljes név</Label>
         <Input
           id="fullName"
-          placeholder="Minta János"
           value={userProfile.fullName}
           onChange={(e) => setField("fullName", e.target.value)}
+          className="focus-visible:ring-primary"
         />
       </div>
 
@@ -57,7 +61,7 @@ export const BasicInfoSection = ({ userProfile, setField }: BasicInfoProps) => (
             onValueChange={(v) => setField("gender", v as Gender)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Választás..." />
+              <SelectValue placeholder="Válassz..." />
             </SelectTrigger>
             <SelectContent>
               {GENDER_OPTIONS.map((o) => (
@@ -76,7 +80,7 @@ export const BasicInfoSection = ({ userProfile, setField }: BasicInfoProps) => (
             onValueChange={(v) => setField("userRole", v as UserRole)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Választás..." />
+              <SelectValue placeholder="Válassz..." />
             </SelectTrigger>
             <SelectContent>
               {USER_ROLE_OPTIONS.map((o) => (

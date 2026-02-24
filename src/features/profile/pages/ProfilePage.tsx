@@ -19,7 +19,7 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="flex justify-center mt-20 px-4">
+    <div className="flex justify-center mt-2 px-4">
       <ProfileCard profile={profile} />
     </div>
   );
