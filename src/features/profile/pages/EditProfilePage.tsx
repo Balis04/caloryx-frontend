@@ -39,7 +39,6 @@ export default function EditProfilePage() {
 
         <Card className="shadow-lg border-t-4 border-t-primary">
           <CardHeader className="py-3 border-b mb-2">
-            {" "}
             <div className="flex justify-between items-center">
               <CardTitle className="text-xl font-bold flex items-center gap-2">
                 <User className="w-5 h-5" /> Profil szerkesztése
