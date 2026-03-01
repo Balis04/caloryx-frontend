@@ -7,12 +7,20 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
+      "/user": {
         target: "http://localhost:8080",
         changeOrigin: true,
       },
       "/account": {
         target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/food-log": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+      "/api": {
+        target: "https://api.nal.usda.gov", // Az API URL-je
         changeOrigin: true,
       },
     },

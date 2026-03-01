@@ -1,7 +1,7 @@
 import type { ProfileResponse } from "../types/profile.types";
 
 export const fetchUserProfile = async (token: string) => {
-  const res = await fetch("/api/profile", {
+  const res = await fetch("/user/profile", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -16,7 +16,7 @@ export const saveUserProfile = async (
   token: string,
   profileData: ProfileResponse
 ) => {
-  await fetch("/api/profile", {
+  await fetch("/user/profile", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

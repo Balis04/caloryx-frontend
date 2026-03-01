@@ -36,7 +36,7 @@ export const useEditProfile = () => {
   const loadUser = useCallback(async () => {
     try {
       const token = await getAccessTokenSilently();
-      const res = await fetch("/api/profile", {
+      const res = await fetch("/user/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -70,7 +70,7 @@ export const useEditProfile = () => {
   const saveUserProfile = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const res = await fetch("/api/profile", {
+      const res = await fetch("/user/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

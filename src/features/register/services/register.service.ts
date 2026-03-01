@@ -5,7 +5,7 @@ export async function submitRegister(
   email: string | undefined,
   data: RegisterFormData
 ) {
-  const res = await fetch("/api/register", {
+  const res = await fetch("/user/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

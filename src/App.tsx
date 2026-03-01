@@ -6,6 +6,7 @@ import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirect from "./pages/AuthRedirect";
 import CaloriePage from "./pages/CaloriePage";
+import FoodSearch from "./features/foods/FoodSearch";
 
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
@@ -38,6 +39,7 @@ function App() {
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/auth-redirect" element={<AuthRedirect />} />
+        <Route path="/foods" element={<FoodSearch />} />
 
         {/* REGISTER csak autholt usernek */}
         <Route
