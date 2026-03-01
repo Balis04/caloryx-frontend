@@ -15,7 +15,7 @@ import { useFoodCalculator } from "../hooks/useFoodCalculator";
 import { useFoodService } from "../hooks/useFoodService";
 import { createFoodLogPayload } from "../utils/foodMapper";
 import { Loader2 } from "lucide-react";
-import { NutrientList } from "./NutRientList";
+import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
 export default function FoodCard({

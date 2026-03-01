@@ -1,4 +1,3 @@
-// src/features/foods/utils/nutrientUtils.ts
 import type { Nutrient } from "../types/food.types";
 
 export const getNutrientValue = (
