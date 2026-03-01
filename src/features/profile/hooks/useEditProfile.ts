@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import type { ProfileResponse } from "../types/profile.types";
+import { useProfileService } from "./useProfileService";
 import type { ProfileEditData } from "../types/profile.types";
 import { useNavigate } from "react-router-dom";
 
@@ -19,12 +18,50 @@ const initialProfileData: ProfileEditData = {
 };
 
 export const useEditProfile = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getProfile, updateProfile } = useProfileService();
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] =
     useState<ProfileEditData>(initialProfileData);
-
   const navigate = useNavigate();
+
+  const loadUser = useCallback(async () => {
+    try {
+      const data = await getProfile();
+      setUserProfile({
+        ...data,
+        birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
+        heightCm: String(data.heightCm ?? ""),
+        startWeightKg: String(data.startWeightKg ?? ""),
+        actualWeightKg: String(data.actualWeightKg ?? ""),
+        targetWeightKg: String(data.targetWeightKg ?? ""),
+        weeklyGoalKg: String(data.weeklyGoalKg ?? ""),
+        userRole: data.role,
+      });
+    } catch (error: unknown) {
+      console.error("Hiba betöltéskor:", error);
+      navigate("/register");
+    } finally {
+      setLoading(false);
+    }
+  }, [getProfile, navigate]);
+
+  const saveUserProfile = async () => {
+    try {
+      await updateProfile({
+        ...userProfile,
+        role: userProfile.userRole,
+        heightCm: Number(userProfile.heightCm),
+        startWeightKg: Number(userProfile.startWeightKg),
+        targetWeightKg: Number(userProfile.targetWeightKg),
+        weeklyGoalKg: Number(userProfile.weeklyGoalKg),
+        actualWeightKg: Number(userProfile.actualWeightKg),
+      });
+      return true;
+    } catch (err) {
+      console.error("Mentési hiba:", err);
+      return false;
+    }
+  };
 
   const setField = useCallback(
     <K extends keyof ProfileEditData>(key: K, value: ProfileEditData[K]) => {
@@ -32,69 +69,6 @@ export const useEditProfile = () => {
     },
     []
   );
-
-  const loadUser = useCallback(async () => {
-    try {
-      const token = await getAccessTokenSilently();
-      const res = await fetch("/api/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        navigate("/register");
-        return;
-      }
-
-      const data: ProfileResponse = await res.json();
-
-      setUserProfile({
-        fullName: data.fullName ?? "",
-        birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
-        gender: data.gender,
-        userRole: data.role,
-        heightCm: String(data.heightCm ?? ""),
-        startWeightKg: String(data.startWeightKg ?? ""),
-        actualWeightKg: String(data.actualWeightKg ?? ""),
-        targetWeightKg: String(data.targetWeightKg ?? ""),
-        weeklyGoalKg: String(data.weeklyGoalKg ?? ""),
-        activityLevel: data.activityLevel,
-        goal: data.goal,
-      });
-    } catch (error) {
-      console.error("Hiba betöltéskor:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [getAccessTokenSilently, navigate]);
-
-  const saveUserProfile = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-      const res = await fetch("/api/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...userProfile,
-          role: userProfile.userRole,
-          heightCm: Number(userProfile.heightCm),
-          startWeightKg: Number(userProfile.startWeightKg),
-          targetWeightKg: Number(userProfile.targetWeightKg),
-          weeklyGoalKg: Number(userProfile.weeklyGoalKg),
-          actualWeightKg: Number(userProfile.actualWeightKg),
-        }),
-      });
-      if (res.ok) {
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-  };
 
   const canSave = useMemo(() => {
     const requiredFields: (keyof ProfileEditData)[] = [

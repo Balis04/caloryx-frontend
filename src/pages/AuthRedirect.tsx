@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-
-type AuthBootstrapResponse = {
-  hasProfile: boolean;
-};
+import { apiClient } from "../lib/api-client";
 
 export default function AuthRedirect() {
   const { isAuthenticated, isLoading, getAccessTokenSilently, logout } =
@@ -12,46 +9,41 @@ export default function AuthRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const run = async () => {
-      if (isLoading) return;
-
-      if (!isAuthenticated) {
-        return;
-      }
+    const checkProfileAndRedirect = async () => {
+      if (isLoading || !isAuthenticated) return;
 
       try {
         const token = await getAccessTokenSilently();
 
-        const res = await fetch("/account/has-profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.status === 401) {
-          console.error("401 from backend - token likely invalid/missing");
-          return;
-        }
-
-        if (!res.ok) {
-          logout({ logoutParams: { returnTo: window.location.origin } });
-          return;
-        }
-
-        const data: AuthBootstrapResponse = await res.json();
+        const data = await apiClient<{ hasProfile: boolean }>(
+          "/account/has-profile",
+          {
+            token,
+          }
+        );
 
         if (data.hasProfile) {
           navigate("/profile", { replace: true });
         } else {
           navigate("/register", { replace: true });
         }
-      } catch {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("Auth redirect hiba:", message);
+
         logout({ logoutParams: { returnTo: window.location.origin } });
       }
     };
 
-    run();
+    checkProfileAndRedirect();
   }, [isAuthenticated, isLoading, getAccessTokenSilently, navigate, logout]);
 
-  return <div>Loading...</div>;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <div className="text-center">
+        <p className="text-lg font-medium">Azonosítás folyamatban...</p>
+        <div className="mt-4 animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+      </div>
+    </div>
+  );
 }
