@@ -17,9 +17,8 @@ import {
 } from "@/components/ui/select";
 import { Plus, Tag, Scale } from "lucide-react";
 import type { Food } from "../types/food.types";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useFoodCalculator } from "../hooks/useFoodCalculator";
-import { saveFoodEntry } from "../services/foodLogServices";
+import { useFoodService } from "../hooks/useFoodService";
 import type { MealTime, FoodLogRequest } from "../types/food.types";
 import type { Nutrient } from "../types/food.types";
 
@@ -30,7 +29,7 @@ export default function FoodCard({
   food: Food;
   mealTime?: string;
 }) {
-  const { getAccessTokenSilently } = useAuth0();
+  const { saveFood } = useFoodService();
   const [isSaving, setIsSaving] = useState(false);
 
   const {
@@ -45,8 +44,6 @@ export default function FoodCard({
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const token = await getAccessTokenSilently();
-
       const getVal = (name: string) =>
         food.foodNutrients.find((n) =>
           n.nutrientName.toLowerCase().includes(name.toLowerCase())
@@ -64,7 +61,7 @@ export default function FoodCard({
         consumedAt: new Date().toISOString(),
       };
 
-      await saveFoodEntry(payload, token);
+      await saveFood(payload);
       alert("Sikeres mentés!");
     } catch {
       alert("Hiba történt a mentés során.");
@@ -109,21 +106,16 @@ export default function FoodCard({
 
       <CardContent className="p-4 pt-2 flex-grow">
         <div className="space-y-1.5 border-t border-dashed pt-3">
-          {food.foodNutrients.slice(0, 4).map(
-            (
-              n: Nutrient,
-              i: number // Explicit any a hibák elkerülésére itt
-            ) => (
-              <div key={i} className="flex justify-between text-xs">
-                <span className="text-muted-foreground">
-                  {n.nutrientName.split(/[,(]/)[0].trim()}
-                </span>
-                <span className="font-mono font-bold">
-                  {calculateNutrient(n.value)} {n.unitName.toLowerCase()}
-                </span>
-              </div>
-            )
-          )}
+          {food.foodNutrients.slice(0, 4).map((n: Nutrient, i: number) => (
+            <div key={i} className="flex justify-between text-xs">
+              <span className="text-muted-foreground">
+                {n.nutrientName.split(/[,(]/)[0].trim()}
+              </span>
+              <span className="font-mono font-bold">
+                {calculateNutrient(n.value)} {n.unitName.toLowerCase()}
+              </span>
+            </div>
+          ))}
         </div>
       </CardContent>
 

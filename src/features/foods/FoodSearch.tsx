@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Search, Loader2, UtensilsCrossed } from "lucide-react";
 import FoodCard from "./components/FoodCard";
-import { useFoodSearch } from "./services/useFoodSearch";
+import { useFoodSearch } from "./hooks/useFoodSearch";
 
 interface SearchInputProps {
   label: string;

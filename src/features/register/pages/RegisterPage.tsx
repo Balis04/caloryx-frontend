@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-
 import { useRegisterForm } from "../hooks/useRegisterForm";
-import { submitRegister } from "../services/register.service";
+import { useRegisterService } from "../hooks/useRegisterService";
 import { RegisterProgress } from "../components/RegisterProgress";
 import { RegisterNav } from "../components/RegisterNav";
 import { StepBasic } from "../components/StepBasic";
@@ -11,9 +9,9 @@ import { StepBody } from "../components/StepBody";
 import { StepGoal } from "../components/StepGoal";
 
 export default function RegisterPage() {
+  // 1. Csak a service hook-ot hívjuk be
+  const { registerUser } = useRegisterService();
   const navigate = useNavigate();
-  const { getAccessTokenSilently, user } = useAuth0();
-
   const { step, formData, setField, canGoNext, next, back } = useRegisterForm();
 
   const [loading, setLoading] = useState(false);
@@ -23,15 +21,12 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
     try {
-      const token = await getAccessTokenSilently();
-      await submitRegister(token, user?.email, formData);
+      // 2. Nincs token kéregetés, nincs email vadászat
+      await registerUser(formData);
       navigate("/profile");
     } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e.message);
-      } else {
-        setError("Network error.");
-      }
+      // 3. Az apiClient már tiszta hibaüzenetet dob
+      setError(e instanceof Error ? e.message : "Network error.");
     } finally {
       setLoading(false);
     }
