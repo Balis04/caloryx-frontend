@@ -20,7 +20,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       "/api": {
-        target: "https://api.nal.usda.gov", // Az API URL-je
+        target: "http://localhost:8080",
         changeOrigin: true,
       },
     },

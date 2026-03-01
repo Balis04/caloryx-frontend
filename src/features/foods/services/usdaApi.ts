@@ -1,18 +1,21 @@
-const USDA_API_KEY = "rkH2pTcapvEVulxGECFDwFqWQG6CBuDKNT6TmLBi";
-const BASE_URL = "https://api.nal.usda.gov/fdc/v1/foods/search";
+// src/features/foods/services/usdaApi.ts
+import { apiClient } from "../../../lib/api-client";
+import type { Food } from "../types/food.types";
 
-export const fetchUsdaFoods = async (product: string, brand: string) => {
-  const params = new URLSearchParams({
-    api_key: USDA_API_KEY,
-    dataType: "Branded",
-    pageSize: "25",
-    sortBy: "dataType.keyword",
-    sortOrder: "asc",
-    ...(product && { query: product }),
-    ...(brand && { brandOwner: brand }),
-  });
+export interface FoodSearchResponse {
+  foods: Food[];
+  totalHits: number;
+}
 
-  const response = await fetch(`${BASE_URL}?${params.toString()}`);
-  if (!response.ok) throw new Error("USDA API hiba történt");
-  return response.json();
+// src/features/foods/services/usdaApi.ts
+export const fetchFoodsFromProxy = async (product: string, brand: string) => {
+  const params = new URLSearchParams();
+  if (product) params.append("query", product);
+  if (brand) params.append("brand", brand);
+
+  // Ha az apiClient BASE_URL-je "http://localhost:5173",
+  // akkor itt a kezdő "/" karakter fontos.
+  return apiClient<FoodSearchResponse>(
+    `/api/foods/search?${params.toString()}`
+  );
 };
