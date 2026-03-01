@@ -7,7 +7,7 @@ import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirect from "./pages/AuthRedirect";
 import CaloriePage from "./pages/CaloriePage";
 import FoodSearch from "./features/foods/FoodSearch";
-
+import { Outlet } from "react-router-dom";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -38,52 +38,33 @@ function App() {
       <Routes>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
+
         <Route path="/auth-redirect" element={<AuthRedirect />} />
-        <Route path="/foods" element={<FoodSearch />} />
 
-        {/* REGISTER csak autholt usernek */}
+        {/* CSAK AUTH KELL */}
         <Route
-          path="/register"
           element={
             <RequireAuth>
-              <RegisterPage />
+              <Outlet />
             </RequireAuth>
           }
-        />
+        >
+          <Route path="/register" element={<RegisterPage />} />
 
-        {/* PROTECTED + ONBOARDED */}
-        <Route
-          path="/profile"
-          element={
-            <RequireAuth>
+          {/* AUTH + ONBOARDING IS KELL */}
+          <Route
+            element={
               <RequireOnboarding>
-                <ProfilePage />
+                <Outlet />
               </RequireOnboarding>
-            </RequireAuth>
-          }
-        />
-
-        <Route
-          path="/profile/edit"
-          element={
-            <RequireAuth>
-              <RequireOnboarding>
-                <EditProfilePage />
-              </RequireOnboarding>
-            </RequireAuth>
-          }
-        />
-
-        <Route
-          path="/calorie-counter"
-          element={
-            <RequireAuth>
-              <RequireOnboarding>
-                <CaloriePage />
-              </RequireOnboarding>
-            </RequireAuth>
-          }
-        />
+            }
+          >
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<EditProfilePage />} />
+            <Route path="/calorie-counter" element={<CaloriePage />} />
+            <Route path="/foods" element={<FoodSearch />} />
+          </Route>
+        </Route>
       </Routes>
     </>
   );
