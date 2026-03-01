@@ -1,74 +1,35 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Search, Loader2, UtensilsCrossed } from "lucide-react";
-import FoodCard from "./components/FoodCard";
 import { useFoodSearch } from "./hooks/useFoodSearch";
-
-interface SearchInputProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  onEnter: () => void;
-  placeholder?: string;
-}
+import FoodCard from "./components/FoodCard";
+import { FoodSearchForm } from "./components/FoodSearchForm";
+import { UtensilsCrossed } from "lucide-react";
 
 export default function FoodSearch() {
-  const [productInput, setProductInput] = useState("cheddar cheese");
-  const [brandInput, setBrandInput] = useState("LIDL");
-
   const { foods, isLoading, performSearch } = useFoodSearch(
-    productInput,
-    brandInput
+    "cheddar cheese",
+    "LIDL"
   );
 
-  const handleSearch = () => {
-    performSearch({ product: productInput.trim(), brand: brandInput.trim() });
+  const handleSearch = (product: string, brand: string) => {
+    performSearch({ product, brand });
   };
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
       <header className="flex flex-col items-center space-y-2 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight italic text-primary">
-          FoodScout
+        <h1 className="text-4xl font-extrabold tracking-tight italic text-primary text-shadow-sm">
+          CalorieX
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground italic">
           Official USDA Branded Food Search
         </p>
       </header>
 
-      <Card className="p-6 shadow-lg border-2 border-primary/10">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-          <SearchInput
-            label="Product"
-            value={productInput}
-            onChange={setProductInput}
-            onEnter={handleSearch}
-            placeholder="e.g. apple juice"
-          />
-          <SearchInput
-            label="Brand Owner"
-            value={brandInput}
-            onChange={setBrandInput}
-            onEnter={handleSearch}
-            placeholder="e.g. LIDL"
-          />
-          <Button
-            onClick={handleSearch}
-            className="h-11 w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <>
-                <Search className="w-5 h-5 mr-2" /> Search
-              </>
-            )}
-          </Button>
-        </div>
-      </Card>
+      <FoodSearchForm
+        onSearch={handleSearch}
+        isLoading={isLoading}
+        initialProduct="cheddar cheese"
+        initialBrand="LIDL"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {isLoading ? (
@@ -79,29 +40,6 @@ export default function FoodSearch() {
           <EmptyState />
         )}
       </div>
-    </div>
-  );
-}
-
-function SearchInput({
-  label,
-  value,
-  onChange,
-  onEnter,
-  placeholder,
-}: SearchInputProps) {
-  return (
-    <div className="md:col-span-2 space-y-2">
-      <label className="text-xs font-bold uppercase text-muted-foreground ml-1">
-        {label}
-      </label>
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && onEnter()}
-        placeholder={placeholder}
-        className="h-11"
-      />
     </div>
   );
 }
