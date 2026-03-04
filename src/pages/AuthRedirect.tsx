@@ -16,7 +16,7 @@ export default function AuthRedirect() {
         const token = await getAccessTokenSilently();
 
         const data = await apiClient<{ hasProfile: boolean }>(
-          "/account/has-profile",
+          "/api/account/has-profile",
           {
             token,
           }

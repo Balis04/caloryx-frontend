@@ -6,13 +6,13 @@ export const useProfileService = () => {
   const { request } = useApi();
 
   const getProfile = useCallback(
-    () => request<ProfileResponse>("/user/profile"),
+    () => request<ProfileResponse>("/api/user/profile"),
     [request]
   );
 
   const updateProfile = useCallback(
     (data: Partial<ProfileResponse>) =>
-      request<ProfileResponse>("/user/profile", {
+      request<ProfileResponse>("/api/user/profile", {
         method: "PUT",
         body: data,
       }),

@@ -6,7 +6,7 @@ export const useRegisterService = () => {
   const { request } = useApi();
 
   const registerUser = async (data: RegisterFormData) => {
-    return request("/user/register", {
+    return request("/api/user/register", {
       method: "POST",
       body: {
         fullName: data.fullName,

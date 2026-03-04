@@ -21,7 +21,7 @@ export default function RequireOnboarding({
       try {
         const token = await getAccessTokenSilently();
         const data = await apiClient<{ hasProfile: boolean }>(
-          "/account/has-profile",
+          "/api/account/has-profile",
           { token }
         );
 

@@ -7,7 +7,7 @@ export const useFoodService = () => {
   const saveFood = async (
     payload: FoodLogRequest
   ): Promise<FoodLogResponse> => {
-    return request<FoodLogResponse>("/food-log/create", {
+    return request<FoodLogResponse>("/api/food-log/create", {
       body: payload,
       method: "POST",
     });
