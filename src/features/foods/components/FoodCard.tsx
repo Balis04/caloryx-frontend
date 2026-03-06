@@ -21,9 +21,11 @@ import { UnitSelect } from "./UnitSelect";
 export default function FoodCard({
   food,
   mealTime = "BREAKFAST",
+  consumedDate,
 }: {
   food: Food;
   mealTime?: string;
+  consumedDate?: string;
 }) {
   const { saveFood } = useFoodService();
   const [isSaving, setIsSaving] = useState(false);
@@ -36,10 +38,11 @@ export default function FoodCard({
         food,
         mealTime,
         calculator.totalGrams,
-        calculator.calculateNutrient
+        calculator.calculateNutrient,
+        consumedDate
       );
       await saveFood(payload);
-      alert("Sikeres mentés!");
+      alert("Sikeres mentes!");
     } catch (e: unknown) {
       alert(`Hiba: ${e instanceof Error ? e.message : "Ismeretlen"}`);
     } finally {

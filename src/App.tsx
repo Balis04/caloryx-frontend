@@ -5,13 +5,13 @@ import RegisterPage from "./features/register/pages/RegisterPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirect from "./pages/AuthRedirect";
-import CaloriePage from "./pages/CaloriePage";
 import FoodSearch from "./features/foods/FoodSearch";
 import { Outlet } from "react-router-dom";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
+import DiaryScreen from "./features/foods/components/DiaryScreen";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
@@ -61,8 +61,8 @@ function App() {
           >
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
-            <Route path="/calorie-counter" element={<CaloriePage />} />
-            <Route path="/foods" element={<FoodSearch />} />
+            <Route path="/calorie-counter" element={<DiaryScreen />} />
+            <Route path="/foods/:mealTime" element={<FoodSearch />} />
           </Route>
         </Route>
       </Routes>

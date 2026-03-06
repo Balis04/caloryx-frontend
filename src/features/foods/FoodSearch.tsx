@@ -2,8 +2,22 @@ import { useFoodSearch } from "./hooks/useFoodSearch";
 import FoodCard from "./components/FoodCard";
 import { FoodSearchForm } from "./components/FoodSearchForm";
 import { UtensilsCrossed } from "lucide-react";
+import { useParams, Navigate, useSearchParams } from "react-router-dom";
+import type { MealTime } from "./types/food.types";
+
+const VALID_MEALS: MealTime[] = ["BREAKFAST", "LUNCH", "DINNER", "SNACK"];
 
 export default function FoodSearch() {
+  const { mealTime } = useParams<{ mealTime: string }>();
+  const [searchParams] = useSearchParams();
+  const consumedDate = searchParams.get("date") ?? undefined;
+
+  const normalizedMeal = mealTime?.toUpperCase() as MealTime;
+
+  if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
+    return <Navigate to="/calorie-counter" replace />;
+  }
+
   const { foods, isLoading, performSearch } = useFoodSearch(
     "cheddar cheese",
     "LIDL"
@@ -35,7 +49,14 @@ export default function FoodSearch() {
         {isLoading ? (
           <SkeletonCards count={8} />
         ) : foods.length > 0 ? (
-          foods.map((food) => <FoodCard key={food.fdcId} food={food} />)
+          foods.map((food) => (
+            <FoodCard
+              key={food.fdcId}
+              food={food}
+              mealTime={normalizedMeal}
+              consumedDate={consumedDate}
+            />
+          ))
         ) : (
           <EmptyState />
         )}
@@ -58,9 +79,7 @@ function EmptyState() {
   return (
     <div className="col-span-full py-20 text-center space-y-3 opacity-50">
       <UtensilsCrossed className="mx-auto h-12 w-12" />
-      <p className="text-xl font-medium">
-        Nincs találat a keresett feltételekkel.
-      </p>
+      <p className="text-xl font-medium">Nincs talalat a keresett feltetelekkel.</p>
     </div>
   );
 }

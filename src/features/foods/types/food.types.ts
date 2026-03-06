@@ -18,6 +18,26 @@ export interface FoodLogResponse extends FoodLogRequest {
   createdAt: string;
 }
 
+export interface CaloriesSummaryResponse {
+  date: string;
+  targetCalories: number;
+  targetProteinGrams: number;
+  targetCarbohydratesGrams: number;
+  targetFatGrams: number;
+  consumedCalories: number;
+  consumedProteinGrams: number;
+  consumedCarbohydratesGrams: number;
+  consumedFatGrams: number;
+  targetbreakfastkcal: number;
+  consumedbreakfastkcal: number;
+  targetlunchkcal: number;
+  consumedlunchkcal: number;
+  targetdinnerkcal: number;
+  consumeddinnerkcal: number;
+  targetsnackkcal: number;
+  consumedsnackkcal: number;
+}
+
 export interface Food {
   fdcId: number;
   description: string;
@@ -33,3 +53,8 @@ export interface Nutrient {
   value: number;
   unitName: string;
 }
+
+export type RootStackParamList = {
+  Diary: undefined;
+  FoodSearch: { mealType: MealTime };
+};
