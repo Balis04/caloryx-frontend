@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Loader2, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -100,6 +100,10 @@ export default function MealTimeDetailsPage() {
     );
   }, [foods]);
 
+  const openAddFood = () => {
+    navigate(`/foods/${normalizedMeal.toLowerCase()}?date=${date}`);
+  };
+
   const beginEdit = (food: FoodLogResponse) => {
     setEditingFoodId(food.id);
     setEditingAmount(String(food.amount));
@@ -164,7 +168,13 @@ export default function MealTimeDetailsPage() {
         <Button variant="outline" onClick={() => navigate("/calorie-counter")}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Vissza
         </Button>
-        <Badge variant="secondary">{date}</Badge>
+
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">{date}</Badge>
+          <Button onClick={openAddFood}>
+            <Plus className="h-4 w-4 mr-2" /> Hozzaadas
+          </Button>
+        </div>
       </div>
 
       <Card>

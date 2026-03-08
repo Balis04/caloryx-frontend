@@ -51,6 +51,31 @@ export interface MealTimeSummaryResponse {
   foods: FoodLogResponse[];
 }
 
+export interface CustomFoodRequest {
+  name: string;
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+}
+
+export interface CustomFoodResponse {
+  id: string;
+  name?: string;
+  foodName?: string;
+  calories?: number;
+  protein?: number;
+  carbohydrates?: number;
+  fat?: number;
+  caloriesPer100g?: number;
+  proteinPer100g?: number;
+  carbohydratesPer100g?: number;
+  fatPer100g?: number;
+  brandOwner?: string;
+  createdBy?: string;
+  createdByName?: string;
+}
+
 export interface Food {
   fdcId: number;
   description: string;
@@ -59,6 +84,7 @@ export interface Food {
   servingSizeUnit: string;
   servingSize: number;
   foodNutrients: Nutrient[];
+  customFoodId?: string;
 }
 
 export interface Nutrient {
