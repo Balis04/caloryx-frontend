@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { useCaloriesSummaryService } from "../hooks/useCaloriesSummaryService";
 import { useFoodService } from "../hooks/useFoodService";
 import type {
@@ -56,6 +57,9 @@ export default function MealTimeDetailsPage() {
   const [actionType, setActionType] = useState<"update" | "delete" | null>(
     null
   );
+  const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
+  const [editingAmount, setEditingAmount] = useState<string>("");
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
@@ -96,45 +100,54 @@ export default function MealTimeDetailsPage() {
     );
   }, [foods]);
 
-  const handleDelete = async (foodId: string) => {
-    const confirmed = window.confirm("Biztosan torlod ezt a tetelt?");
-    if (!confirmed) return;
+  const beginEdit = (food: FoodLogResponse) => {
+    setEditingFoodId(food.id);
+    setEditingAmount(String(food.amount));
+    setActionError(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingFoodId(null);
+    setEditingAmount("");
+    setActionError(null);
+  };
+
+  const saveEdit = async (foodId: string) => {
+    const newAmount = Number(editingAmount);
+    if (Number.isNaN(newAmount) || newAmount <= 0) {
+      setActionError("A mennyisegnek pozitiv szamnak kell lennie.");
+      return;
+    }
 
     setActiveFoodId(foodId);
-    setActionType("delete");
+    setActionType("update");
+    setActionError(null);
 
     try {
-      await deleteFood(foodId);
+      await updateFoodAmount(foodId, newAmount);
       await loadData();
+      cancelEdit();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Torles sikertelen.");
+      setActionError(e instanceof Error ? e.message : "Modositas sikertelen.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
     }
   };
 
-  const handleEditAmount = async (foodId: string) => {
-    const current = foods.find((item) => item.id === foodId);
-    if (!current) return;
-
-    const value = prompt("Uj mennyiseg:", String(current.amount));
-    if (!value) return;
-
-    const newAmount = Number(value);
-    if (Number.isNaN(newAmount) || newAmount <= 0) {
-      alert("Ervenytelen mennyiseg.");
-      return;
-    }
-
+  const handleDelete = async (foodId: string) => {
     setActiveFoodId(foodId);
-    setActionType("update");
+    setActionType("delete");
+    setActionError(null);
 
     try {
-      await updateFoodAmount(foodId, newAmount);
+      await deleteFood(foodId);
       await loadData();
+      if (editingFoodId === foodId) {
+        cancelEdit();
+      }
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Modositas sikertelen.");
+      setActionError(e instanceof Error ? e.message : "Torles sikertelen.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
@@ -195,34 +208,73 @@ export default function MealTimeDetailsPage() {
         </CardContent>
       </Card>
 
+      {actionError && <p className="text-sm text-destructive">{actionError}</p>}
+
       <div className="space-y-3">
         {foods.map((food) => {
           const isActive = activeFoodId === food.id;
+          const isEditing = editingFoodId === food.id;
 
           return (
             <Card key={food.id}>
               <CardContent className="pt-6 space-y-3">
                 <div className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="w-full max-w-xs">
                     <p className="font-semibold">{food.foodName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {Math.round(food.amount)} {food.unit}
-                    </p>
+                    {isEditing ? (
+                      <div className="mt-2 flex items-center gap-2">
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value={editingAmount}
+                          onChange={(e) => setEditingAmount(e.target.value)}
+                          className="h-8"
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {food.unit}
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        {Math.round(food.amount)} {food.unit}
+                      </p>
+                    )}
                   </div>
+
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEditAmount(food.id)}
-                      disabled={isActive}
-                    >
-                      {isActive && actionType === "update" ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Pencil className="h-4 w-4 mr-2" />
-                      )}
-                      Modositas
-                    </Button>
+                    {isEditing ? (
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => saveEdit(food.id)}
+                          disabled={isActive}
+                        >
+                          {isActive && actionType === "update" ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : null}
+                          Mentes
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={cancelEdit}
+                          disabled={isActive}
+                        >
+                          Megse
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => beginEdit(food)}
+                        disabled={isActive}
+                      >
+                        <Pencil className="h-4 w-4 mr-2" /> Modositas
+                      </Button>
+                    )}
+
                     <Button
                       size="sm"
                       variant="destructive"

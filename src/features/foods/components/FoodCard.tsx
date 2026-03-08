@@ -9,12 +9,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Food } from "../types/food.types";
 import { useFoodCalculator } from "../hooks/useFoodCalculator";
 import { useFoodService } from "../hooks/useFoodService";
 import { createFoodLogPayload } from "../utils/foodMapper";
-import { Loader2 } from "lucide-react";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
@@ -27,12 +27,16 @@ export default function FoodCard({
   mealTime?: string;
   consumedDate?: string;
 }) {
+  const navigate = useNavigate();
   const { saveFood } = useFoodService();
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const calculator = useFoodCalculator(food);
 
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveError(null);
+
     try {
       const payload = createFoodLogPayload(
         food,
@@ -42,9 +46,9 @@ export default function FoodCard({
         consumedDate
       );
       await saveFood(payload);
-      alert("Sikeres mentes!");
+      navigate("/calorie-counter");
     } catch (e: unknown) {
-      alert(`Hiba: ${e instanceof Error ? e.message : "Ismeretlen"}`);
+      setSaveError(e instanceof Error ? e.message : "Sikertelen mentes.");
     } finally {
       setIsSaving(false);
     }
@@ -105,6 +109,10 @@ export default function FoodCard({
             onUnitChange={calculator.handleUnitChange}
           />
         </div>
+
+        {saveError && (
+          <p className="text-xs text-destructive w-full">{saveError}</p>
+        )}
       </CardFooter>
     </Card>
   );
