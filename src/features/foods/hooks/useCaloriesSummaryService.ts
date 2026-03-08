@@ -1,6 +1,10 @@
 import { useCallback } from "react";
 import { useApi } from "../../../hooks/useApi";
-import type { CaloriesSummaryResponse } from "../types/food.types";
+import type {
+  CaloriesSummaryResponse,
+  MealTime,
+  MealTimeSummaryResponse,
+} from "../types/food.types";
 
 export const useCaloriesSummaryService = () => {
   const { request } = useApi();
@@ -15,5 +19,16 @@ export const useCaloriesSummaryService = () => {
     [request]
   );
 
-  return { getSummaryByDate };
+  const getMealTimeSummary = useCallback(
+    async (date: string, mealTime: MealTime): Promise<MealTimeSummaryResponse> => {
+      const dateQuery = encodeURIComponent(date);
+      const mealQuery = encodeURIComponent(mealTime);
+      return request<MealTimeSummaryResponse>(
+        `/api/calories-summary/meal-times?date=${dateQuery}&mealTime=${mealQuery}`
+      );
+    },
+    [request]
+  );
+
+  return { getSummaryByDate, getMealTimeSummary };
 };

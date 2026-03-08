@@ -38,6 +38,19 @@ export interface CaloriesSummaryResponse {
   consumedsnackkcal: number;
 }
 
+export interface MealTimeSummaryResponse {
+  mealTime: MealTime;
+  targetCalories: number;
+  targetProteinGrams: number;
+  targetCarbohydratesGrams: number;
+  targetFatGrams: number;
+  consumedCalories: number;
+  consumedProteinGrams: number;
+  consumedCarbohydratesGrams: number;
+  consumedFatGrams: number;
+  foods: FoodLogResponse[];
+}
+
 export interface Food {
   fdcId: number;
   description: string;

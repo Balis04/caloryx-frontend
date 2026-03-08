@@ -60,7 +60,10 @@ const mapApiToFallback = (date: string): CaloriesSummaryResponse => ({
   consumedsnackkcal: 0,
 });
 
-const getMealCalories = (summary: CaloriesSummaryResponse, mealType: MealTime) => {
+const getMealCalories = (
+  summary: CaloriesSummaryResponse,
+  mealType: MealTime
+): { consumed: number; target: number } => {
   switch (mealType) {
     case "BREAKFAST":
       return {
@@ -144,8 +147,12 @@ export default function DiaryScreen() {
     );
   }, [summary.consumedCalories, summary.targetCalories]);
 
-  const openMeal = (mealType: MealTime) => {
+  const openMealForAdd = (mealType: MealTime) => {
     navigate(`/foods/${mealType.toLowerCase()}?date=${selectedDate}`);
+  };
+
+  const openMealDetails = (mealType: MealTime) => {
+    navigate(`/calorie-counter/meal/${mealType.toLowerCase()}?date=${selectedDate}`);
   };
 
   return (
@@ -258,7 +265,16 @@ export default function DiaryScreen() {
         return (
           <div
             key={meal.type}
-            className="flex justify-between items-center p-4 mb-3 bg-white rounded-2xl shadow-sm border border-border"
+            role="button"
+            tabIndex={0}
+            onClick={() => openMealDetails(meal.type)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openMealDetails(meal.type);
+              }
+            }}
+            className="flex justify-between items-center p-4 mb-3 bg-white rounded-2xl shadow-sm border border-border cursor-pointer"
           >
             <div>
               <p className="text-lg font-semibold">{meal.title}</p>
@@ -270,7 +286,10 @@ export default function DiaryScreen() {
             <Button
               size="icon"
               className="rounded-full bg-blue-500 hover:bg-blue-600"
-              onClick={() => openMeal(meal.type)}
+              onClick={(e) => {
+                e.stopPropagation();
+                openMealForAdd(meal.type);
+              }}
             >
               <Plus className="w-5 h-5 text-white" />
             </Button>

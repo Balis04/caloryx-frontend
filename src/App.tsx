@@ -12,6 +12,7 @@ import RequireOnboarding from "./guards/RequireOnboarding";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import DiaryScreen from "./features/foods/components/DiaryScreen";
+import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
@@ -63,6 +64,10 @@ function App() {
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/calorie-counter" element={<DiaryScreen />} />
             <Route path="/foods/:mealTime" element={<FoodSearch />} />
+            <Route
+              path="/calorie-counter/meal/:mealTime"
+              element={<MealTimeDetailsPage />}
+            />
           </Route>
         </Route>
       </Routes>

@@ -13,5 +13,21 @@ export const useFoodService = () => {
     });
   };
 
-  return { saveFood };
+  const updateFoodAmount = async (
+    id: string,
+    amount: number
+  ): Promise<FoodLogResponse> => {
+    return request<FoodLogResponse>(`/api/food-log/${id}/amount`, {
+      body: { amount },
+      method: "PATCH",
+    });
+  };
+
+  const deleteFood = async (id: string): Promise<void> => {
+    await request<void>(`/api/food-log/${id}`, {
+      method: "DELETE",
+    });
+  };
+
+  return { saveFood, updateFoodAmount, deleteFood };
 };
