@@ -34,6 +34,7 @@ export default function AuthRedirect() {
         logout({ logoutParams: { returnTo: window.location.origin } });
       }
     };
+    
 
     checkProfileAndRedirect();
   }, [isAuthenticated, isLoading, getAccessTokenSilently, navigate, logout]);
