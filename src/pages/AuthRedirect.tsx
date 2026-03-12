@@ -16,7 +16,7 @@ export default function AuthRedirect() {
         const token = await getAccessTokenSilently();
 
         const data = await apiClient<{ hasProfile: boolean }>(
-          "/account/has-profile",
+          "/api/account/has-profile",
           {
             token,
           }
@@ -34,6 +34,7 @@ export default function AuthRedirect() {
         logout({ logoutParams: { returnTo: window.location.origin } });
       }
     };
+    
 
     checkProfileAndRedirect();
   }, [isAuthenticated, isLoading, getAccessTokenSilently, navigate, logout]);
