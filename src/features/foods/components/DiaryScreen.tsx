@@ -9,8 +9,7 @@ import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCaloriesSummaryService } from "../hooks/useCaloriesSummaryService";
 import type { CaloriesSummaryResponse } from "../types/food.types";
-
-type MealTime = "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK";
+import type { MealTime } from "../types/food.types";
 
 const MEALS: { title: string; type: MealTime }[] = [
   { title: "Breakfast", type: "BREAKFAST" },

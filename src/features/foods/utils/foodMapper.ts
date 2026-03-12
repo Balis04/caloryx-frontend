@@ -6,7 +6,7 @@ const toConsumedAtIso = (consumedDate?: string): string => {
     return new Date().toISOString();
   }
 
-  return new Date(`${consumedDate}T12:00:00`).toISOString();
+  return new Date(`${consumedDate}T12:00:00Z`).toISOString();
 };
 
 export const createFoodLogPayload = (

@@ -92,8 +92,3 @@ export interface Nutrient {
   value: number;
   unitName: string;
 }
-
-export type RootStackParamList = {
-  Diary: undefined;
-  FoodSearch: { mealType: MealTime };
-};
