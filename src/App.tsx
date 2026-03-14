@@ -13,6 +13,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import DiaryScreen from "./features/foods/components/DiaryScreen";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
+import TrainerRequestPage from "./features/training-request/pages/TrainerRequestPage";
+import TrainerProfilePage from "./features/trainer-profile/pages/TrainerProfilePage";
+import RequireTrainer from "./guards/RequireTrainer";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
@@ -62,6 +65,15 @@ function App() {
           >
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
+            <Route path="/training-request" element={<TrainerRequestPage />} />
+            <Route
+              path="/trainer-profile"
+              element={
+                <RequireTrainer>
+                  <TrainerProfilePage />
+                </RequireTrainer>
+              }
+            />
             <Route path="/calorie-counter" element={<DiaryScreen />} />
             <Route path="/foods/:mealTime" element={<FoodSearch />} />
             <Route

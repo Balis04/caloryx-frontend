@@ -1,9 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
 
 export default function Navbar() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
   const navigate = useNavigate();
+  const { profile } = useViewerProfile(isAuthenticated);
+  const isTrainer = profile?.role === "TRAINER";
 
   return (
     <nav
@@ -24,6 +27,12 @@ export default function Navbar() {
           <span style={{ fontSize: "0.9rem", color: "#666" }}>
             {user?.email}
           </span>
+
+          {isTrainer && (
+            <button onClick={() => navigate("/trainer-profile")}>
+              Edzői profil
+            </button>
+          )}
 
           <button onClick={() => navigate("/profile")}>Profile</button>
 

@@ -1,5 +1,6 @@
-import type { Goal, RegisterFormData } from "../types/register.types";
+import type { RegisterFormData } from "../types/register.types";
 import { GOAL_OPTIONS } from "@/shared/constants/user-options";
+import type { Goal } from "@/shared/types/profile.types";
 
 export function StepGoal(props: {
   data: RegisterFormData;

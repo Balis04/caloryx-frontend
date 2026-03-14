@@ -1,13 +1,24 @@
 const API_BASE_URL = "http://localhost:8080";
 
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 export interface ApiConfig extends Omit<RequestInit, "body"> {
   body?: unknown;
   token?: string;
+  suppressErrorLog?: boolean;
 }
 
 export const apiClient = async <T>(
   endpoint: string,
-  { body, token, ...customConfig }: ApiConfig = {}
+  { body, token, suppressErrorLog, ...customConfig }: ApiConfig = {}
 ): Promise<T> => {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -35,7 +46,7 @@ export const apiClient = async <T>(
   if (!response.ok) {
     const errorMessage =
       data?.message || `Hiba: ${response.status} ${response.statusText}`;
-    throw new Error(errorMessage);
+    throw new ApiError(errorMessage, response.status);
   }
 
   if (response.status === 204 || !data) {
