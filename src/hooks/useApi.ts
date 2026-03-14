@@ -22,9 +22,11 @@ export const useApi = () => {
           loginWithRedirect();
         }
 
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        console.error("API hiba:", errorMessage);
+        if (!config.suppressErrorLog) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          console.error("API hiba:", errorMessage);
+        }
 
         throw error;
       }

@@ -12,6 +12,7 @@ export const useRegisterService = () => {
         fullName: data.fullName,
         birthDate: data.birthDate,
         gender: data.gender,
+        role: data.userRole,
         heightCm: Number(data.heightCm),
         startWeightKg: Number(data.startWeightKg),
         activityLevel: data.activityLevel,

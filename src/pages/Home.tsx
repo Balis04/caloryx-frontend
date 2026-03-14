@@ -22,7 +22,7 @@ export default function Home() {
       {/* FEATURES */}
       <section className="container mx-auto px-6 py-1">
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="hover:shadow-lg transition">
+          <Card className="hover:shadow-lg transition" onClick={() => navigate("/training-request")}>
             <CardHeader>
               <Dumbbell className="w-8 h-8 text-primary mb-4" />
               <CardTitle>Edzésnapló</CardTitle>

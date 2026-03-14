@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { User, Target, Activity, Edit3 } from "lucide-react";
+import { User, Target, Activity, Edit3, Briefcase } from "lucide-react";
 import {
   getProgressMessage,
   calculateProgress,
@@ -132,13 +132,25 @@ export default function ProfileCard({ profile }: Props) {
       </CardContent>
 
       <CardFooter className="border-t bg-slate-50/50 py-4">
-        <Button
-          onClick={() => navigate("/profile/edit")}
-          className="w-full lg:w-auto lg:ml-auto font-bold group"
-        >
-          <Edit3 className="mr-2 w-4 h-4" />
-          Profil szerkesztése
-        </Button>
+        <div className="flex w-full flex-col gap-3 lg:ml-auto lg:w-auto lg:flex-row">
+          {profile.role === "TRAINER" && (
+            <Button
+              variant="outline"
+              onClick={() => navigate("/trainer-profile")}
+              className="w-full lg:w-auto font-bold"
+            >
+              <Briefcase className="mr-2 w-4 h-4" />
+              Edzői profil
+            </Button>
+          )}
+          <Button
+            onClick={() => navigate("/profile/edit")}
+            className="w-full lg:w-auto font-bold group"
+          >
+            <Edit3 className="mr-2 w-4 h-4" />
+            Profil szerkesztése
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
