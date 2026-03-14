@@ -30,7 +30,7 @@ export default function Navbar() {
 
           {isTrainer && (
             <button onClick={() => navigate("/trainer-profile")}>
-              Edzoi profil
+              Edzői profil
             </button>
           )}
 

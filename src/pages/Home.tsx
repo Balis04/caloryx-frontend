@@ -22,28 +22,37 @@ export default function Home() {
       {/* FEATURES */}
       <section className="container mx-auto px-6 py-1">
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="hover:shadow-lg transition" onClick={() => navigate("/training-request")}>
-            <CardHeader>
-              <Dumbbell className="w-8 h-8 text-primary mb-4" />
-              <CardTitle>Edzésnapló</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground">
-              Rögzíts gyakorlatokat, súlyokat és ismétléseket.
-            </CardContent>
-          </Card>
+          <Card className="hover:shadow-lg transition">
+             <button
+               type="button"
+               onClick={() => navigate("/training-request")}
+               className="w-full text-left cursor-pointer"
+             >
+               <CardHeader>
+                 <Dumbbell className="w-8 h-8 text-primary mb-4" />
+                 <CardTitle>Edző igénylése</CardTitle>
+               </CardHeader>
+               <CardContent className="text-muted-foreground">
+                 Válassz személyi edzőt és kérj edzéstervet a céljaidhoz.
+               </CardContent>
+             </button>
+           </Card>
 
-          <Card
-            className="hover:shadow-lg transition"
-            onClick={() => navigate("/calorie-counter")}
-          >
-            <CardHeader>
-              <Flame className="w-8 h-8 text-primary mb-4" />
-              <CardTitle>Kalóriaszámolás</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground">
-              Állíts be napi célt és kövesd a makrókat.
-            </CardContent>
-          </Card>
+          <Card className="hover:shadow-lg transition">
+             <button
+               type="button"
+               onClick={() => navigate("/calorie-counter")}
+               className="w-full text-left cursor-pointer"
+             >
+               <CardHeader>
+                 <Flame className="w-8 h-8 text-primary mb-4" />
+                 <CardTitle>Kalóriaszámolás</CardTitle>
+               </CardHeader>
+               <CardContent className="text-muted-foreground">
+                 Állíts be napi célt és kövesd a makrókat.
+               </CardContent>
+             </button>
+           </Card>
 
           <Card className="hover:shadow-lg transition">
             <CardHeader>

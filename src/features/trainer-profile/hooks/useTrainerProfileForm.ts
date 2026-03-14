@@ -103,21 +103,21 @@ const normalizeCoachProfileResponse = (
   contactNote: data.contactNote ?? "",
   certificates: Array.isArray(data.certificates) ? data.certificates : [],
   availability:
-    Array.isArray(data.availabilities) && data.availabilities.length > 0
-      ? createInitialAvailability().map((defaultSlot) => {
-          const matchingSlot = data.availabilities?.find(
-            (slot) => slot.dayOfWeek === defaultSlot.dayOfWeek
-          );
+  Array.isArray(data.availabilities) && data.availabilities.length > 0
+    ? createInitialAvailability().map((defaultSlot) => {
+        const matchingSlot = data.availabilities?.find(
+          (slot) => slot.dayOfWeek === defaultSlot.dayOfWeek
+        );
 
-          return {
-            dayOfWeek: defaultSlot.dayOfWeek,
-            label: defaultSlot.label,
-            enabled: matchingSlot?.available ?? defaultSlot.enabled,
-            from: matchingSlot?.startTime ?? defaultSlot.from,
-            until: matchingSlot?.endTime ?? defaultSlot.until,
-          };
-        })
-      : createInitialAvailability(),
+        return {
+          dayOfWeek: defaultSlot.dayOfWeek,
+          label: defaultSlot.label,
+          enabled: matchingSlot?.available ?? false,
+          from: matchingSlot?.startTime ?? defaultSlot.from,
+          until: matchingSlot?.endTime ?? defaultSlot.until,
+        };
+      })
+    : createInitialAvailability()
 });
 
 export const useTrainerProfileForm = () => {

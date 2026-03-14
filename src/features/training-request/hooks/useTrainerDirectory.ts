@@ -98,7 +98,7 @@ const normalizeTrainer = (
         ? `Formatum: ${trainer.trainingFormat}`
         : "Formatum nincs megadva",
       trainer.maxCapacity ? `Kapacitas: ${trainer.maxCapacity} fo` : "Kapacitas nincs megadva",
-      trainer.priceFrom || trainer.priceTo
+      trainer.priceFrom != null || trainer.priceTo != null
         ? `Ar: ${trainer.priceFrom ?? 0}-${trainer.priceTo ?? 0} ${trainer.currency ?? ""}`.trim()
         : "Ar nincs megadva",
     ],

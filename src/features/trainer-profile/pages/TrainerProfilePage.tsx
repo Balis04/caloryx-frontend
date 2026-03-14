@@ -23,7 +23,7 @@ import ProfileField from "@/features/profile/components/ProfileField";
 const TRAINING_FORMAT_OPTIONS = [
   { value: "ONLINE", label: "Online" },
   { value: "HYBRID", label: "Hybrid" },
-  { value: "IN_PERSON", label: "Szemelyes" },
+  { value: "IN_PERSON", label: "Személyes" },
 ] as const;
 
 const CURRENCY_OPTIONS = [
@@ -63,11 +63,11 @@ export default function TrainerProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-10 italic">Edzoi profil betoltese...</div>;
+    return <div className="flex justify-center p-10 italic">Edzői profil betöltése...</div>;
   }
 
   const showForm = !hasTrainerProfile || isEditing;
-  const primaryActionLabel = hasTrainerProfile ? "Modositas mentese" : "Edzoi profil letrehozasa";
+  const primaryActionLabel = hasTrainerProfile ? "Módosítás mentése" : "Edzői profil létrehozása";
 
   return (
     <div className="flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] pt-2 pb-6 px-4">
