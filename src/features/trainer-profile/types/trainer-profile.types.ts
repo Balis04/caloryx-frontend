@@ -9,6 +9,15 @@ export interface AvailabilitySlot {
   until: string;
 }
 
+export interface TrainerCertificate {
+  id: string;
+  certificateName: string;
+  issuer: string;
+  issuedAt: string;
+  fileName: string;
+  fileUrl: string;
+}
+
 export interface TrainerProfileFormData {
   description: string;
   startedCoachingAt: string;
@@ -18,6 +27,6 @@ export interface TrainerProfileFormData {
   priceTo: string;
   currency: Currency | "";
   contactNote: string;
-  certificates: string[];
+  certificates: TrainerCertificate[];
   availability: AvailabilitySlot[];
 }

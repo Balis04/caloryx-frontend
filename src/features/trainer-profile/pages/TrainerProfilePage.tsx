@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { API_BASE_URL } from "@/lib/api-client";
 import {
   ArrowLeft,
   Briefcase,
   CalendarDays,
+  Download,
   Edit3,
   FileText,
   Save,
@@ -17,7 +19,11 @@ import {
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTrainerProfileForm } from "../hooks/useTrainerProfileForm";
-import type { Currency, TrainingFormat } from "../types/trainer-profile.types";
+import type {
+  Currency,
+  TrainerCertificate,
+  TrainingFormat,
+} from "../types/trainer-profile.types";
 import ProfileField from "@/features/profile/components/ProfileField";
 
 const TRAINING_FORMAT_OPTIONS = [
@@ -49,17 +55,41 @@ export default function TrainerProfilePage() {
     cancelEditing,
     canSave,
   } = useTrainerProfileForm();
+  const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
   const [selectedPdfNames, setSelectedPdfNames] = useState<string[]>([]);
 
   const allCertificateNames = useMemo(
-    () => [...formData.certificates, ...selectedPdfNames],
+    () => [
+      ...new Set([
+        ...formData.certificates.map((certificate) => certificate.certificateName),
+        ...selectedPdfNames,
+      ]),
+    ],
     [formData.certificates, selectedPdfNames]
+  );
+
+  const downloadableCertificates = useMemo(
+    () => formData.certificates.filter((certificate) => certificate.fileUrl),
+    [formData.certificates]
   );
 
   const handlePdfSelection = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     const pdfFiles = files.filter((file) => file.type === "application/pdf");
+    setSelectedPdfFiles(pdfFiles);
     setSelectedPdfNames(pdfFiles.map((file) => file.name));
+  };
+
+  const handleCertificateDownload = (certificate: TrainerCertificate) => {
+    if (!certificate.fileUrl) {
+      return;
+    }
+
+    const fileUrl = /^https?:\/\//i.test(certificate.fileUrl)
+      ? certificate.fileUrl
+      : `${API_BASE_URL}${certificate.fileUrl.startsWith("/") ? "" : "/"}${certificate.fileUrl}`;
+
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
 
   if (loading) {
@@ -335,6 +365,48 @@ export default function TrainerProfilePage() {
                     Meg nem valasztottal ki PDF oklevelet.
                   </div>
                 )}
+
+                <div className="space-y-2">
+                  <Label>Feltoltott certificate-ek</Label>
+                  {downloadableCertificates.length > 0 ? (
+                    <div className="grid gap-2">
+                      {downloadableCertificates.map((certificate) => (
+                        <div
+                          key={certificate.id}
+                          className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2"
+                        >
+                          <div className="min-w-0 text-sm">
+                            <p className="font-medium truncate">
+                              {certificate.certificateName}
+                            </p>
+                            {certificate.issuer || certificate.issuedAt ? (
+                              <p className="text-xs text-muted-foreground truncate">
+                                {[certificate.issuer, certificate.issuedAt]
+                                  .filter(Boolean)
+                                  .join(" | ")}
+                              </p>
+                            ) : null}
+                          </div>
+
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCertificateDownload(certificate)}
+                            className="shrink-0 gap-2"
+                          >
+                            <Download className="h-4 w-4" />
+                            Letoltes
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-lg border border-dashed px-3 py-4 text-sm text-muted-foreground">
+                      Meg nincs feltoltott certificate a profilodhoz.
+                    </div>
+                  )}
+                </div>
                     </CardContent>
                   </Card>
 
@@ -345,7 +417,13 @@ export default function TrainerProfilePage() {
                       </Button>
                     )}
                     <Button
-                      onClick={() => void saveTrainerProfile()}
+                      onClick={async () => {
+                        const saved = await saveTrainerProfile(selectedPdfFiles);
+                        if (saved) {
+                          setSelectedPdfFiles([]);
+                          setSelectedPdfNames([]);
+                        }
+                      }}
                       disabled={!canSave || saving}
                       className="gap-2"
                     >
@@ -488,6 +566,28 @@ export default function TrainerProfilePage() {
                           .join(", ") || "-"
                       }
                     />
+                    <div className="space-y-2 pt-2">
+                      <p className="text-sm font-medium">Certificate-ek</p>
+                      {downloadableCertificates.length > 0 ? (
+                        <div className="grid gap-2">
+                          {downloadableCertificates.map((certificate) => (
+                            <button
+                              key={certificate.id}
+                              type="button"
+                              onClick={() => handleCertificateDownload(certificate)}
+                              className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2 text-left text-sm transition-colors hover:bg-muted/50"
+                            >
+                              <span className="truncate">
+                                {certificate.certificateName}
+                              </span>
+                              <Download className="h-4 w-4 shrink-0" />
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">-</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

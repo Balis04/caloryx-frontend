@@ -16,6 +16,8 @@ import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
 import TrainerRequestPage from "./features/training-request/pages/TrainerRequestPage";
 import TrainerProfilePage from "./features/trainer-profile/pages/TrainerProfilePage";
 import RequireTrainer from "./guards/RequireTrainer";
+import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
+import TrainingRequestsPage from "./features/training-requests/pages/TrainingRequestsPage";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
@@ -66,6 +68,11 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/training-request" element={<TrainerRequestPage />} />
+            <Route path="/training-requests" element={<TrainingRequestsPage />} />
+            <Route
+              path="/training-request/:trainerId"
+              element={<TrainingRequestFormPage />}
+            />
             <Route
               path="/trainer-profile"
               element={

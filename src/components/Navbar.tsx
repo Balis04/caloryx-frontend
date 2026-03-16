@@ -28,6 +28,10 @@ export default function Navbar() {
             {user?.email}
           </span>
 
+          <button onClick={() => navigate("/training-requests")}>
+            Training kérelmek
+          </button>
+
           {isTrainer && (
             <button onClick={() => navigate("/trainer-profile")}>
               Edzői profil

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dumbbell, Flame, LineChart } from "lucide-react";
+import { ArrowRightLeft, Dumbbell, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -55,13 +55,19 @@ export default function Home() {
            </Card>
 
           <Card className="hover:shadow-lg transition">
-            <CardHeader>
-              <LineChart className="w-8 h-8 text-primary mb-4" />
-              <CardTitle>Statisztikák</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground">
-              Heti és havi trendek grafikonokon.
-            </CardContent>
+            <button
+              type="button"
+              onClick={() => navigate("/training-requests")}
+              className="w-full text-left cursor-pointer"
+            >
+              <CardHeader>
+                <ArrowRightLeft className="w-8 h-8 text-primary mb-4" />
+                <CardTitle>Training kérelmek</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                Kövesd a beérkező vagy elküldött edzésterv kérelmek állapotát.
+              </CardContent>
+            </button>
           </Card>
         </div>
       </section>

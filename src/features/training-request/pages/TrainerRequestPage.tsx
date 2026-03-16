@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, Clock3, Dumbbell, Mail, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
 import type { TrainerCardData } from "../types/trainer.types";
 
@@ -74,6 +75,7 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
 );
 
 export default function TrainerRequestPage() {
+  const navigate = useNavigate();
   const { trainers, loading, error } = useTrainerDirectory();
   const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(null);
 
@@ -81,7 +83,7 @@ export default function TrainerRequestPage() {
     trainers.find((trainer) => trainer.id === selectedTrainerId) ?? null;
 
   if (loading) {
-    return <div className="p-10 italic text-muted-foreground">Edzok betoltese...</div>;
+    return <div className="p-10 italic text-muted-foreground">Edzők betöltése...</div>;
   }
 
   return (
@@ -127,7 +129,7 @@ export default function TrainerRequestPage() {
             {!error && trainers.length === 0 && (
               <Card className="sm:col-span-2 2xl:col-span-3">
                 <CardContent className="p-6 text-sm text-muted-foreground">
-                  Jelenleg nincs elerheto edzoi profil a rendszerben.
+                  Jelenleg nincs elérhető edzői profil a rendszerben.
                 </CardContent>
               </Card>
             )}
@@ -136,13 +138,12 @@ export default function TrainerRequestPage() {
           <Card className="h-fit border-primary/20 bg-background lg:sticky lg:top-6">
             <CardHeader className="space-y-3">
               <Badge variant="secondary" className="w-fit">
-                Kovetkezo lepes
+                Következő lépés
               </Badge>
-              <CardTitle>Edzeskero urlap hamarosan</CardTitle>
+              <CardTitle>Edzésterv kérés</CardTitle>
               <CardDescription className="text-sm leading-6">
-                A kovetkezo korben ide kerul majd az urlap, ahol a felhasznalo megadja
-                peldaul a szabadidojet, testsulyat es a celjait, majd ezt elkuldjuk a
-                kivalasztott edzonek emailben.
+                A kiválasztott edzőhöz külön kérőoldal nyílik meg, ahol meg tudod adni
+                az alapadataidat, a céljaidat és a saját leírásodat.
               </CardDescription>
             </CardHeader>
 
@@ -150,26 +151,30 @@ export default function TrainerRequestPage() {
               {selectedTrainer ? (
                 <>
                   <div className="rounded-lg border bg-muted/40 p-4">
-                    <p className="font-medium">Kivalasztott edzo</p>
+                    <p className="font-medium">Kiválasztott edző</p>
                     <p className="mt-1 text-muted-foreground">{selectedTrainer.fullName}</p>
                     <p className="text-muted-foreground">{selectedTrainer.email}</p>
                   </div>
                   <p className="text-muted-foreground">
-                    A formszakaszban ehhez az edzohoz fogjuk kapcsolni a bekuldott
-                    adatokat.
+                    A következő oldalon ehhez az edzőhöz kapcsolódik majd az
+                    edzésterv kérésed.
                   </p>
                 </>
               ) : (
                 <div className="rounded-lg border border-dashed p-4 text-muted-foreground">
-                  Valassz ki egy edzot a kartyak kozul, hogy lathato legyen, kihez fog
-                  tartozni majd az edzeskero urlap.
+                  Válassz ki egy edzőt a kártyák közül, hogy megnyithasd az
+                  edzésterv kérő oldalt.
                 </div>
               )}
             </CardContent>
 
             <CardFooter>
-              <Button disabled className="w-full">
-                Urlap megnyitasa hamarosan
+              <Button
+                className="w-full"
+                disabled={!selectedTrainer}
+                onClick={() => navigate(`/training-request/${selectedTrainerId}`)}
+              >
+                Edzésterv kérés megnyitása
               </Button>
             </CardFooter>
           </Card>
