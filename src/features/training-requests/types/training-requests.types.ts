@@ -18,13 +18,11 @@ export interface TrainingRequestResponse {
   coachNote: string;
   description: string | null;
   createdAt: string;
-  trainingPlanName: string | null;
-  trainingPlanDescription: string | null;
-  trainingPlanFileName: string | null;
-  trainingPlanFileUrl: string | null;
-  trainingPlanContentType: string | null;
-  trainingPlanFileSizeBytes: number | null;
-  trainingPlanUploadedAt: string | null;
+  planName?: string | null;
+  planDescription?: string | null;
+  fileName?: string | null;
+  fileUrl?: string | null;
+  uploadedAt?: string | null;
 }
 
 export interface ApprovedRequestDraft {

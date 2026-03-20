@@ -32,13 +32,13 @@ export const PhysicalStatsSection = ({
     <div className="flex items-center gap-2 border-b pb-2">
       <Activity className="w-4 h-4 text-muted-foreground" />
       <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-        Fizikai állapot
+        Physical Stats
       </h3>
     </div>
 
     <div className="grid gap-4 pt-2">
       <div className="grid gap-2">
-        <Label htmlFor="heightCm">Magasság (cm)</Label>
+        <Label htmlFor="heightCm">Height (cm)</Label>
         <Input
           id="heightCm"
           type="number"
@@ -50,7 +50,7 @@ export const PhysicalStatsSection = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="startWeightKg">Kezdő súly (kg)</Label>
+          <Label htmlFor="startWeightKg">Starting weight (kg)</Label>
           <Input
             id="startWeightKg"
             type="number"
@@ -62,7 +62,7 @@ export const PhysicalStatsSection = ({
         </div>
         <div className="grid gap-2">
           <Label htmlFor="actualWeightKg" className="text-blue-600 font-bold">
-            Jelenlegi súly (kg)
+            Current weight (kg)
           </Label>
           <Input
             id="actualWeightKg"
@@ -76,7 +76,7 @@ export const PhysicalStatsSection = ({
         </div>
         <div className="grid gap-2">
           <Label htmlFor="targetWeightKg" className="text-green-700 font-bold">
-            Célsúly (kg)
+            Target weight (kg)
           </Label>
           <Input
             id="targetWeightKg"
@@ -89,7 +89,7 @@ export const PhysicalStatsSection = ({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="weeklyGoalKg">Heti cél (kg)</Label>
+          <Label htmlFor="weeklyGoalKg">Weekly target (kg)</Label>
           <Input
             id="weeklyGoalKg"
             type="number"
@@ -106,19 +106,19 @@ export const PhysicalStatsSection = ({
       <div className="flex items-center gap-2 border-b pb-2">
         <Target className="w-4 h-4 text-muted-foreground" />
         <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-          Célkitűzések
+          Goals
         </h3>
       </div>
 
       <div className="grid gap-4 pt-2">
         <div className="grid gap-2">
-          <Label>Elsődleges cél</Label>
+          <Label>Primary goal</Label>
           <Select
             value={userProfile.goal ?? ""}
             onValueChange={(v) => setField("goal", v as Goal)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Választás..." />
+              <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent>
               {GOAL_OPTIONS.map((o) => (
@@ -130,13 +130,13 @@ export const PhysicalStatsSection = ({
           </Select>
         </div>
         <div className="grid gap-2">
-          <Label>Aktivitási szint</Label>
+          <Label>Activity level</Label>
           <Select
             value={userProfile.activityLevel ?? ""}
             onValueChange={(v) => setField("activityLevel", v as ActivityLevel)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Választás..." />
+              <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent>
               {ACTIVITY_OPTIONS.map((o) => (

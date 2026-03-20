@@ -18,14 +18,14 @@ export const useApi = () => {
           "error" in error &&
           (error as { error: string }).error === "login_required"
         ) {
-          console.warn("Session lejárt, újrabejelentkezés szükséges...");
+          console.warn("Session expired, sign-in required again...");
           loginWithRedirect();
         }
 
         if (!config.suppressErrorLog) {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
-          console.error("API hiba:", errorMessage);
+          console.error("API error:", errorMessage);
         }
 
         throw error;

@@ -10,49 +10,49 @@ import type {
 const createInitialAvailability = (): AvailabilitySlot[] => [
   {
     dayOfWeek: "MONDAY",
-    label: "Hetfo",
+    label: "Monday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "TUESDAY",
-    label: "Kedd",
+    label: "Tuesday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "WEDNESDAY",
-    label: "Szerda",
+    label: "Wednesday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "THURSDAY",
-    label: "Csutortok",
+    label: "Thursday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "FRIDAY",
-    label: "Pentek",
+    label: "Friday",
     enabled: true,
     from: "08:00",
     until: "14:00",
   },
   {
     dayOfWeek: "SATURDAY",
-    label: "Szombat",
+    label: "Saturday",
     enabled: false,
     from: "09:00",
     until: "12:00",
   },
   {
     dayOfWeek: "SUNDAY",
-    label: "Vasarnap",
+    label: "Sunday",
     enabled: false,
     from: "09:00",
     until: "12:00",
@@ -141,7 +141,7 @@ const normalizeCertificate = (
     certificateName:
       certificate?.certificateName?.trim() ||
       certificate?.fileName?.trim() ||
-      `Oklevel ${index + 1}`,
+      `Certificate ${index + 1}`,
     issuer: certificate?.issuer?.trim() ?? "",
     issuedAt: certificate?.issuedAt?.trim() ?? "",
     fileName: certificate?.fileName?.trim() ?? "",
@@ -216,7 +216,7 @@ export const useTrainerProfileForm = () => {
         setIsEditing(false);
       } else {
         const message =
-          error instanceof Error ? error.message : "Nem sikerult betolteni az edzoi profilt.";
+          error instanceof Error ? error.message : "Failed to load trainer profile.";
         setErrorMessage(message);
       }
     } finally {
@@ -317,13 +317,13 @@ export const useTrainerProfileForm = () => {
       setIsEditing(false);
       setStatusMessage(
         coachProfileId
-          ? "Az edzoi profil sikeresen modositva."
-          : "Az edzoi profil sikeresen letrehozva."
+          ? "Trainer profile updated successfully."
+          : "Trainer profile created successfully."
       );
       return true;
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "A mentes nem sikerult.";
+        error instanceof Error ? error.message : "Saving failed.";
       setErrorMessage(message);
       return false;
     } finally {

@@ -64,7 +64,7 @@ export default function TrainerRequestCard({
             <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <UserRound className="h-4 w-4" />
-                Ugyfel
+                Client
               </span>
               <span className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
@@ -84,20 +84,20 @@ export default function TrainerRequestCard({
 
       <CardContent className="space-y-5 pt-6">
         <TrainingRequestMetrics request={request} />
-        <RequestTextPanel label="Ugyfel megjegyzese" value={request.coachNote} />
+        <RequestTextPanel label="Client note" value={request.coachNote} />
         <RequestTextPanel
           label="Statusz comment"
-          value={decisionDescription || "Meg nincs statusz comment."}
+          value={decisionDescription || "No status comment yet."}
         />
 
         {isClosedTab && (
           <>
             {getTrainingPlanName(request) && (
-              <RequestTextPanel label="Training plan neve" value={getTrainingPlanName(request)} />
+              <RequestTextPanel label="Training plan name" value={getTrainingPlanName(request)} />
             )}
             {getTrainingPlanDescription(request) && (
               <RequestTextPanel
-                label="Training plan leiras"
+                label="Training plan description"
                 value={getTrainingPlanDescription(request)}
               />
             )}
@@ -108,15 +108,15 @@ export default function TrainerRequestCard({
               <div className="rounded-xl border bg-background p-4 text-sm">
                 <p className="font-medium">Training plan fajl</p>
                 <div className="mt-2 space-y-2 text-muted-foreground">
-                  {getTrainingPlanFileName(request) && <p>Fajlnev: {getTrainingPlanFileName(request)}</p>}
-                  {request.trainingPlanContentType && <p>Tipus: {request.trainingPlanContentType}</p>}
-                  {request.trainingPlanFileSizeBytes != null && <p>Meret: {request.trainingPlanFileSizeBytes} byte</p>}
-                  {request.trainingPlanUploadedAt && <p>Feltoltve: {formatDate(request.trainingPlanUploadedAt)}</p>}
+                  {getTrainingPlanFileName(request) && <p>File name: {getTrainingPlanFileName(request)}</p>}
+                  {request.trainingPlanContentType && <p>Type: {request.trainingPlanContentType}</p>}
+                  {request.trainingPlanFileSizeBytes != null && <p>Size: {request.trainingPlanFileSizeBytes} bytes</p>}
+                  {request.trainingPlanUploadedAt && <p>Uploaded: {formatDate(request.trainingPlanUploadedAt)}</p>}
                 </div>
                 {getTrainingPlanFileUrl(request) && (
                   <div className="mt-3">
                     <Button type="button" variant="outline" size="sm" onClick={() => openFile(getTrainingPlanFileUrl(request))}>
-                      Fajl megnyitasa
+                      Open file
                     </Button>
                   </div>
                 )}
@@ -134,13 +134,13 @@ export default function TrainerRequestCard({
               <textarea
                 id={`decision-description-${request.id}`}
                 className="mt-2 min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="Ird le, miert fogadtad el vagy utasitottad el a kerelmet."
+                placeholder="Explain why you approved or rejected the request."
                 value={decisionDescription}
                 onChange={(event) => onDecisionDescriptionChange(event.target.value)}
                 disabled={isUpdating}
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                Statuszvaltasnal az indoklas kotelezo, es ezt a felhasznalo is latni fogja.
+                A comment is required when changing the status, and the user will be able to see it.
               </p>
             </div>
 
@@ -152,7 +152,7 @@ export default function TrainerRequestCard({
                 onClick={() => onStatusChange("REJECTED")}
               >
                 <X className="h-4 w-4" />
-                {isUpdating ? "Frissites..." : "Elutasitas"}
+                {isUpdating ? "Updating..." : "Reject"}
               </Button>
               <Button
                 className="gap-2"
@@ -160,7 +160,7 @@ export default function TrainerRequestCard({
                 onClick={() => onStatusChange("APPROVED")}
               >
                 <Check className="h-4 w-4" />
-                {isUpdating ? "Frissites..." : "Elfogadas"}
+                {isUpdating ? "Updating..." : "Approve"}
               </Button>
             </div>
           </>

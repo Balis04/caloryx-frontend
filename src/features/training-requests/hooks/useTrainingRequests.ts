@@ -120,7 +120,7 @@ export const useTrainingRequests = () => {
       });
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Nem sikerult betolteni a kerelmeket.";
+        err instanceof Error ? err.message : "Failed to load requests.";
       setError(message);
       setOutgoingRequests([]);
       setPendingRequests([]);
@@ -149,7 +149,7 @@ export const useTrainingRequests = () => {
       const trimmedDescription = description.trim();
 
       if (!trimmedDescription) {
-        setError("Az elfogadas vagy elutasitas indoklasa kotelezo.");
+        setError("A status comment is required when approving or rejecting a request.");
         return;
       }
 
@@ -217,7 +217,7 @@ export const useTrainingRequests = () => {
         void loadRequests();
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : "A statusz frissitese nem sikerult.";
+          err instanceof Error ? err.message : "Failed to update status.";
         setError(message);
       } finally {
         setUpdatingRequestId(null);
@@ -233,7 +233,7 @@ export const useTrainingRequests = () => {
       const trimmedDescription = draft.description.trim();
 
       if (!draft.file) {
-        setError("A training plan feltoltesehez valassz ki egy PDF vagy DOCX fajlt.");
+        setError("Select a PDF or DOCX file to upload the training plan.");
         return;
       }
 
@@ -261,19 +261,19 @@ export const useTrainingRequests = () => {
         );
 
         const fallbackTrainingPlanName =
-          trimmedPlanName || requestItem.trainingPlanName || null;
+          trimmedPlanName || requestItem.planName || null;
         const fallbackTrainingPlanDescription =
-          trimmedDescription || requestItem.trainingPlanDescription || null;
+          trimmedDescription || requestItem.planDescription || null;
         const nextTrainingPlanName =
-          response.trainingPlanName ?? fallbackTrainingPlanName;
+          response.planName ?? fallbackTrainingPlanName;
         const nextTrainingPlanDescription =
-          response.trainingPlanDescription ?? fallbackTrainingPlanDescription;
+          response.planDescription ?? fallbackTrainingPlanDescription;
         const nextTrainingPlanFileName =
-          response.trainingPlanFileName ?? draft.file?.name ?? requestItem.trainingPlanFileName;
+          response.fileName ?? draft.file?.name ?? requestItem.fileName;
         const nextTrainingPlanFileUrl =
-          response.trainingPlanFileUrl ??
+          response.fileUrl ??
           draft.existingFileUrl ??
-          requestItem.trainingPlanFileUrl;
+          requestItem.fileUrl;
 
         const normalizedResponse = {
           ...requestItem,
@@ -300,7 +300,7 @@ export const useTrainingRequests = () => {
         void loadRequests();
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : "Az elfogadott anyag feltoltese nem sikerult.";
+          err instanceof Error ? err.message : "Failed to upload the training plan.";
         setError(message);
       } finally {
         setSavingApprovedRequestId(null);

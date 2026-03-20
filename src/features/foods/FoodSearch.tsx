@@ -144,7 +144,7 @@ export default function FoodSearch() {
         : ((response as { content?: CustomFoodResponse[] }).content ?? []);
       setSavedFoods(items.map(toFoodFromCustom));
     } catch (e) {
-      setSavedError(e instanceof Error ? e.message : "Nem sikerult betolteni.");
+      setSavedError(e instanceof Error ? e.message : "Failed to load saved foods.");
       setSavedFoods([]);
     } finally {
       setSavedLoading(false);
@@ -172,7 +172,7 @@ export default function FoodSearch() {
 
     const name = newFood.name.trim();
     if (!name) {
-      setCreateError("A nev kotelezo.");
+      setCreateError("Name is required.");
       return;
     }
 
@@ -182,7 +182,7 @@ export default function FoodSearch() {
     const fat = toNumber(newFood.fat);
 
     if ([calories, protein, carbohydrates, fat].some((value) => value < 0)) {
-      setCreateError("A tapanyag ertekek nem lehetnek negativak.");
+      setCreateError("Nutrition values cannot be negative.");
       return;
     }
 
@@ -210,7 +210,7 @@ export default function FoodSearch() {
       setActiveTab("saved");
       await loadSavedFoods();
     } catch (e) {
-      setCreateError(e instanceof Error ? e.message : "Sikertelen letrehozas.");
+      setCreateError(e instanceof Error ? e.message : "Creation failed.");
     } finally {
       setCreateLoading(false);
     }
@@ -226,7 +226,7 @@ export default function FoodSearch() {
       await deleteCustomFood(foodId);
       await loadSavedFoods();
     } catch (e) {
-      setSavedError(e instanceof Error ? e.message : "Sikertelen torles.");
+      setSavedError(e instanceof Error ? e.message : "Delete failed.");
     } finally {
       setActiveDeleteId(null);
     }
@@ -242,7 +242,7 @@ export default function FoodSearch() {
         <h1 className="text-4xl font-extrabold tracking-tight italic text-primary text-shadow-sm">
           CalorieX
         </h1>
-        <p className="text-muted-foreground italic">Etel kereso es sajat etel kezelo</p>
+        <p className="text-muted-foreground italic">Food search and custom food manager</p>
       </header>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as MainTab)}>
@@ -273,7 +273,7 @@ export default function FoodSearch() {
                 />
               ))
             ) : (
-              <EmptyState message="Nincs talalat a keresett feltetelekkel." />
+              <EmptyState message="No results match your search." />
             )}
           </div>
         </TabsContent>
@@ -281,25 +281,25 @@ export default function FoodSearch() {
         <TabsContent value="create">
           <Card>
             <CardHeader>
-              <CardTitle>Create New Food (100g alap)</CardTitle>
+              <CardTitle>Create New Food (per 100 g)</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2 space-y-2">
-                  <Label htmlFor="food-name">Nev</Label>
+                  <Label htmlFor="food-name">Name</Label>
                   <Input
                     id="food-name"
                     value={newFood.name}
                     onChange={(e) =>
                       setNewFood((prev) => ({ ...prev, name: e.target.value }))
                     }
-                    placeholder="pl. Zabkasa tejjel"
+                    placeholder="e.g. Oatmeal with milk"
                   />
                 </div>
 
                 <NutrientInput
                   id="food-calories"
-                  label="Kaloria (kcal / 100g)"
+                  label="Calories (kcal / 100 g)"
                   value={newFood.calories}
                   onChange={(value) =>
                     setNewFood((prev) => ({ ...prev, calories: value }))
@@ -308,7 +308,7 @@ export default function FoodSearch() {
 
                 <NutrientInput
                   id="food-protein"
-                  label="Feherje (g / 100g)"
+                  label="Protein (g / 100 g)"
                   value={newFood.protein}
                   onChange={(value) =>
                     setNewFood((prev) => ({ ...prev, protein: value }))
@@ -317,7 +317,7 @@ export default function FoodSearch() {
 
                 <NutrientInput
                   id="food-carbs"
-                  label="Szenhidrat (g / 100g)"
+                  label="Carbohydrates (g / 100 g)"
                   value={newFood.carbohydrates}
                   onChange={(value) =>
                     setNewFood((prev) => ({ ...prev, carbohydrates: value }))
@@ -326,7 +326,7 @@ export default function FoodSearch() {
 
                 <NutrientInput
                   id="food-fat"
-                  label="Zsir (g / 100g)"
+                  label="Fat (g / 100 g)"
                   value={newFood.fat}
                   onChange={(value) =>
                     setNewFood((prev) => ({ ...prev, fat: value }))
@@ -340,7 +340,7 @@ export default function FoodSearch() {
                 <div className="md:col-span-2 flex justify-end">
                   <Button type="submit" disabled={createLoading}>
                     {createLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                    Mentes a Saved Foods-ba
+                    Save to Saved Foods
                   </Button>
                 </div>
               </form>
@@ -351,11 +351,11 @@ export default function FoodSearch() {
         <TabsContent value="saved" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Felhasznalok altal mentett etelek</CardTitle>
+              <CardTitle>Foods saved by users</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Ezek backendrol jonnek, minden tapanyag 100g-ra ertendo.
+                These come from the backend, and all nutrition values are per 100 g.
               </p>
 
               <Tabs
@@ -370,10 +370,10 @@ export default function FoodSearch() {
               </Tabs>
 
               <div className="space-y-2">
-                <Label htmlFor="saved-food-search">Kereses nev szerint</Label>
+                <Label htmlFor="saved-food-search">Search by name</Label>
                 <Input
                   id="saved-food-search"
-                  placeholder="pl. csirkemell"
+                  placeholder="e.g. chicken breast"
                   value={savedSearchTerm}
                   onChange={(e) => setSavedSearchTerm(e.target.value)}
                 />
@@ -407,13 +407,13 @@ export default function FoodSearch() {
                       ) : (
                         <Trash2 className="h-4 w-4 mr-2" />
                       )}
-                      Torles a mentettek kozul
+                      Remove from saved foods
                     </Button>
                   ) : null}
                 </div>
               ))
             ) : (
-              <EmptyState message="Nincs a keresesnek megfelelo custom food." />
+              <EmptyState message="No custom foods match your search." />
             )}
           </div>
         </TabsContent>

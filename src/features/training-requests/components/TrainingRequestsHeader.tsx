@@ -26,8 +26,8 @@ export default function TrainingRequestsHeader({
   onViewModeChange,
 }: Props) {
   const pageDescription = showTrainerIncomingRequests
-    ? "Itt latod a hozzad beerkezett edzesterv kereseket."
-    : "Itt latod az altalad elkuldott edzesterv kereseket es azok allapotat.";
+    ? "Here you can see the training plan requests sent to you."
+    : "Here you can see the training plan requests you have sent and their status.";
 
   return (
     <CardHeader className="border-b">
@@ -36,12 +36,12 @@ export default function TrainingRequestsHeader({
           <div>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <ArrowRightLeft className="h-6 w-6" />
-              Training kerelmek
+              Training Requests
             </CardTitle>
             <p className="mt-2 text-sm text-muted-foreground">{pageDescription}</p>
           </div>
           <Badge variant="secondary" className="w-fit">
-            {showTrainerIncomingRequests ? "Edzoi nezet" : "Felhasznaloi nezet"}
+            {showTrainerIncomingRequests ? "Trainer view" : "User view"}
           </Badge>
         </div>
 
@@ -51,13 +51,13 @@ export default function TrainingRequestsHeader({
               variant={trainerViewMode === "trainer" ? "default" : "outline"}
               onClick={() => onViewModeChange("trainer")}
             >
-              Edzoi nezet
+              Trainer view
             </Button>
             <Button
               variant={trainerViewMode === "user" ? "default" : "outline"}
               onClick={() => onViewModeChange("user")}
             >
-              Felhasznaloi nezet
+              User view
             </Button>
           </div>
         )}
@@ -66,16 +66,16 @@ export default function TrainingRequestsHeader({
           <Tabs value={trainerRequestFilter} onValueChange={(value) => onFilterChange(value as TrainerRequestFilter)}>
             <TabsList className="flex h-auto w-full max-w-2xl flex-row gap-1 p-1">
               <TabsTrigger value="pending" className="flex-1">
-                Folyamatban
+                Pending
               </TabsTrigger>
               <TabsTrigger value="approved" className="flex-1">
-                Elfogadott
+                Approved
               </TabsTrigger>
               <TabsTrigger value="rejected" className="flex-1">
-                Elutasitott
+                Rejected
               </TabsTrigger>
               <TabsTrigger value="closed" className="flex-1">
-                Befejezett
+                Completed
               </TabsTrigger>
             </TabsList>
           </Tabs>

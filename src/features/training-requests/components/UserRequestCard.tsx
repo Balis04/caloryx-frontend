@@ -33,7 +33,7 @@ export default function UserRequestCard({ request }: Props) {
             <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                Edzo
+                Trainer
               </span>
               <span className="flex items-center gap-2">
                 <Clock3 className="h-4 w-4" />
@@ -50,11 +50,11 @@ export default function UserRequestCard({ request }: Props) {
       <CardContent className="space-y-4 pt-6">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-xl border bg-muted/20 p-4 text-sm">
-            <p className="font-medium">Heti edzesszam</p>
-            <p className="mt-2 text-muted-foreground">{request.weeklyTrainingCount} alkalom</p>
+            <p className="font-medium">Weekly sessions</p>
+            <p className="mt-2 text-muted-foreground">{request.weeklyTrainingCount} sessions</p>
           </div>
           <div className="rounded-xl border bg-muted/20 p-4 text-sm">
-            <p className="font-medium">Preferalt helyszin</p>
+            <p className="font-medium">Preferred location</p>
             <p className="mt-2 text-muted-foreground">{request.preferredLocation}</p>
           </div>
           <div className="rounded-xl border bg-muted/20 p-4 text-sm">
@@ -64,7 +64,7 @@ export default function UserRequestCard({ request }: Props) {
         </div>
 
         <div className="rounded-xl border bg-background p-4 text-sm">
-          <p className="font-medium">A sajat kerelmed leirasa</p>
+            <p className="font-medium">Your request description</p>
           <p className="mt-2 leading-6 text-muted-foreground">{request.coachNote}</p>
         </div>
 
@@ -78,7 +78,7 @@ export default function UserRequestCard({ request }: Props) {
         {(request.status === "APPROVED" || request.status === "CLOSED") &&
           trainingPlanDescription && (
           <div className="rounded-xl border bg-background p-4 text-sm">
-            <p className="font-medium">Training plan leiras</p>
+            <p className="font-medium">Training plan description</p>
             <p className="mt-2 leading-6 text-muted-foreground">{trainingPlanDescription}</p>
           </div>
         )}
@@ -86,12 +86,12 @@ export default function UserRequestCard({ request }: Props) {
         {(request.status === "APPROVED" || request.status === "CLOSED") &&
           trainingPlanFileName && (
           <div className="rounded-xl border bg-background p-4 text-sm">
-            <p className="font-medium">Csatolt fajl</p>
+            <p className="font-medium">Attached file</p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <span className="text-muted-foreground">{trainingPlanFileName}</span>
               {trainingPlanFileUrl && (
                 <Button type="button" variant="outline" size="sm" onClick={() => openFile(trainingPlanFileUrl)}>
-                  Megnyitas
+                  Open
                 </Button>
               )}
             </div>

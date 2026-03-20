@@ -11,16 +11,16 @@ import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
 import { useTrainingRequestForm } from "../hooks/useTrainingRequestForm";
 
 const GOAL_OPTIONS = [
-  { value: "CUT", label: "Fogyás" },
-  { value: "MAINTAIN", label: "Szinten tartás" },
-  { value: "BULK", label: "Tömegnövelés" },
+  { value: "CUT", label: "Weight loss" },
+  { value: "MAINTAIN", label: "Maintenance" },
+  { value: "BULK", label: "Muscle gain" },
 ] as const;
 
 const ACTIVITY_OPTIONS = [
-  { value: "SEDENTARY", label: "Nagyon alacsony" },
-  { value: "LIGHT", label: "Könnyű aktivitás" },
-  { value: "MODERATE", label: "Közepes aktivitás" },
-  { value: "ACTIVE", label: "Magas aktivitás" },
+  { value: "SEDENTARY", label: "Very low" },
+  { value: "LIGHT", label: "Light activity" },
+  { value: "MODERATE", label: "Moderate activity" },
+  { value: "ACTIVE", label: "High activity" },
 ] as const;
 
 export default function TrainingRequestFormPage() {
@@ -46,7 +46,7 @@ export default function TrainingRequestFormPage() {
   );
 
   if (loading || trainersLoading) {
-    return <div className="p-10 italic text-muted-foreground">Betöltés...</div>;
+    return <div className="p-10 italic text-muted-foreground">Loading...</div>;
   }
 
   return (
@@ -59,7 +59,7 @@ export default function TrainingRequestFormPage() {
           className="w-fit text-xs text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-3 w-3" />
-          Vissza az edzőválasztóhoz
+          Back to trainer selection
         </Button>
 
         {(error || trainersError) && (
@@ -79,18 +79,18 @@ export default function TrainingRequestFormPage() {
         )}
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_360px]">
-          <Card className="shadow-lg border-t-4 border-t-primary">
+          <Card className="border-t-4 border-t-primary shadow-lg">
             <CardHeader className="border-b">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <CardTitle className="text-2xl">Edzésterv kérés</CardTitle>
+                  <CardTitle className="text-2xl">Training plan request</CardTitle>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Add meg a főbb paramétereidet és írd le röviden, milyen
-                    edzéstervre lenne szükséged.
+                    Enter your main preferences and briefly describe what kind of
+                    training plan you need.
                   </p>
                 </div>
                 <Badge variant="secondary" className="w-fit">
-                  Új kérés
+                  New request
                 </Badge>
               </div>
             </CardHeader>
@@ -99,12 +99,12 @@ export default function TrainingRequestFormPage() {
               <section className="space-y-4">
                 <div className="flex items-center gap-2">
                   <UserRound className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Alapadatok a profilból</h2>
+                  <h2 className="text-lg font-semibold">Profile-based details</h2>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="currentWeightKg">Jelenlegi testsúly</Label>
+                    <Label htmlFor="currentWeightKg">Current weight</Label>
                     <Input
                       id="currentWeightKg"
                       value={formData.currentWeightKg}
@@ -115,7 +115,7 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="targetWeightKg">Cél testsúly</Label>
+                    <Label htmlFor="targetWeightKg">Target weight</Label>
                     <Input
                       id="targetWeightKg"
                       value={formData.targetWeightKg}
@@ -126,7 +126,7 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="goal">Cél</Label>
+                    <Label htmlFor="goal">Goal</Label>
                     <select
                       id="goal"
                       value={formData.goal}
@@ -135,7 +135,7 @@ export default function TrainingRequestFormPage() {
                       }
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">Válassz célt</option>
+                      <option value="">Select a goal</option>
                       {GOAL_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -145,19 +145,16 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="activityLevel">Aktivitási szint</Label>
+                    <Label htmlFor="activityLevel">Activity level</Label>
                     <select
                       id="activityLevel"
                       value={formData.activityLevel}
                       onChange={(event) =>
-                        setField(
-                          "activityLevel",
-                          event.target.value as ActivityLevel | ""
-                        )
+                        setField("activityLevel", event.target.value as ActivityLevel | "")
                       }
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">Válassz aktivitási szintet</option>
+                      <option value="">Select an activity level</option>
                       {ACTIVITY_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -169,8 +166,7 @@ export default function TrainingRequestFormPage() {
 
                 {profile && (
                   <div className="rounded-xl border bg-muted/20 p-4 text-sm text-muted-foreground">
-                    Ezeket az adatokat később a backend a felhasználói profilból is
-                    tudja majd tölteni.
+                    Later, the backend can also load these details from the user profile.
                   </div>
                 )}
               </section>
@@ -178,17 +174,17 @@ export default function TrainingRequestFormPage() {
               <section className="space-y-4">
                 <div className="flex items-center gap-2">
                   <Dumbbell className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Edzési igények</h2>
+                  <h2 className="text-lg font-semibold">Training preferences</h2>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="weeklyWorkouts">Heti hány edzést szeretnél?</Label>
+                    <Label htmlFor="weeklyWorkouts">How many sessions per week do you want?</Label>
                     <Input
                       id="weeklyWorkouts"
                       type="number"
                       min="1"
-                      placeholder="Például: 3"
+                      placeholder="e.g. 3"
                       value={formData.weeklyWorkouts}
                       onChange={(event) =>
                         setField("weeklyWorkouts", event.target.value)
@@ -197,14 +193,12 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="preferredSessionLength">
-                      Egy alkalom hossza percben
-                    </Label>
+                    <Label htmlFor="preferredSessionLength">Session length in minutes</Label>
                     <Input
                       id="preferredSessionLength"
                       type="number"
                       min="15"
-                      placeholder="Például: 60"
+                      placeholder="e.g. 60"
                       value={formData.preferredSessionLength}
                       onChange={(event) =>
                         setField("preferredSessionLength", event.target.value)
@@ -213,10 +207,10 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="trainingLocation">Hol szeretnél edzeni?</Label>
+                    <Label htmlFor="trainingLocation">Where would you like to train?</Label>
                     <Input
                       id="trainingLocation"
-                      placeholder="Például: konditeremben, otthon, szabadtéren"
+                      placeholder="e.g. gym, home, outdoors"
                       value={formData.trainingLocation}
                       onChange={(event) =>
                         setField("trainingLocation", event.target.value)
@@ -225,16 +219,14 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="customerDescription">
-                      Rövid leírás az edző számára
-                    </Label>
+                    <Label htmlFor="customerDescription">Short description for the trainer</Label>
                     <textarea
                       id="customerDescription"
                       value={formData.customerDescription}
                       onChange={(event) =>
                         setField("customerDescription", event.target.value)
                       }
-                      placeholder="Írd le, milyen céljaid vannak, milyen tapasztalattal rendelkezel, van-e sérülésed vagy bármi fontos körülmény."
+                      placeholder="Describe your goals, experience level, any injuries, or anything else the trainer should know."
                       className="min-h-36 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     />
                   </div>
@@ -248,7 +240,7 @@ export default function TrainingRequestFormPage() {
                   className="gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  {submitting ? "Küldés..." : "Küldés az edzőnek"}
+                  {submitting ? "Sending..." : "Send to trainer"}
                 </Button>
               </div>
             </CardContent>
@@ -257,7 +249,7 @@ export default function TrainingRequestFormPage() {
           <div className="space-y-6">
             <Card className="shadow-sm">
               <CardHeader>
-                <CardTitle>Kiválasztott edző</CardTitle>
+                <CardTitle>Selected trainer</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 {selectedTrainer ? (
@@ -280,8 +272,7 @@ export default function TrainingRequestFormPage() {
                   </>
                 ) : (
                   <div className="rounded-xl border border-dashed p-4 text-muted-foreground">
-                    Nem található a kiválasztott edző. Menj vissza a listához és
-                    válassz újra.
+                    The selected trainer could not be found. Go back to the list and choose again.
                   </div>
                 )}
               </CardContent>
@@ -289,17 +280,16 @@ export default function TrainingRequestFormPage() {
 
             <Card className="shadow-sm">
               <CardHeader>
-                <CardTitle>Mi fog történni?</CardTitle>
+                <CardTitle>What happens next?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-muted-foreground">
                 <p>
-                  A backend ezt az űrlapot a kiválasztott edző coach profile
-                  azonosítójához küldi el, és onnan tudja majd az e-mail küldést
-                  kezelni.
+                  The backend sends this form to the selected trainer&apos;s coach profile ID
+                  and can then handle the related notification flow.
                 </p>
                 <p>
-                  A kéréshez most a heti edzésszám, az alkalom hossza, a preferált
-                  helyszín és a leírás kerül beküldésre.
+                  The request currently submits the weekly session count, session length,
+                  preferred location, and your description.
                 </p>
               </CardContent>
             </Card>

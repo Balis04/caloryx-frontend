@@ -30,7 +30,7 @@ export default function TrainingRequestsPage() {
   const showTrainerIncomingRequests = isTrainer && trainerViewMode === "trainer";
 
   if (profileLoading || loading) {
-    return <div className="p-10 italic text-muted-foreground">Keresek betoltese...</div>;
+    return <div className="p-10 italic text-muted-foreground">Loading requests...</div>;
   }
 
   return (
@@ -58,13 +58,13 @@ export default function TrainingRequestsPage() {
                 <CardContent className="p-6 text-sm text-muted-foreground">
                   {showTrainerIncomingRequests
                     ? trainerRequestFilter === "pending"
-                      ? "Jelenleg nincs folyamatban levo kerelem."
+                      ? "There are currently no pending requests."
                       : trainerRequestFilter === "approved"
-                        ? "Jelenleg nincs elfogadott kerelem."
+                        ? "There are currently no approved requests."
                         : trainerRequestFilter === "rejected"
-                          ? "Jelenleg nincs elutasitott kerelem."
-                          : "Jelenleg nincs befejezett kerelem."
-                    : "Jelenleg nincs elkuldott edzesterv keresed."}
+                          ? "There are currently no rejected requests."
+                          : "There are currently no completed requests."
+                    : "You have not sent any training plan requests yet."}
                 </CardContent>
               </Card>
             ) : showTrainerIncomingRequests ? (

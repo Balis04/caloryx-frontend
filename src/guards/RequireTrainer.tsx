@@ -9,7 +9,7 @@ export default function RequireTrainer({
   const { profile, loading } = useViewerProfile();
 
   if (loading) {
-    return <div className="flex justify-center p-10">Edzői jogosultság ellenőrzése...</div>;
+    return <div className="flex justify-center p-10">Checking trainer access...</div>;
   }
 
   if (profile?.role !== "TRAINER") {

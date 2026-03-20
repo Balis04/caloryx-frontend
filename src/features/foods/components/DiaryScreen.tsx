@@ -31,8 +31,8 @@ const shiftDate = (date: string, days: number): string => {
   return formatDateInput(base);
 };
 
-const formatHuDate = (date: string): string => {
-  return new Intl.DateTimeFormat("hu-HU", {
+const formatDisplayDate = (date: string): string => {
+  return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -116,7 +116,7 @@ export default function DiaryScreen() {
       } catch (error) {
         if (!isMounted) return;
         const message =
-          error instanceof Error ? error.message : "Nem sikerult lekerdezni.";
+          error instanceof Error ? error.message : "Failed to fetch summary.";
         setSummaryError(message);
         setSummary(mapApiToFallback(selectedDate));
       } finally {
@@ -157,26 +157,26 @@ export default function DiaryScreen() {
   return (
     <div className="flex flex-col h-full bg-background p-4 overflow-y-auto">
       <div className="flex items-center justify-between mb-4 gap-3">
-        <h1 className="text-3xl font-bold">Naplo</h1>
+        <h1 className="text-3xl font-bold">Diary</h1>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setSelectedDate(formatDateInput(new Date()))}
         >
-          Ma
+          Today
         </Button>
       </div>
 
       <Card className="mb-6">
         <CardHeader className="pb-2 space-y-3">
-          <CardTitle className="text-xl">Napi osszegzes</CardTitle>
+          <CardTitle className="text-xl">Daily summary</CardTitle>
 
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
               onClick={() => setSelectedDate((prev) => shiftDate(prev, -1))}
-              aria-label="Elozo nap"
+              aria-label="Previous day"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -194,14 +194,14 @@ export default function DiaryScreen() {
               variant="outline"
               size="icon"
               onClick={() => setSelectedDate((prev) => shiftDate(prev, 1))}
-              aria-label="Kovetkezo nap"
+              aria-label="Next day"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Kivalasztott nap: {formatHuDate(selectedDate)}
+            Selected date: {formatDisplayDate(selectedDate)}
           </p>
         </CardHeader>
 
@@ -216,11 +216,11 @@ export default function DiaryScreen() {
                 {Math.round(summary.consumedCalories)} kcal
               </p>
               <p className="text-sm text-muted-foreground">
-                {isLoadingSummary ? "Betoltes..." : "Napi elfogyasztas"}
+                {isLoadingSummary ? "Loading..." : "Daily intake"}
               </p>
             </div>
             <Badge variant="secondary" className="text-sm py-1 px-3">
-              {Math.round(caloriesRemaining)} kcal hatra
+              {Math.round(caloriesRemaining)} kcal remaining
             </Badge>
           </div>
 
@@ -228,19 +228,19 @@ export default function DiaryScreen() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Zsir</p>
+              <p className="text-xs text-muted-foreground">Fat</p>
               <p className="font-semibold">
                 {Math.round(summary.consumedFatGrams)} g
               </p>
             </div>
             <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Feherje</p>
+              <p className="text-xs text-muted-foreground">Protein</p>
               <p className="font-semibold">
                 {Math.round(summary.consumedProteinGrams)} g
               </p>
             </div>
             <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Szenhidrat</p>
+              <p className="text-xs text-muted-foreground">Carbohydrates</p>
               <p className="font-semibold">
                 {Math.round(summary.consumedCarbohydratesGrams)} g
               </p>
@@ -251,9 +251,9 @@ export default function DiaryScreen() {
 
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>
-              {Math.round(summary.consumedCalories)} kcal elfogyasztva
+              {Math.round(summary.consumedCalories)} kcal consumed
             </span>
-            <span>{Math.round(summary.targetCalories)} kcal cel</span>
+            <span>{Math.round(summary.targetCalories)} kcal target</span>
           </div>
         </CardContent>
       </Card>

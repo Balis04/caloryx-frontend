@@ -30,31 +30,31 @@ export default function TrainingPlanEditor({
         <div>
           <p className="font-medium">Training plan</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Itt adhatod meg a training plan nevet, leirasat es feltolthetsz PDF vagy DOCX fajlt az ugyfelnek.
+            Add the training plan name and description, then upload a PDF or DOCX file for the user.
           </p>
         </div>
         <Button type="button" variant={isExpanded ? "secondary" : "outline"} className="gap-2" onClick={onToggle}>
           <FileText className="h-4 w-4" />
-          {isExpanded ? "Szerkeszto bezarasa" : "Training plan feltoltese"}
+          {isExpanded ? "Close editor" : "Upload training plan"}
         </Button>
       </div>
 
       {draft.description && !isExpanded && (
         <div className="rounded-lg border bg-muted/20 p-3">
           {draft.planName && <p className="font-medium text-foreground">{draft.planName}</p>}
-          <p className="font-medium">Training plan leiras</p>
+          <p className="font-medium">Training plan description</p>
           <p className="mt-2 leading-6 text-muted-foreground">{draft.description}</p>
         </div>
       )}
 
       {(draft.existingFileName || draft.file) && !isExpanded && (
         <div className="rounded-lg border bg-muted/20 p-3">
-          <p className="font-medium">Jelenlegi fajl</p>
+          <p className="font-medium">Current file</p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <span className="text-muted-foreground">{draft.file?.name || draft.existingFileName}</span>
             {draft.existingFileUrl && (
               <Button type="button" variant="outline" size="sm" onClick={() => openFile(draft.existingFileUrl)}>
-                Megnyitas
+                Open
               </Button>
             )}
           </div>
@@ -65,7 +65,7 @@ export default function TrainingPlanEditor({
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="training-plan-name" className="font-medium">
-              Training plan neve
+              Training plan name
             </label>
             <Input
               id="training-plan-name"
@@ -73,18 +73,18 @@ export default function TrainingPlanEditor({
               value={draft.planName}
               onChange={(event) => onDraftChange({ ...draft, planName: event.target.value })}
               disabled={isSaving}
-              placeholder="Adj nevet a training plannek."
+              placeholder="Enter a name for the training plan."
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="training-plan-description" className="font-medium">
-              Training plan leiras
+              Training plan description
             </label>
             <textarea
               id="training-plan-description"
               className="min-h-32 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              placeholder="Ird le roviden, mit tartalmaz a training plan."
+              placeholder="Briefly describe what the training plan contains."
               value={draft.description}
               onChange={(event) => onDraftChange({ ...draft, description: event.target.value })}
               disabled={isSaving}
@@ -93,7 +93,7 @@ export default function TrainingPlanEditor({
 
           <div className="space-y-2">
             <label htmlFor="training-plan-file" className="font-medium">
-              PDF vagy DOCX fajl
+              PDF or DOCX file
             </label>
             <Input
               id="training-plan-file"
@@ -102,17 +102,17 @@ export default function TrainingPlanEditor({
               onChange={(event) => onDraftChange({ ...draft, file: event.target.files?.[0] ?? null })}
               disabled={isSaving}
             />
-            <p className="text-xs text-muted-foreground">Elfogadott formatumok: `.pdf`, `.docx`</p>
+            <p className="text-xs text-muted-foreground">Accepted formats: `.pdf`, `.docx`</p>
           </div>
 
           {(hasExistingFile || draft.file) && (
             <div className="rounded-lg border bg-muted/20 p-3">
-              <p className="font-medium">Kivalasztott vagy jelenlegi fajl</p>
+              <p className="font-medium">Selected or current file</p>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <span className="text-muted-foreground">{draft.file?.name || draft.existingFileName}</span>
                 {!draft.file && draft.existingFileUrl && (
                   <Button type="button" variant="outline" size="sm" onClick={() => openFile(draft.existingFileUrl)}>
-                    Megnyitas
+                    Open
                   </Button>
                 )}
               </div>
@@ -122,7 +122,7 @@ export default function TrainingPlanEditor({
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <Button type="button" className="gap-2" disabled={isSaving} onClick={onSave}>
               <Upload className="h-4 w-4" />
-              {isSaving ? "Mentes..." : "Training plan mentese"}
+              {isSaving ? "Saving..." : "Save training plan"}
             </Button>
           </div>
         </div>

@@ -9,9 +9,9 @@ export const TRAINING_PLAN_UPLOAD_ENDPOINT = (trainingRequestId: string) =>
   `/api/training-requests/${trainingRequestId}/training-plan`;
 
 export const statusLabelMap: Record<TrainingRequestStatus, string> = {
-  PENDING: "Folyamatban",
-  APPROVED: "Elfogadva",
-  REJECTED: "Elutasitva",
+  PENDING: "Pending",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
   CLOSED: "Closed",
 };
 
@@ -46,16 +46,16 @@ export const getDecisionDescription = (request: TrainingRequestResponse) =>
   "";
 
 export const getTrainingPlanDescription = (request: TrainingRequestResponse) =>
-  request.trainingPlanDescription?.trim() || "";
+  request.planDescription?.trim() || "";
 
 export const getTrainingPlanFileName = (request: TrainingRequestResponse) =>
-  request.trainingPlanFileName?.trim() || "";
+  request.fileName?.trim() || "";
 
 export const getTrainingPlanFileUrl = (request: TrainingRequestResponse) =>
-  request.trainingPlanFileUrl?.trim() || "";
+  request.fileUrl?.trim() || "";
 
 export const getTrainingPlanName = (request: TrainingRequestResponse) =>
-  request.trainingPlanName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
+  request.planName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
 
 export const createApprovedDraft = (
   request: TrainingRequestResponse

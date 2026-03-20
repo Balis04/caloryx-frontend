@@ -29,12 +29,11 @@ export default function AuthRedirect() {
         }
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error("Auth redirect hiba:", message);
+        console.error("Auth redirect error:", message);
 
         logout({ logoutParams: { returnTo: window.location.origin } });
       }
     };
-    
 
     checkProfileAndRedirect();
   }, [isAuthenticated, isLoading, getAccessTokenSilently, navigate, logout]);
@@ -42,7 +41,7 @@ export default function AuthRedirect() {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="text-center">
-        <p className="text-lg font-medium">Azonosítás folyamatban...</p>
+        <p className="text-lg font-medium">Authenticating...</p>
         <div className="mt-4 animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
       </div>
     </div>

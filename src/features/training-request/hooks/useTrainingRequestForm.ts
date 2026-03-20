@@ -39,7 +39,7 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
       setFormData(createInitialFormData(response));
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Nem sikerült betölteni a profiladatokat.";
+        err instanceof Error ? err.message : "Failed to load profile data.";
       setError(message);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
 
   const submit = useCallback(async () => {
     if (!coachProfileId) {
-      setError("Hiányzik a kiválasztott edző azonosítója.");
+      setError("The selected trainer ID is missing.");
       return false;
     }
 
@@ -80,11 +80,11 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
           coachNote: formData.customerDescription,
         },
       });
-      setSubmitMessage("Az edzésterv kérés sikeresen elküldve az edzőnek.");
+      setSubmitMessage("Your training plan request was sent successfully to the trainer.");
       return true;
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "A kérés elküldése nem sikerült.";
+        err instanceof Error ? err.message : "Failed to send the request.";
       setError(message);
       return false;
     } finally {
