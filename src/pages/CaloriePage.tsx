@@ -21,7 +21,7 @@ export default function CaloriePage() {
   const percent = Math.min((totalCalories / dailyGoal) * 100, 100);
 
   const addCalories = (meal: MealKey) => {
-    const value = prompt("Hány kalória?");
+    const value = prompt("How many calories?");
     if (!value) return;
 
     const num = Number(value);
@@ -35,12 +35,11 @@ export default function CaloriePage() {
 
   return (
     <div className="container mx-auto px-6 py-10 max-w-xl">
-      <h1 className="text-2xl font-bold mb-6">Ma</h1>
+      <h1 className="text-2xl font-bold mb-6">Today</h1>
 
-      {/* SUMMARY */}
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Napi összegzés</CardTitle>
+          <CardTitle>Daily Summary</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center mb-4">
@@ -51,20 +50,19 @@ export default function CaloriePage() {
           <Progress value={percent} className="mb-4" />
 
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>{totalCalories} elfogyasztva</span>
-            <span>{dailyGoal} cél</span>
+            <span>{totalCalories} consumed</span>
+            <span>{dailyGoal} target</span>
           </div>
         </CardContent>
       </Card>
 
-      {/* MEALS */}
       <div className="space-y-4">
         {[
-          { key: "breakfast", label: "Reggeli" },
-          { key: "snack1", label: "Tízórai" },
-          { key: "lunch", label: "Ebéd" },
-          { key: "snack2", label: "Uzsonna" },
-          { key: "dinner", label: "Vacsora" },
+          { key: "breakfast", label: "Breakfast" },
+          { key: "snack1", label: "Morning Snack" },
+          { key: "lunch", label: "Lunch" },
+          { key: "snack2", label: "Afternoon Snack" },
+          { key: "dinner", label: "Dinner" },
         ].map((meal) => (
           <Card key={meal.key}>
             <CardContent className="flex justify-between items-center py-4">

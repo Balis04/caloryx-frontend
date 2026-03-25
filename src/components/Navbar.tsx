@@ -24,13 +24,11 @@ export default function Navbar() {
 
       {isAuthenticated ? (
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <span style={{ fontSize: "0.9rem", color: "#666" }}>
-            {user?.email}
-          </span>
+          <span style={{ fontSize: "0.9rem", color: "#666" }}>{user?.email}</span>
 
           {isTrainer && (
             <button onClick={() => navigate("/trainer-profile")}>
-              Edzői profil
+              Trainer Profile
             </button>
           )}
 

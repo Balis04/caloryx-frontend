@@ -3,55 +3,56 @@ import { ApiError } from "@/lib/api-client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   AvailabilitySlot,
+  TrainerCertificate,
   TrainerProfileFormData,
 } from "../types/trainer-profile.types";
 
 const createInitialAvailability = (): AvailabilitySlot[] => [
   {
     dayOfWeek: "MONDAY",
-    label: "Hetfo",
+    label: "Monday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "TUESDAY",
-    label: "Kedd",
+    label: "Tuesday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "WEDNESDAY",
-    label: "Szerda",
+    label: "Wednesday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "THURSDAY",
-    label: "Csutortok",
+    label: "Thursday",
     enabled: true,
     from: "08:00",
     until: "16:00",
   },
   {
     dayOfWeek: "FRIDAY",
-    label: "Pentek",
+    label: "Friday",
     enabled: true,
     from: "08:00",
     until: "14:00",
   },
   {
     dayOfWeek: "SATURDAY",
-    label: "Szombat",
+    label: "Saturday",
     enabled: false,
     from: "09:00",
     until: "12:00",
   },
   {
     dayOfWeek: "SUNDAY",
-    label: "Vasarnap",
+    label: "Sunday",
     enabled: false,
     from: "09:00",
     until: "12:00",
@@ -87,8 +88,66 @@ interface CoachProfileResponse {
     startTime?: string | null;
     endTime?: string | null;
   }>;
-  certificates?: string[];
+  certificates?: Array<
+    | string
+    | {
+        id?: string;
+        certificateName?: string | null;
+        issuer?: string | null;
+        issuedAt?: string | null;
+        fileName?: string | null;
+        fileUrl?: string | null;
+      }
+  >;
 }
+
+type CoachProfileCertificate =
+  | string
+  | {
+      id?: string;
+      certificateName?: string | null;
+      issuer?: string | null;
+      issuedAt?: string | null;
+      fileName?: string | null;
+      fileUrl?: string | null;
+    };
+
+interface CoachCertificateResponse {
+  id: string;
+  certificateName?: string | null;
+  issuer?: string | null;
+  issuedAt?: string | null;
+  fileName?: string | null;
+  fileUrl?: string | null;
+}
+
+const normalizeCertificate = (
+  certificate: CoachProfileCertificate,
+  index: number
+): TrainerCertificate => {
+  if (typeof certificate === "string") {
+    return {
+      id: `legacy-${index}-${certificate}`,
+      certificateName: certificate,
+      issuer: "",
+      issuedAt: "",
+      fileName: certificate,
+      fileUrl: "",
+    };
+  }
+
+  return {
+    id: certificate?.id ?? `certificate-${index}`,
+    certificateName:
+      certificate?.certificateName?.trim() ||
+      certificate?.fileName?.trim() ||
+      `Certificate ${index + 1}`,
+    issuer: certificate?.issuer?.trim() ?? "",
+    issuedAt: certificate?.issuedAt?.trim() ?? "",
+    fileName: certificate?.fileName?.trim() ?? "",
+    fileUrl: certificate?.fileUrl?.trim() ?? "",
+  };
+};
 
 const normalizeCoachProfileResponse = (
   data: CoachProfileResponse
@@ -101,7 +160,9 @@ const normalizeCoachProfileResponse = (
   priceTo: String(data.priceTo ?? ""),
   currency: data.currency ?? "HUF",
   contactNote: data.contactNote ?? "",
-  certificates: Array.isArray(data.certificates) ? data.certificates : [],
+  certificates: Array.isArray(data.certificates)
+    ? data.certificates.map(normalizeCertificate)
+    : [],
   availability:
   Array.isArray(data.availabilities) && data.availabilities.length > 0
     ? createInitialAvailability().map((defaultSlot) => {
@@ -155,13 +216,35 @@ export const useTrainerProfileForm = () => {
         setIsEditing(false);
       } else {
         const message =
-          error instanceof Error ? error.message : "Nem sikerult betolteni az edzoi profilt.";
+          error instanceof Error ? error.message : "Failed to load trainer profile.";
         setErrorMessage(message);
       }
     } finally {
       setLoading(false);
     }
   }, [request]);
+
+  const uploadCertificates = useCallback(
+    async (profileId: string, files: File[]) => {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append(
+          "certificateName",
+          file.name.replace(/\.pdf$/i, "")
+        );
+
+        await request<CoachCertificateResponse>(
+          `/api/coach-profiles/${profileId}/certificates`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+      }
+    },
+    [request]
+  );
 
   useEffect(() => {
     void loadTrainerProfile();
@@ -189,7 +272,7 @@ export const useTrainerProfileForm = () => {
     []
   );
 
-  const saveTrainerProfile = useCallback(async () => {
+  const saveTrainerProfile = useCallback(async (certificateFiles: File[] = []) => {
     setSaving(true);
     setErrorMessage(null);
 
@@ -221,25 +304,32 @@ export const useTrainerProfileForm = () => {
         method,
         body: payload,
       });
-      setFormData(normalizeCoachProfileResponse(response));
-      setCoachProfileId(response.id);
+
+      if (certificateFiles.length > 0) {
+        await uploadCertificates(response.id, certificateFiles);
+        await loadTrainerProfile();
+      } else {
+        setFormData(normalizeCoachProfileResponse(response));
+        setCoachProfileId(response.id);
+      }
+
       setHasTrainerProfile(true);
       setIsEditing(false);
       setStatusMessage(
         coachProfileId
-          ? "Az edzoi profil sikeresen modositva."
-          : "Az edzoi profil sikeresen letrehozva."
+          ? "Trainer profile updated successfully."
+          : "Trainer profile created successfully."
       );
       return true;
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "A mentes nem sikerult.";
+        error instanceof Error ? error.message : "Saving failed.";
       setErrorMessage(message);
       return false;
     } finally {
       setSaving(false);
     }
-  }, [coachProfileId, formData, request]);
+  }, [coachProfileId, formData, loadTrainerProfile, request, uploadCertificates]);
 
   const startEditing = useCallback(() => {
     setStatusMessage(null);

@@ -38,7 +38,7 @@ export const useEditProfile = () => {
         userRole: data.role,
       });
     } catch (error: unknown) {
-      console.error("Hiba betöltéskor:", error);
+      console.error("Load error:", error);
       navigate("/register");
     } finally {
       setLoading(false);
@@ -58,7 +58,7 @@ export const useEditProfile = () => {
       });
       return true;
     } catch (err) {
-      console.error("Mentési hiba:", err);
+      console.error("Save error:", err);
       return false;
     }
   };

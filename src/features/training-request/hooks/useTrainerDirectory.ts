@@ -24,36 +24,35 @@ interface CoachProfileListResponse {
 }
 
 const dayLabels: Record<string, string> = {
-  MONDAY: "Hetfo",
-  TUESDAY: "Kedd",
-  WEDNESDAY: "Szerda",
-  THURSDAY: "Csutortok",
-  FRIDAY: "Pentek",
-  SATURDAY: "Szombat",
-  SUNDAY: "Vasarnap",
+  MONDAY: "Monday",
+  TUESDAY: "Tuesday",
+  WEDNESDAY: "Wednesday",
+  THURSDAY: "Thursday",
+  FRIDAY: "Friday",
+  SATURDAY: "Saturday",
+  SUNDAY: "Sunday",
 };
 
 const formatAvailability = (
   availabilities?: CoachProfileListResponse["availabilities"]
 ) => {
-  const activeAvailabilities =
-    availabilities?.filter((slot) => slot.available) ?? [];
+  const activeAvailabilities = availabilities?.filter((slot) => slot.available) ?? [];
 
   if (activeAvailabilities.length === 0) {
     return {
-      summary: "Egyeztetes alapjan",
-      slots: ["Idopont egyeztetes szerint"],
+      summary: "By arrangement",
+      slots: ["Time by arrangement"],
     };
   }
 
   const slots = activeAvailabilities.map((slot) => {
-      const day = slot.dayOfWeek ? dayLabels[slot.dayOfWeek] ?? slot.dayOfWeek : "Ismeretlen nap";
-      const timeRange =
-        slot.startTime && slot.endTime
-          ? `${slot.startTime}-${slot.endTime}`
-          : "rugalmas idopont";
-      return `${day} ${timeRange}`;
-    });
+    const day = slot.dayOfWeek ? dayLabels[slot.dayOfWeek] ?? slot.dayOfWeek : "Unknown day";
+    const timeRange =
+      slot.startTime && slot.endTime
+        ? `${slot.startTime}-${slot.endTime}`
+        : "flexible time";
+    return `${day} ${timeRange}`;
+  });
 
   return {
     summary: slots.join(", "),
@@ -63,18 +62,18 @@ const formatAvailability = (
 
 const formatExperience = (trainingStartedAt?: string | null) => {
   if (!trainingStartedAt) {
-    return "Tapasztalat nincs megadva";
+    return "Experience not provided";
   }
 
   const startedYear = new Date(trainingStartedAt).getFullYear();
   const currentYear = new Date().getFullYear();
 
   if (Number.isNaN(startedYear)) {
-    return "Tapasztalat nincs megadva";
+    return "Experience not provided";
   }
 
   const years = Math.max(currentYear - startedYear, 0);
-  return years === 0 ? "Kevesebb mint 1 ev tapasztalat" : `${years} ev tapasztalat`;
+  return years === 0 ? "Less than 1 year of experience" : `${years} years of experience`;
 };
 
 const normalizeTrainer = (
@@ -85,22 +84,20 @@ const normalizeTrainer = (
 
   return {
     id: trainer.id ?? `trainer-${index}`,
-    fullName:
-      trainer.trainerName ??
-      `Edzo #${index + 1}`,
-    email: trainer.email ?? "Email nincs megadva",
+    fullName: trainer.trainerName ?? `Trainer #${index + 1}`,
+    email: trainer.email ?? "No email provided",
     bio:
       trainer.shortDescription ??
       trainer.contactNote ??
-      "Ennek az edzonek a bemutatkozasa meg nincs kitoltve.",
+      "This trainer has not added an introduction yet.",
     specialties: [
       trainer.trainingFormat
-        ? `Formatum: ${trainer.trainingFormat}`
-        : "Formatum nincs megadva",
-      trainer.maxCapacity ? `Kapacitas: ${trainer.maxCapacity} fo` : "Kapacitas nincs megadva",
+        ? `Format: ${trainer.trainingFormat}`
+        : "Format not provided",
+      trainer.maxCapacity ? `Capacity: ${trainer.maxCapacity} people` : "Capacity not provided",
       trainer.priceFrom != null || trainer.priceTo != null
-        ? `Ar: ${trainer.priceFrom ?? 0}-${trainer.priceTo ?? 0} ${trainer.currency ?? ""}`.trim()
-        : "Ar nincs megadva",
+        ? `Price: ${trainer.priceFrom ?? 0}-${trainer.priceTo ?? 0} ${trainer.currency ?? ""}`.trim()
+        : "Price not provided",
     ],
     weeklyAvailability: availability.summary,
     availabilitySlots: availability.slots,
@@ -123,9 +120,7 @@ export const useTrainerDirectory = () => {
       setTrainers(response.map(normalizeTrainer));
     } catch {
       setTrainers([]);
-      setError(
-        "Nem sikerult betolteni az edzok listajat a backendrol."
-      );
+      setError("Failed to load the trainer list from the backend.");
     } finally {
       setLoading(false);
     }

@@ -18,7 +18,6 @@ import {
   calculateProgress,
   formatWeeklyGoal,
 } from "../utils/profile.utils";
-
 import {
   GENDER_OPTIONS,
   ACTIVITY_OPTIONS,
@@ -43,11 +42,10 @@ export default function ProfileCard({ profile }: Props) {
       <CardHeader className="py-4 border-b">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <User className="w-5 h-5 text-primary" /> Felhasználói Profil
+            <User className="w-5 h-5 text-primary" /> User Profile
           </CardTitle>
           <Badge variant="secondary" className="capitalize">
-            {USER_ROLE_OPTIONS.find((o) => o.value === profile.role)?.label ??
-              "Felhasználó"}
+            {USER_ROLE_OPTIONS.find((o) => o.value === profile.role)?.label ?? "User"}
           </Badge>
         </div>
       </CardHeader>
@@ -57,37 +55,28 @@ export default function ProfileCard({ profile }: Props) {
           <div className="space-y-4">
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <User className="w-3 h-3" /> Alapadatok
+                <User className="w-3 h-3" /> Basic Information
               </h3>
-              <ProfileField label="Név" value={profile.fullName} />
-              <ProfileField label="Születési dátum" value={formattedDate} />
+              <ProfileField label="Name" value={profile.fullName} />
+              <ProfileField label="Birth date" value={formattedDate} />
               <ProfileField
-                label="Nem"
+                label="Gender"
                 value={getLabelFromOptions(GENDER_OPTIONS, profile.gender)}
               />
-              <ProfileField label="Magasság" value={`${profile.heightCm} cm`} />
+              <ProfileField label="Height" value={`${profile.heightCm} cm`} />
             </div>
 
             <Separator className="lg:hidden" />
 
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Activity className="w-3 h-3" /> Fizikai állapot
+                <Activity className="w-3 h-3" /> Physical Stats
               </h3>
+              <ProfileField label="Starting weight" value={`${profile.startWeightKg} kg`} />
+              <ProfileField label="Current weight" value={`${profile.actualWeightKg} kg`} />
               <ProfileField
-                label="Kezdő súly"
-                value={`${profile.startWeightKg} kg`}
-              />
-              <ProfileField
-                label="Jelenlegi súly"
-                value={`${profile.actualWeightKg} kg`}
-              />
-              <ProfileField
-                label="Aktivitási szint"
-                value={getLabelFromOptions(
-                  ACTIVITY_OPTIONS,
-                  profile.activityLevel
-                )}
+                label="Activity level"
+                value={getLabelFromOptions(ACTIVITY_OPTIONS, profile.activityLevel)}
               />
             </div>
           </div>
@@ -95,18 +84,15 @@ export default function ProfileCard({ profile }: Props) {
           <div className="space-y-6">
             <div className="space-y-1">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Target className="w-3 h-3" /> Célkitűzések
+                <Target className="w-3 h-3" /> Goals
               </h3>
+              <ProfileField label="Target weight" value={`${profile.targetWeightKg} kg`} />
               <ProfileField
-                label="Cél súly"
-                value={`${profile.targetWeightKg} kg`}
-              />
-              <ProfileField
-                label="Heti cél"
+                label="Weekly target"
                 value={formatWeeklyGoal(profile.goal, profile.weeklyGoalKg)}
               />
               <ProfileField
-                label="Cél típusa"
+                label="Goal type"
                 value={getLabelFromOptions(GOAL_OPTIONS, profile.goal)}
               />
             </div>
@@ -114,7 +100,7 @@ export default function ProfileCard({ profile }: Props) {
             <div className="bg-slate-50 p-4 rounded-xl border space-y-3">
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  Haladás
+                  Progress
                 </span>
                 <span className="text-lg font-black text-primary leading-none">
                   {progressValue.toFixed(0)}%
@@ -140,7 +126,7 @@ export default function ProfileCard({ profile }: Props) {
               className="w-full lg:w-auto font-bold"
             >
               <Briefcase className="mr-2 w-4 h-4" />
-              Edzői profil
+              Trainer Profile
             </Button>
           )}
           <Button
@@ -148,7 +134,7 @@ export default function ProfileCard({ profile }: Props) {
             className="w-full lg:w-auto font-bold group"
           >
             <Edit3 className="mr-2 w-4 h-4" />
-            Profil szerkesztése
+            Edit Profile
           </Button>
         </div>
       </CardFooter>

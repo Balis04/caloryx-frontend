@@ -1,22 +1,22 @@
 export const GENDER_OPTIONS = [
-  { value: "MALE", label: "Férfi" },
-  { value: "FEMALE", label: "Nő" },
+  { value: "MALE", label: "Male" },
+  { value: "FEMALE", label: "Female" },
 ] as const;
 
 export const ACTIVITY_OPTIONS = [
-  { value: "SEDENTARY", label: "Nagyon alacsony" },
-  { value: "LIGHT", label: "Kevéssé aktív" },
-  { value: "MODERATE", label: "Közepesen aktív" },
-  { value: "ACTIVE", label: "Nagyon aktív" },
+  { value: "SEDENTARY", label: "Very low" },
+  { value: "LIGHT", label: "Lightly active" },
+  { value: "MODERATE", label: "Moderately active" },
+  { value: "ACTIVE", label: "Highly active" },
 ] as const;
 
 export const GOAL_OPTIONS = [
-  { value: "CUT", label: "Fogyás" },
-  { value: "MAINTAIN", label: "Szinten tartás" },
-  { value: "BULK", label: "Tömegelés" },
+  { value: "CUT", label: "Weight loss" },
+  { value: "MAINTAIN", label: "Maintenance" },
+  { value: "BULK", label: "Muscle gain" },
 ] as const;
 
 export const USER_ROLE_OPTIONS = [
-  { value: "USER", label: "Felhasználó" },
-  { value: "TRAINER", label: "Edző" },
+  { value: "USER", label: "User" },
+  { value: "TRAINER", label: "Trainer" },
 ] as const;

@@ -9,21 +9,21 @@ export const getProgressMessage = (profile: ProfileResponse) => {
   switch (profile.goal) {
     case "CUT":
       return diff < 0
-        ? `Gratulálunk, már ${absDiff} kg-ot fogytál az indulás óta!`
-        : "Induljon a fogyás, az első lépés a legnehezebb!";
+        ? `Great work, you have already lost ${absDiff} kg since you started!`
+        : "Your weight-loss journey starts now. The first step is the hardest.";
 
     case "BULK":
       return diff > 0
-        ? `Szuper munka, már ${absDiff} kg-ot szedtél fel!`
-        : "Kezdődjön az építkezés, minden gramm számít!";
+        ? `Nice job, you have already gained ${absDiff} kg!`
+        : "Time to start building. Every gram counts.";
 
     case "MAINTAIN":
       return isSteady
-        ? "Remekül tartod a formád, csak így tovább!"
-        : `Kicsit elmozdultál az induló súlytól (${absDiff} kg), de a fókusz megvan!`;
+        ? "You are maintaining your form well. Keep it up."
+        : `You have moved ${absDiff} kg from your starting weight, but your focus is still there.`;
 
     default:
-      return "Minden nagy utazás az első lépéssel kezdődik!";
+      return "Every great journey starts with a single step.";
   }
 };
 
@@ -33,13 +33,11 @@ export const calculateProgress = (profile: ProfileResponse): number => {
   if (goal === "MAINTAIN") return 100;
 
   const totalDistance = targetWeightKg - startWeightKg;
-
   const distanceCovered = actualWeightKg - startWeightKg;
 
   if (totalDistance === 0) return 100;
 
   const progress = (distanceCovered / totalDistance) * 100;
-
   return Math.max(0, Math.min(100, progress));
 };
 
@@ -47,6 +45,5 @@ export const formatWeeklyGoal = (goal: Goal | null, value: number) => {
   if (!value || value === 0) return "0 kg";
 
   const sign = goal === "CUT" ? "-" : "+";
-
   return `${sign}${value} kg`;
 };

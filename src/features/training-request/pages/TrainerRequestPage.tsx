@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, Clock3, Dumbbell, Mail, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
 import type { TrainerCardData } from "../types/trainer.types";
 
@@ -25,14 +26,14 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
       <CardHeader className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <CardTitle className="text-xl break-words">{trainer.fullName}</CardTitle>
-            <CardDescription className="mt-2 flex items-start gap-2 text-sm break-all">
+            <CardTitle className="break-words text-xl">{trainer.fullName}</CardTitle>
+            <CardDescription className="mt-2 flex items-start gap-2 break-all text-sm">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />
               <span>{trainer.email}</span>
             </CardDescription>
           </div>
           <Badge variant={selected ? "default" : "secondary"} className="w-fit shrink-0">
-            {selected ? "Kivalasztva" : "Elerheto"}
+            {selected ? "Selected" : "Available"}
           </Badge>
         </div>
         <p className="text-sm leading-6 text-muted-foreground">{trainer.bio}</p>
@@ -42,7 +43,7 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
         <div className="space-y-3 rounded-xl border bg-muted/20 p-4">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Clock3 className="h-4 w-4" />
-            <span>Elerheto idopontok</span>
+            <span>Available time slots</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {trainer.availabilitySlots.map((slot) => (
@@ -74,6 +75,7 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
 );
 
 export default function TrainerRequestPage() {
+  const navigate = useNavigate();
   const { trainers, loading, error } = useTrainerDirectory();
   const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(null);
 
@@ -81,13 +83,12 @@ export default function TrainerRequestPage() {
     trainers.find((trainer) => trainer.id === selectedTrainerId) ?? null;
 
   if (loading) {
-    return <div className="p-10 italic text-muted-foreground">Edzok betoltese...</div>;
+    return <div className="p-10 italic text-muted-foreground">Loading trainers...</div>;
   }
 
   return (
     <div className="min-h-[calc(100vh-72px)] bg-muted/30">
       <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 lg:py-12">
-
         {error && (
           <Card className="border-amber-300 bg-amber-50">
             <CardContent className="p-6 text-sm text-amber-900">
@@ -112,12 +113,12 @@ export default function TrainerRequestPage() {
                     {isSelected ? (
                       <>
                         <Check className="h-4 w-4" />
-                        Kivalasztottad
+                        Selected
                       </>
                     ) : (
                       <>
                         <Dumbbell className="h-4 w-4" />
-                        Ezt az edzot valasztom
+                        Choose this trainer
                       </>
                     )}
                   </Button>
@@ -127,7 +128,7 @@ export default function TrainerRequestPage() {
             {!error && trainers.length === 0 && (
               <Card className="sm:col-span-2 2xl:col-span-3">
                 <CardContent className="p-6 text-sm text-muted-foreground">
-                  Jelenleg nincs elerheto edzoi profil a rendszerben.
+                  No trainer profiles are currently available.
                 </CardContent>
               </Card>
             )}
@@ -136,13 +137,12 @@ export default function TrainerRequestPage() {
           <Card className="h-fit border-primary/20 bg-background lg:sticky lg:top-6">
             <CardHeader className="space-y-3">
               <Badge variant="secondary" className="w-fit">
-                Kovetkezo lepes
+                Next step
               </Badge>
-              <CardTitle>Edzeskero urlap hamarosan</CardTitle>
+              <CardTitle>Training plan request</CardTitle>
               <CardDescription className="text-sm leading-6">
-                A kovetkezo korben ide kerul majd az urlap, ahol a felhasznalo megadja
-                peldaul a szabadidojet, testsulyat es a celjait, majd ezt elkuldjuk a
-                kivalasztott edzonek emailben.
+                Open a dedicated request page for the selected trainer, where you can
+                provide your main details, goals, and a short description.
               </CardDescription>
             </CardHeader>
 
@@ -150,26 +150,28 @@ export default function TrainerRequestPage() {
               {selectedTrainer ? (
                 <>
                   <div className="rounded-lg border bg-muted/40 p-4">
-                    <p className="font-medium">Kivalasztott edzo</p>
+                    <p className="font-medium">Selected trainer</p>
                     <p className="mt-1 text-muted-foreground">{selectedTrainer.fullName}</p>
                     <p className="text-muted-foreground">{selectedTrainer.email}</p>
                   </div>
                   <p className="text-muted-foreground">
-                    A formszakaszban ehhez az edzohoz fogjuk kapcsolni a bekuldott
-                    adatokat.
+                    On the next page, your training plan request will be linked to this trainer.
                   </p>
                 </>
               ) : (
                 <div className="rounded-lg border border-dashed p-4 text-muted-foreground">
-                  Valassz ki egy edzot a kartyak kozul, hogy lathato legyen, kihez fog
-                  tartozni majd az edzeskero urlap.
+                  Select a trainer from the cards to open the training request form.
                 </div>
               )}
             </CardContent>
 
             <CardFooter>
-              <Button disabled className="w-full">
-                Urlap megnyitasa hamarosan
+              <Button
+                className="w-full"
+                disabled={!selectedTrainer}
+                onClick={() => navigate(`/training-request/${selectedTrainerId}`)}
+              >
+                Open training request form
               </Button>
             </CardFooter>
           </Card>

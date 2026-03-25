@@ -15,12 +15,10 @@ export default function ProfilePage() {
       .finally(() => setLoading(false));
   }, [getProfile]);
 
-  if (loading) return <div className="p-10 italic">Betöltés...</div>;
+  if (loading) return <div className="p-10 italic">Loading...</div>;
 
   if (!profile) {
-    return (
-      <div className="p-10 text-red-500">Nem sikerült betölteni a profilt.</div>
-    );
+    return <div className="p-10 text-red-500">Failed to load profile.</div>;
   }
 
   return (

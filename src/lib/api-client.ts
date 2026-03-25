@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8080";
+export const API_BASE_URL = "http://localhost:8080";
 
 export class ApiError extends Error {
   status: number;
@@ -20,11 +20,15 @@ export const apiClient = async <T>(
   endpoint: string,
   { body, token, suppressErrorLog, ...customConfig }: ApiConfig = {}
 ): Promise<T> => {
+  const isFormData = body instanceof FormData;
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
     ...((customConfig.headers as Record<string, string>) || {}),
   };
+
+  if (!isFormData && body !== undefined && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
 
   const config: RequestInit = {
     method: customConfig.method || (body ? "POST" : "GET"),
@@ -32,8 +36,8 @@ export const apiClient = async <T>(
     headers,
   };
 
-  if (body) {
-    config.body = JSON.stringify(body);
+  if (body !== undefined) {
+    config.body = isFormData ? body : JSON.stringify(body);
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);

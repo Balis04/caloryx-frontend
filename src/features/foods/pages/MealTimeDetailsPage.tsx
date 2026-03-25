@@ -74,7 +74,7 @@ export default function MealTimeDetailsPage() {
       setSummary(data);
       setFoods(data.foods ?? []);
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Nem sikerult betolteni.";
+      const message = e instanceof Error ? e.message : "Failed to load meal details.";
       setError(message);
       setSummary(null);
       setFoods([]);
@@ -119,7 +119,7 @@ export default function MealTimeDetailsPage() {
   const saveEdit = async (foodId: string) => {
     const newAmount = Number(editingAmount);
     if (Number.isNaN(newAmount) || newAmount <= 0) {
-      setActionError("A mennyisegnek pozitiv szamnak kell lennie.");
+      setActionError("Amount must be a positive number.");
       return;
     }
 
@@ -132,7 +132,7 @@ export default function MealTimeDetailsPage() {
       await loadData();
       cancelEdit();
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Modositas sikertelen.");
+      setActionError(e instanceof Error ? e.message : "Update failed.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
@@ -151,7 +151,7 @@ export default function MealTimeDetailsPage() {
         cancelEdit();
       }
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Torles sikertelen.");
+      setActionError(e instanceof Error ? e.message : "Delete failed.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
@@ -159,56 +159,56 @@ export default function MealTimeDetailsPage() {
   };
 
   if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
-    return <div className="p-6">Ervenytelen etkezes tipus.</div>;
+    return <div className="p-6">Invalid meal type.</div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between gap-3">
         <Button variant="outline" onClick={() => navigate("/calorie-counter")}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Vissza
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
 
         <div className="flex items-center gap-2">
           <Badge variant="secondary">{date}</Badge>
           <Button onClick={openAddFood}>
-            <Plus className="h-4 w-4 mr-2" /> Hozzaadas
+            <Plus className="h-4 w-4 mr-2" /> Add food
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{toMealTitle(normalizedMeal)} reszletek</CardTitle>
+          <CardTitle>{toMealTitle(normalizedMeal)} details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
-          {isLoading && <p className="text-muted-foreground">Betoltes...</p>}
+          {isLoading && <p className="text-muted-foreground">Loading...</p>}
           {error && <p className="text-destructive">{error}</p>}
           {!isLoading && !error && (
             <>
               <div className="flex justify-between">
-                <span>Kaloria</span>
+                <span>Calories</span>
                 <span>
                   {Math.round(consumed.calories)} /{" "}
                   {Math.round(summary?.targetCalories ?? 0)} kcal
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Feherje</span>
+                <span>Protein</span>
                 <span>
                   {Math.round(consumed.protein)} /{" "}
                   {Math.round(summary?.targetProteinGrams ?? 0)} g
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Szenhidrat</span>
+                <span>Carbohydrates</span>
                 <span>
                   {Math.round(consumed.carbohydrates)} /{" "}
                   {Math.round(summary?.targetCarbohydratesGrams ?? 0)} g
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Zsir</span>
+                <span>Fat</span>
                 <span>
                   {Math.round(consumed.fat)} / {Math.round(summary?.targetFatGrams ?? 0)} g
                 </span>
@@ -263,7 +263,7 @@ export default function MealTimeDetailsPage() {
                           {isActive && actionType === "update" ? (
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           ) : null}
-                          Mentes
+                          Save
                         </Button>
                         <Button
                           size="sm"
@@ -271,7 +271,7 @@ export default function MealTimeDetailsPage() {
                           onClick={cancelEdit}
                           disabled={isActive}
                         >
-                          Megse
+                          Cancel
                         </Button>
                       </>
                     ) : (
@@ -281,7 +281,7 @@ export default function MealTimeDetailsPage() {
                         onClick={() => beginEdit(food)}
                         disabled={isActive}
                       >
-                        <Pencil className="h-4 w-4 mr-2" /> Modositas
+                        <Pencil className="h-4 w-4 mr-2" /> Edit
                       </Button>
                     )}
 
@@ -296,7 +296,7 @@ export default function MealTimeDetailsPage() {
                       ) : (
                         <Trash2 className="h-4 w-4 mr-2" />
                       )}
-                      Torles
+                      Delete
                     </Button>
                   </div>
                 </div>
@@ -307,7 +307,7 @@ export default function MealTimeDetailsPage() {
                   <div>{Math.round(food.calories)} kcal</div>
                   <div>F: {Math.round(food.protein)} g</div>
                   <div>CH: {Math.round(food.carbohydrates)} g</div>
-                  <div>Zs: {Math.round(food.fat)} g</div>
+                  <div>Fat: {Math.round(food.fat)} g</div>
                 </div>
               </CardContent>
             </Card>
@@ -317,7 +317,7 @@ export default function MealTimeDetailsPage() {
         {!isLoading && !error && foods.length === 0 && (
           <Card>
             <CardContent className="pt-6 text-sm text-muted-foreground">
-              Ehhez az etkezeshez nincs rogzitett etel ezen a napon.
+              No foods have been logged for this meal on this date.
             </CardContent>
           </Card>
         )}

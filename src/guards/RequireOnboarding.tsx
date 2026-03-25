@@ -1,4 +1,3 @@
-// src/guards/RequireOnboarding.tsx
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate } from "react-router-dom";
@@ -32,7 +31,7 @@ export default function RequireOnboarding({
         if (message.includes("401") || message.includes("403")) {
           logout({ logoutParams: { returnTo: window.location.origin } });
         } else {
-          console.error("Onboarding hiba:", message);
+          console.error("Onboarding error:", message);
           setStatus("error");
         }
       }
@@ -41,13 +40,19 @@ export default function RequireOnboarding({
     checkStatus();
   }, [getAccessTokenSilently, logout, isAuthenticated]);
 
-  if (status === "loading")
+  if (status === "loading") {
     return <div className="flex justify-center p-10">Checking profile...</div>;
+  }
+
   if (status === "needsRegister") return <Navigate to="/register" replace />;
-  if (status === "error")
+
+  if (status === "error") {
     return (
-      <div className="p-10 text-red-500">Hiba történt az azonosítás során.</div>
+      <div className="p-10 text-red-500">
+        An error occurred during authentication.
+      </div>
     );
+  }
 
   return <>{children}</>;
 }
