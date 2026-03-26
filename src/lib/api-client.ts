@@ -7,8 +7,10 @@ const XSRF_COOKIE_NAME = "XSRF-TOKEN";
 const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
 const CSRF_ENDPOINT = "/api/auth/csrf";
 const STATE_CHANGING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const DEFAULT_CSRF_PARAMETER_NAME = "_csrf";
 
 let csrfRequest: Promise<string | null> | null = null;
+let csrfParameterName = DEFAULT_CSRF_PARAMETER_NAME;
 
 export class ApiError extends Error {
   status: number;
@@ -76,10 +78,14 @@ const ensureCsrfToken = async () => {
         const contentType = response.headers.get("content-type") ?? "";
         if (contentType.includes("application/json")) {
           const data = (await response.json().catch(() => null)) as
-            | { csrfToken?: string | null }
+            | { csrfToken?: string | null; token?: string | null; parameterName?: string | null }
             | null;
 
-          return data?.csrfToken ?? null;
+          if (typeof data?.parameterName === "string" && data.parameterName.trim()) {
+            csrfParameterName = data.parameterName;
+          }
+
+          return data?.csrfToken ?? data?.token ?? null;
         }
 
         return null;
@@ -90,6 +96,15 @@ const ensureCsrfToken = async () => {
   }
 
   return csrfRequest;
+};
+
+export const getCsrfFormState = async () => {
+  const token = (await ensureCsrfToken()) ?? readCsrfToken();
+
+  return {
+    parameterName: csrfParameterName,
+    token,
+  };
 };
 
 export const apiClient = async <T>(

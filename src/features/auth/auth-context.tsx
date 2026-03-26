@@ -1,4 +1,4 @@
-import { apiClient, ApiError, buildApiUrl } from "@/lib/api-client";
+import { apiClient, ApiError, buildApiUrl, getCsrfFormState } from "@/lib/api-client";
 import {
   useCallback,
   useEffect,
@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { AuthContext } from "./auth-context.shared";
-import type { AuthMeResponse, LogoutResponse } from "./auth.types";
+import type { AuthMeResponse } from "./auth.types";
 
 export interface AuthContextValue {
   authState: AuthMeResponse | null;
@@ -117,17 +117,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async (publicPath = "/") => {
     try {
-      const response = await apiClient<LogoutResponse>("/api/auth/logout", {
-        method: "POST",
-        suppressErrorLog: true,
-      });
-
       setAuthState(null);
+      const { parameterName, token } = await getCsrfFormState();
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = buildApiUrl("/api/auth/logout");
+      form.style.display = "none";
 
-      if (response?.auth0LogoutUrl) {
-        window.location.assign(response.auth0LogoutUrl);
-        return;
+      if (token) {
+        const csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
+        csrfInput.name = parameterName;
+        csrfInput.value = token;
+        form.appendChild(csrfInput);
       }
+
+      document.body.appendChild(form);
+      form.submit();
+      return;
     } catch (error) {
       setAuthState(null);
       console.error("Logout failed:", error);
