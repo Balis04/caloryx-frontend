@@ -1,8 +1,10 @@
 import { useApi } from "@/hooks/useApi";
 import { useCallback } from "react";
 import type {
+  ClosedTrainingRequestResponseDto,
   CreateTrainingRequestDto,
   TrainingRequestResponseDto,
+  UpdateTrainingRequestStatusDto,
 } from "./training-request.dto";
 
 export const useTrainingRequestApi = () => {
@@ -25,5 +27,34 @@ export const useTrainingRequestApi = () => {
     [request]
   );
 
-  return { createTrainingRequest, getMyTrainingRequests };
+  const updateTrainingRequestStatus = useCallback(
+    (trainingRequestId: string, data: UpdateTrainingRequestStatusDto) =>
+      request<TrainingRequestResponseDto>(
+        `/api/training-requests/${trainingRequestId}/status`,
+        {
+          method: "PATCH",
+          body: data,
+        }
+      ),
+    [request]
+  );
+
+  const uploadTrainingPlan = useCallback(
+    (trainingRequestId: string, body: FormData) =>
+      request<ClosedTrainingRequestResponseDto>(
+        `/api/training-requests/${trainingRequestId}/training-plan`,
+        {
+          method: "POST",
+          body,
+        }
+      ),
+    [request]
+  );
+
+  return {
+    createTrainingRequest,
+    getMyTrainingRequests,
+    updateTrainingRequestStatus,
+    uploadTrainingPlan,
+  };
 };

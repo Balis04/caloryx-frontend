@@ -13,8 +13,7 @@ export type TrainingRequestResponse = TrainingRequest;
 
 export interface ApprovedRequestDraft {
   planName: string;
-  description: string;
+  planDescription: string;
   file: File | null;
   existingFileName: string;
-  existingFileUrl: string;
 }

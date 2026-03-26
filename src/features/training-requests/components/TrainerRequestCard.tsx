@@ -7,9 +7,7 @@ import {
   formatDate,
   getTrainingPlanDescription,
   getTrainingPlanFileName,
-  getTrainingPlanFileUrl,
   getTrainingPlanName,
-  openFile,
   statusLabelMap,
   statusVariantMap,
 } from "../utils/training-requests.utils";
@@ -84,7 +82,7 @@ export default function TrainerRequestCard({
 
       <CardContent className="space-y-5 pt-6">
         <TrainingRequestMetrics request={request} />
-        <RequestTextPanel label="Client note" value={request.description} />
+        <RequestTextPanel label="Client note" value={request.requestDescription} />
         <RequestTextPanel
           label="Statusz comment"
           value={decisionDescription || "No status comment yet."}
@@ -102,24 +100,13 @@ export default function TrainerRequestCard({
               />
             )}
             {(getTrainingPlanFileName(request) ||
-              request.trainingPlanUploadedAt ||
-              request.trainingPlanContentType ||
-              request.trainingPlanFileSizeBytes != null) && (
+              request.uploadedAt) && (
               <div className="rounded-xl border bg-background p-4 text-sm">
                 <p className="font-medium">Training plan fajl</p>
                 <div className="mt-2 space-y-2 text-muted-foreground">
                   {getTrainingPlanFileName(request) && <p>File name: {getTrainingPlanFileName(request)}</p>}
-                  {request.trainingPlanContentType && <p>Type: {request.trainingPlanContentType}</p>}
-                  {request.trainingPlanFileSizeBytes != null && <p>Size: {request.trainingPlanFileSizeBytes} bytes</p>}
-                  {request.trainingPlanUploadedAt && <p>Uploaded: {formatDate(request.trainingPlanUploadedAt)}</p>}
+                  {request.uploadedAt && <p>Uploaded: {formatDate(request.uploadedAt)}</p>}
                 </div>
-                {getTrainingPlanFileUrl(request) && (
-                  <div className="mt-3">
-                    <Button type="button" variant="outline" size="sm" onClick={() => openFile(getTrainingPlanFileUrl(request))}>
-                      Open file
-                    </Button>
-                  </div>
-                )}
               </div>
             )}
           </>

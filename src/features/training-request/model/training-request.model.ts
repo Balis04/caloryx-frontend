@@ -4,8 +4,8 @@ export type { TrainingRequestStatus };
 
 export interface TrainingRequest {
   id: string;
-  coachProfileId: string;
-  requesterUserId: string;
+  coachProfileId?: string;
+  requesterUserId?: string;
   coachName: string;
   requesterName: string;
   requesterEmail: string;
@@ -13,15 +13,11 @@ export interface TrainingRequest {
   sessionDurationMinutes: number;
   preferredLocation: string;
   status: TrainingRequestStatus;
-  description: string;
-  coachNote: string;
+  requestDescription: string;
+  coachResponse: string;
   createdAt: string;
   planName?: string | null;
   planDescription?: string | null;
   fileName?: string | null;
-  fileUrl?: string | null;
   uploadedAt?: string | null;
-  trainingPlanUploadedAt?: string | null;
-  trainingPlanContentType?: string | null;
-  trainingPlanFileSizeBytes?: number | null;
 }

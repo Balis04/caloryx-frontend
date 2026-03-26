@@ -1,5 +1,10 @@
 import { useTrainingRequestApi } from "@/features/training-request/api/training-request.api";
-import { mapTrainingRequestDtoToModel } from "@/features/training-request/lib/training-request.mapper";
+import type { ClosedTrainingRequestResponseDto } from "@/features/training-request/api/training-request.dto";
+import {
+  mapClosedTrainingRequestDtoToModel,
+  mapTrainingRequestDtoToModel,
+  mapTrainingRequestStatusToUpdateDto,
+} from "@/features/training-request/lib/training-request.mapper";
 import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
 import { isCoachRole } from "@/shared/utils/profileRole";
 import { useApi } from "@/hooks/useApi";
@@ -17,15 +22,17 @@ import {
   getDecisionDescription,
   getTrainingPlanDescription,
   getTrainingPlanFileName,
-  getTrainingPlanFileUrl,
   getTrainingPlanName,
-  TRAINING_PLAN_UPLOAD_ENDPOINT,
   upsertRequest,
 } from "../utils/training-requests.utils";
 
 export const useTrainingRequests = () => {
   const { request } = useApi();
-  const { getMyTrainingRequests } = useTrainingRequestApi();
+  const {
+    getMyTrainingRequests,
+    updateTrainingRequestStatus: updateTrainingRequestStatusRequest,
+    uploadTrainingPlan,
+  } = useTrainingRequestApi();
   const { profile, loading: profileLoading } = useViewerProfile();
   const isTrainer = isCoachRole(profile?.role);
 
@@ -71,7 +78,7 @@ export const useTrainingRequests = () => {
             )
           : Promise.resolve([]),
         isTrainer
-          ? request<TrainingRequestResponse[]>(
+          ? request<ClosedTrainingRequestResponseDto[]>(
               "/api/coach-profiles/me/training-requests/closed"
             )
           : Promise.resolve([]),
@@ -82,15 +89,18 @@ export const useTrainingRequests = () => {
           : Promise.resolve([]),
       ]);
 
-      setOutgoingRequests(outgoingResponse.map(mapTrainingRequestDtoToModel));
+      const mappedOutgoingRequests = outgoingResponse.map(mapTrainingRequestDtoToModel);
+      const mappedClosedRequests = closedResponse.map(mapClosedTrainingRequestDtoToModel);
+
+      setOutgoingRequests(mappedOutgoingRequests);
       setPendingRequests(dedupeRequests(pendingResponse));
       setApprovedRequests(dedupeRequests(approvedResponse));
-      setClosedRequests(dedupeRequests(closedResponse));
+      setClosedRequests(dedupeRequests(mappedClosedRequests));
       setRejectedRequests(dedupeRequests(rejectedResponse));
       setDecisionDescriptions((prev) => {
         const next = { ...prev };
 
-        [...pendingResponse, ...approvedResponse, ...closedResponse, ...rejectedResponse].forEach(
+        [...pendingResponse, ...approvedResponse, ...mappedClosedRequests, ...rejectedResponse].forEach(
           (requestItem) => {
             if (!next[requestItem.id]) {
               next[requestItem.id] = getDecisionDescription(requestItem);
@@ -115,8 +125,8 @@ export const useTrainingRequests = () => {
             ...currentDraft,
             planName: currentDraft.planName || getTrainingPlanName(requestItem),
             existingFileName: currentDraft.existingFileName || getTrainingPlanFileName(requestItem),
-            existingFileUrl: currentDraft.existingFileUrl || getTrainingPlanFileUrl(requestItem),
-            description: currentDraft.description || getTrainingPlanDescription(requestItem),
+            planDescription:
+              currentDraft.planDescription || getTrainingPlanDescription(requestItem),
           };
         });
 
@@ -148,11 +158,16 @@ export const useTrainingRequests = () => {
     async (
       trainingRequestId: string,
       status: TrainingRequestStatus,
-      description: string
+      coachResponse: string
     ) => {
-      const trimmedDescription = description.trim();
+      if (status === "PENDING" || status === "CLOSED") {
+        setError("Only APPROVED or REJECTED status updates are allowed.");
+        return;
+      }
 
-      if (!trimmedDescription) {
+      const trimmedCoachResponse = coachResponse.trim();
+
+      if (!trimmedCoachResponse) {
         setError("A status comment is required when approving or rejecting a request.");
         return;
       }
@@ -161,24 +176,18 @@ export const useTrainingRequests = () => {
       setError(null);
 
       try {
-        const response = await request<TrainingRequestResponse>(
-          `/api/training-requests/${trainingRequestId}/status`,
-          {
-            method: "PATCH",
-            body: { status, description: trimmedDescription },
-          }
+        const response = await updateTrainingRequestStatusRequest(
+          trainingRequestId,
+          mapTrainingRequestStatusToUpdateDto(status, trimmedCoachResponse)
         );
 
-        const normalizedResponse = {
-          ...response,
-          coachNote: getDecisionDescription(response) || trimmedDescription,
-        };
+        const normalizedResponse = mapTrainingRequestDtoToModel(response);
 
         setPendingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
         setOutgoingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
         setDecisionDescriptions((prev) => ({
           ...prev,
-          [trainingRequestId]: trimmedDescription,
+          [trainingRequestId]: trimmedCoachResponse,
         }));
 
         if (status === "APPROVED") {
@@ -204,9 +213,7 @@ export const useTrainingRequests = () => {
               : prev.filter((requestItem) => requestItem.id !== trainingRequestId)
           );
           setClosedRequests((prev) =>
-            status === "CLOSED"
-              ? dedupeRequests(upsertRequest(prev, normalizedResponse))
-              : prev.filter((requestItem) => requestItem.id !== trainingRequestId)
+            prev.filter((requestItem) => requestItem.id !== trainingRequestId)
           );
           setApprovedDrafts((prev) => {
             const next = { ...prev };
@@ -227,14 +234,19 @@ export const useTrainingRequests = () => {
         setUpdatingRequestId(null);
       }
     },
-    [loadRequests, request]
+    [loadRequests, updateTrainingRequestStatusRequest]
   );
 
   const saveTrainingPlan = useCallback(
     async (requestItem: TrainingRequestResponse) => {
       const draft = approvedDrafts[requestItem.id] ?? createApprovedDraft(requestItem);
       const trimmedPlanName = draft.planName.trim();
-      const trimmedDescription = draft.description.trim();
+      const trimmedPlanDescription = draft.planDescription.trim();
+
+      if (requestItem.status !== "APPROVED") {
+        setError("Training plan can only be uploaded for approved requests.");
+        return;
+      }
 
       if (!draft.file) {
         setError("Select a PDF or DOCX file to upload the training plan.");
@@ -252,53 +264,42 @@ export const useTrainingRequests = () => {
           formData.append("planName", trimmedPlanName);
         }
 
-        if (trimmedDescription) {
-          formData.append("description", trimmedDescription);
+        if (trimmedPlanDescription) {
+          formData.append("planDescription", trimmedPlanDescription);
         }
 
-        const response = await request<TrainingRequestResponse>(
-          TRAINING_PLAN_UPLOAD_ENDPOINT(requestItem.id),
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        const response = await uploadTrainingPlan(requestItem.id, formData);
 
         const fallbackTrainingPlanName =
           trimmedPlanName || requestItem.planName || null;
         const fallbackTrainingPlanDescription =
-          trimmedDescription || requestItem.planDescription || null;
-        const nextTrainingPlanName =
-          response.planName ?? fallbackTrainingPlanName;
-        const nextTrainingPlanDescription =
-          response.planDescription ?? fallbackTrainingPlanDescription;
-        const nextTrainingPlanFileName =
-          response.fileName ?? draft.file?.name ?? requestItem.fileName;
-        const nextTrainingPlanFileUrl =
-          response.fileUrl ??
-          draft.existingFileUrl ??
-          requestItem.fileUrl;
-
-        const normalizedResponse = {
-          ...requestItem,
+          trimmedPlanDescription || requestItem.planDescription || null;
+        const normalizedResponse = mapClosedTrainingRequestDtoToModel({
           ...response,
-          trainingPlanName: nextTrainingPlanName,
-          trainingPlanDescription: nextTrainingPlanDescription,
-          trainingPlanFileName: nextTrainingPlanFileName,
-          trainingPlanFileUrl: nextTrainingPlanFileUrl,
-        };
+          planName: response.planName ?? fallbackTrainingPlanName,
+          planDescription: response.planDescription ?? fallbackTrainingPlanDescription,
+          fileName: response.fileName ?? draft.file?.name ?? requestItem.fileName,
+        });
 
-        setApprovedRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
-        setPendingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
+        setApprovedRequests((prev) =>
+          prev.filter((request) => request.id !== requestItem.id)
+        );
+        setPendingRequests((prev) =>
+          prev.filter((request) => request.id !== requestItem.id)
+        );
+        setRejectedRequests((prev) =>
+          prev.filter((request) => request.id !== requestItem.id)
+        );
+        setClosedRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
         setOutgoingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
         setApprovedDrafts((prev) => ({
           ...prev,
           [requestItem.id]: {
             planName: trimmedPlanName || getTrainingPlanName(normalizedResponse),
-            description: normalizedResponse.trainingPlanDescription ?? trimmedDescription,
+            planDescription:
+              normalizedResponse.planDescription ?? trimmedPlanDescription,
             file: null,
-            existingFileName: normalizedResponse.trainingPlanFileName ?? draft.file?.name ?? "",
-            existingFileUrl: normalizedResponse.trainingPlanFileUrl ?? draft.existingFileUrl,
+            existingFileName: normalizedResponse.fileName ?? draft.file?.name ?? "",
           },
         }));
         void loadRequests();
@@ -310,7 +311,7 @@ export const useTrainingRequests = () => {
         setSavingApprovedRequestId(null);
       }
     },
-    [approvedDrafts, loadRequests, request]
+    [approvedDrafts, loadRequests, uploadTrainingPlan]
   );
 
   const visibleRequests = useMemo(() => {

@@ -11,22 +11,37 @@ export interface TrainingRequestResponseDto {
   sessionDurationMinutes: number;
   preferredLocation: string;
   status: TrainingRequestStatus;
-  description: string | null;
-  coachNote: string | null;
+  requestDescription: string | null;
+  coachResponse: string | null;
+  createdAt: string;
+}
+
+export interface ClosedTrainingRequestResponseDto {
+  requestId: string;
+  coachName: string;
+  requesterName: string;
+  requesterEmail: string;
+  weeklyTrainingCount: number;
+  sessionDurationMinutes: number;
+  preferredLocation: string;
+  status: TrainingRequestStatus;
+  requestDescription: string | null;
+  coachResponse: string | null;
   createdAt: string;
   planName?: string | null;
   planDescription?: string | null;
   fileName?: string | null;
-  fileUrl?: string | null;
   uploadedAt?: string | null;
-  trainingPlanUploadedAt?: string | null;
-  trainingPlanContentType?: string | null;
-  trainingPlanFileSizeBytes?: number | null;
 }
 
 export interface CreateTrainingRequestDto {
   weeklyTrainingCount: number;
   sessionDurationMinutes: number;
   preferredLocation: string;
-  description: string;
+  requestDescription: string;
+}
+
+export interface UpdateTrainingRequestStatusDto {
+  status: Exclude<TrainingRequestStatus, "PENDING" | "CLOSED">;
+  coachResponse: string;
 }

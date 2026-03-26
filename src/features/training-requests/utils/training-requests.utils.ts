@@ -42,16 +42,13 @@ export const formatDate = (value: string) => {
 };
 
 export const getDecisionDescription = (request: TrainingRequestResponse) =>
-  request.coachNote.trim();
+  request.coachResponse.trim() || "";
 
 export const getTrainingPlanDescription = (request: TrainingRequestResponse) =>
   request.planDescription?.trim() || "";
 
 export const getTrainingPlanFileName = (request: TrainingRequestResponse) =>
   request.fileName?.trim() || "";
-
-export const getTrainingPlanFileUrl = (request: TrainingRequestResponse) =>
-  request.fileUrl?.trim() || "";
 
 export const getTrainingPlanName = (request: TrainingRequestResponse) =>
   request.planName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
@@ -60,10 +57,9 @@ export const createApprovedDraft = (
   request: TrainingRequestResponse
 ): ApprovedRequestDraft => ({
   planName: getTrainingPlanName(request),
-  description: getTrainingPlanDescription(request),
+  planDescription: getTrainingPlanDescription(request),
   file: null,
   existingFileName: getTrainingPlanFileName(request),
-  existingFileUrl: getTrainingPlanFileUrl(request),
 });
 
 export const upsertRequest = (
