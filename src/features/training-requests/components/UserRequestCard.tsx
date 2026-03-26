@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock3, Mail } from "lucide-react";
 import type { TrainingRequestResponse } from "../types/training-requests.types";
@@ -8,8 +7,6 @@ import {
   getDecisionDescription,
   getTrainingPlanDescription,
   getTrainingPlanFileName,
-  getTrainingPlanFileUrl,
-  openFile,
   statusLabelMap,
   statusVariantMap,
 } from "../utils/training-requests.utils";
@@ -22,7 +19,6 @@ export default function UserRequestCard({ request }: Props) {
   const decisionDescription = getDecisionDescription(request);
   const trainingPlanDescription = getTrainingPlanDescription(request);
   const trainingPlanFileName = getTrainingPlanFileName(request);
-  const trainingPlanFileUrl = getTrainingPlanFileUrl(request);
 
   return (
     <Card className="shadow-sm">
@@ -65,7 +61,7 @@ export default function UserRequestCard({ request }: Props) {
 
         <div className="rounded-xl border bg-background p-4 text-sm">
             <p className="font-medium">Your request description</p>
-          <p className="mt-2 leading-6 text-muted-foreground">{request.coachNote}</p>
+          <p className="mt-2 leading-6 text-muted-foreground">{request.requestDescription}</p>
         </div>
 
         {decisionDescription && (
@@ -89,11 +85,6 @@ export default function UserRequestCard({ request }: Props) {
             <p className="font-medium">Attached file</p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <span className="text-muted-foreground">{trainingPlanFileName}</span>
-              {trainingPlanFileUrl && (
-                <Button type="button" variant="outline" size="sm" onClick={() => openFile(trainingPlanFileUrl)}>
-                  Open
-                </Button>
-              )}
             </div>
           </div>
         )}

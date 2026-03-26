@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FileText, Upload } from "lucide-react";
 import type { ApprovedRequestDraft, TrainingRequestResponse } from "../types/training-requests.types";
-import { openFile } from "../utils/training-requests.utils";
 
 interface Props {
   draft: ApprovedRequestDraft;
@@ -22,7 +21,7 @@ export default function TrainingPlanEditor({
   onSave,
   onToggle,
 }: Props) {
-  const hasExistingFile = Boolean(draft.existingFileName || draft.existingFileUrl);
+  const hasExistingFile = Boolean(draft.existingFileName);
 
   return (
     <div className="space-y-4 rounded-xl border bg-background p-4 text-sm">
@@ -39,11 +38,11 @@ export default function TrainingPlanEditor({
         </Button>
       </div>
 
-      {draft.description && !isExpanded && (
+      {draft.planDescription && !isExpanded && (
         <div className="rounded-lg border bg-muted/20 p-3">
           {draft.planName && <p className="font-medium text-foreground">{draft.planName}</p>}
           <p className="font-medium">Training plan description</p>
-          <p className="mt-2 leading-6 text-muted-foreground">{draft.description}</p>
+          <p className="mt-2 leading-6 text-muted-foreground">{draft.planDescription}</p>
         </div>
       )}
 
@@ -52,11 +51,6 @@ export default function TrainingPlanEditor({
           <p className="font-medium">Current file</p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <span className="text-muted-foreground">{draft.file?.name || draft.existingFileName}</span>
-            {draft.existingFileUrl && (
-              <Button type="button" variant="outline" size="sm" onClick={() => openFile(draft.existingFileUrl)}>
-                Open
-              </Button>
-            )}
           </div>
         </div>
       )}
@@ -85,8 +79,8 @@ export default function TrainingPlanEditor({
               id="training-plan-description"
               className="min-h-32 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               placeholder="Briefly describe what the training plan contains."
-              value={draft.description}
-              onChange={(event) => onDraftChange({ ...draft, description: event.target.value })}
+              value={draft.planDescription}
+              onChange={(event) => onDraftChange({ ...draft, planDescription: event.target.value })}
               disabled={isSaving}
             />
           </div>
@@ -110,11 +104,6 @@ export default function TrainingPlanEditor({
               <p className="font-medium">Selected or current file</p>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <span className="text-muted-foreground">{draft.file?.name || draft.existingFileName}</span>
-                {!draft.file && draft.existingFileUrl && (
-                  <Button type="button" variant="outline" size="sm" onClick={() => openFile(draft.existingFileUrl)}>
-                    Open
-                  </Button>
-                )}
               </div>
             </div>
           )}
