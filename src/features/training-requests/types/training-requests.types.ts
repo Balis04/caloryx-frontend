@@ -23,6 +23,9 @@ export interface TrainingRequestResponse {
   fileName?: string | null;
   fileUrl?: string | null;
   uploadedAt?: string | null;
+  trainingPlanUploadedAt?: string | null;
+  trainingPlanContentType?: string | null;
+  trainingPlanFileSizeBytes?: number | null;
 }
 
 export interface ApprovedRequestDraft {

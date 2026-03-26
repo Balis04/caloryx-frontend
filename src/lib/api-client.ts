@@ -1,4 +1,14 @@
-export const API_BASE_URL = "http://localhost:8080";
+const DEFAULT_API_URL = "http://localhost:8080";
+
+export const API_BASE_URL =
+  (import.meta.env.VITE_API_URL?.trim() || DEFAULT_API_URL).replace(/\/+$/, "");
+
+const XSRF_COOKIE_NAME = "XSRF-TOKEN";
+const CSRF_HEADER_NAME = "X-XSRF-TOKEN";
+const CSRF_ENDPOINT = "/api/auth/csrf";
+const STATE_CHANGING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+let csrfRequest: Promise<string | null> | null = null;
 
 export class ApiError extends Error {
   status: number;
@@ -12,27 +22,100 @@ export class ApiError extends Error {
 
 export interface ApiConfig extends Omit<RequestInit, "body"> {
   body?: unknown;
-  token?: string;
   suppressErrorLog?: boolean;
+  skipCsrf?: boolean;
 }
+
+const buildApiUrl = (endpoint: string) =>
+  endpoint.startsWith("http://") || endpoint.startsWith("https://")
+    ? endpoint
+    : `${API_BASE_URL}${endpoint}`;
+
+const getCookieValue = (name: string) => {
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  const cookie = document.cookie
+    .split("; ")
+    .find((entry) => entry.startsWith(`${name}=`));
+
+  if (!cookie) {
+    return null;
+  }
+
+  return decodeURIComponent(cookie.slice(name.length + 1));
+};
+
+const readCsrfToken = () => getCookieValue(XSRF_COOKIE_NAME);
+
+const ensureCsrfToken = async () => {
+  const existingToken = readCsrfToken();
+  if (existingToken) {
+    return existingToken;
+  }
+
+  if (!csrfRequest) {
+    csrfRequest = fetch(buildApiUrl(CSRF_ENDPOINT), {
+      credentials: "include",
+      method: "GET",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new ApiError(
+            `Hiba: ${response.status} ${response.statusText}`,
+            response.status
+          );
+        }
+
+        const cookieToken = readCsrfToken();
+        if (cookieToken) {
+          return cookieToken;
+        }
+
+        const contentType = response.headers.get("content-type") ?? "";
+        if (contentType.includes("application/json")) {
+          const data = (await response.json().catch(() => null)) as
+            | { csrfToken?: string | null }
+            | null;
+
+          return data?.csrfToken ?? null;
+        }
+
+        return null;
+      })
+      .finally(() => {
+        csrfRequest = null;
+      });
+  }
+
+  return csrfRequest;
+};
 
 export const apiClient = async <T>(
   endpoint: string,
-  { body, token, suppressErrorLog, ...customConfig }: ApiConfig = {}
+  { body, suppressErrorLog, skipCsrf, ...customConfig }: ApiConfig = {}
 ): Promise<T> => {
   const isFormData = body instanceof FormData;
-  const headers: Record<string, string> = {
-    ...(token && { Authorization: `Bearer ${token}` }),
-    ...((customConfig.headers as Record<string, string>) || {}),
-  };
+  const method = (customConfig.method || (body ? "POST" : "GET")).toUpperCase();
+  const headers = new Headers(customConfig.headers);
 
-  if (!isFormData && body !== undefined && !headers["Content-Type"]) {
-    headers["Content-Type"] = "application/json";
+  if (!isFormData && body !== undefined && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  if (!skipCsrf && STATE_CHANGING_METHODS.has(method)) {
+    const csrfToken = (await ensureCsrfToken()) ?? readCsrfToken();
+
+    if (csrfToken) {
+      headers.set(CSRF_HEADER_NAME, csrfToken);
+    }
   }
 
   const config: RequestInit = {
-    method: customConfig.method || (body ? "POST" : "GET"),
     ...customConfig,
+    method,
+    credentials: "include",
     headers,
   };
 
@@ -40,22 +123,32 @@ export const apiClient = async <T>(
     config.body = isFormData ? body : JSON.stringify(body);
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  try {
+    const response = await fetch(buildApiUrl(endpoint), config);
+    const contentType = response.headers.get("content-type") ?? "";
+    const isJson = contentType.includes("application/json");
+    const data = isJson ? await response.json().catch(() => null) : null;
 
-  const contentType = response.headers.get("content-type");
-  const isJson = contentType && contentType.includes("application/json");
+    if (!response.ok) {
+      const errorMessage =
+        data?.message || `Hiba: ${response.status} ${response.statusText}`;
+      throw new ApiError(errorMessage, response.status);
+    }
 
-  const data = isJson ? await response.json().catch(() => null) : null;
+    if (response.status === 204 || data == null) {
+      return {} as T;
+    }
 
-  if (!response.ok) {
-    const errorMessage =
-      data?.message || `Hiba: ${response.status} ${response.statusText}`;
-    throw new ApiError(errorMessage, response.status);
+    return data as T;
+  } catch (error) {
+    if (!suppressErrorLog) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("API error:", errorMessage);
+    }
+
+    throw error;
   }
-
-  if (response.status === 204 || !data) {
-    return {} as T;
-  }
-
-  return data as T;
 };
+
+export { buildApiUrl, readCsrfToken };

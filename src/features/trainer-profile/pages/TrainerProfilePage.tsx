@@ -46,6 +46,7 @@ export default function TrainerProfilePage() {
     saving,
     statusMessage,
     errorMessage,
+    isForbidden,
     hasTrainerProfile,
     isEditing,
     setField,
@@ -94,6 +95,30 @@ export default function TrainerProfilePage() {
 
   if (loading) {
     return <div className="flex justify-center p-10 italic">Loading trainer profile...</div>;
+  }
+
+  if (isForbidden) {
+    return (
+      <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-start px-4 pb-6 pt-2">
+        <div className="w-full max-w-5xl space-y-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/profile")}
+            className="w-fit text-xs text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="mr-2 h-3 w-3" />
+            Back to profile
+          </Button>
+
+          <Card className="border-red-300 bg-red-50">
+            <CardContent className="p-4 text-sm text-red-700">
+              {errorMessage ?? "Forbidden"}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   const showForm = !hasTrainerProfile || isEditing;

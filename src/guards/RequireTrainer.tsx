@@ -1,4 +1,4 @@
-import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
+import { useAuth } from "@/features/auth/use-auth";
 import { Navigate } from "react-router-dom";
 
 export default function RequireTrainer({
@@ -6,13 +6,13 @@ export default function RequireTrainer({
 }: {
   children: React.ReactNode;
 }) {
-  const { profile, loading } = useViewerProfile();
+  const { isLoading, hasAnyRole } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return <div className="flex justify-center p-10">Checking trainer access...</div>;
   }
 
-  if (profile?.role !== "TRAINER") {
+  if (!hasAnyRole("COACH")) {
     return <Navigate to="/profile" replace />;
   }
 

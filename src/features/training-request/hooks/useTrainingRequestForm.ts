@@ -1,11 +1,12 @@
-import { useProfileService } from "@/features/profile/hooks/useProfileService";
-import type { ProfileResponse } from "@/features/profile/types/profile.types";
+import { useProfileApi } from "@/features/profile/api/profile.api";
+import { mapProfileDtoToModel } from "@/features/profile/lib/profile.mapper";
+import type { Profile } from "@/features/profile/model/profile.model";
 import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { TrainingRequestFormData } from "../types/training-request-form.types";
 
 const createInitialFormData = (
-  profile?: ProfileResponse | null
+  profile?: Profile | null
 ): TrainingRequestFormData => ({
   weeklyWorkouts: "",
   preferredSessionLength: "",
@@ -19,8 +20,8 @@ const createInitialFormData = (
 
 export const useTrainingRequestForm = (coachProfileId: string | null) => {
   const { request } = useApi();
-  const { getProfile } = useProfileService();
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const { getProfile } = useProfileApi();
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
     createInitialFormData()
   );
@@ -35,8 +36,9 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
 
     try {
       const response = await getProfile();
-      setProfile(response);
-      setFormData(createInitialFormData(response));
+      const nextProfile = mapProfileDtoToModel(response);
+      setProfile(nextProfile);
+      setFormData(createInitialFormData(nextProfile));
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to load profile data.";

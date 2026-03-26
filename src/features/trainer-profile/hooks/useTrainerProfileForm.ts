@@ -189,6 +189,7 @@ export const useTrainerProfileForm = () => {
   const [saving, setSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isForbidden, setIsForbidden] = useState(false);
   const [hasTrainerProfile, setHasTrainerProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -196,6 +197,7 @@ export const useTrainerProfileForm = () => {
     setLoading(true);
     setErrorMessage(null);
     setStatusMessage(null);
+    setIsForbidden(false);
 
     try {
       const response = await request<CoachProfileResponse>(
@@ -214,6 +216,13 @@ export const useTrainerProfileForm = () => {
         setCoachProfileId(null);
         setHasTrainerProfile(false);
         setIsEditing(false);
+      } else if (error instanceof ApiError && error.status === 403) {
+        setFormData(initialFormData);
+        setCoachProfileId(null);
+        setHasTrainerProfile(false);
+        setIsEditing(false);
+        setIsForbidden(true);
+        setErrorMessage(error.message);
       } else {
         const message =
           error instanceof Error ? error.message : "Failed to load trainer profile.";
@@ -373,6 +382,7 @@ export const useTrainerProfileForm = () => {
     saving,
     statusMessage,
     errorMessage,
+    isForbidden,
     hasTrainerProfile,
     isEditing,
     setField,
