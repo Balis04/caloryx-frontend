@@ -1,5 +1,5 @@
-import type { Food, FoodLogRequest, MealTime } from "../types/food.types";
-import { getNutrientValue } from "./nutrientUtils";
+import type { Food, FoodLogRequest, MealTime } from "../model/food.model";
+import { getNutrientValue } from "./food.nutrients";
 
 const toConsumedAtIso = (consumedDate?: string): string => {
   if (!consumedDate) {

@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCaloriesSummaryService } from "../hooks/useCaloriesSummaryService";
-import type { CaloriesSummaryResponse } from "../types/food.types";
-import type { MealTime } from "../types/food.types";
+import type { CaloriesSummaryResponse, MealTime } from "../model/food.model";
 
 const MEALS: { title: string; type: MealTime }[] = [
   { title: "Breakfast", type: "BREAKFAST" },
@@ -49,14 +48,14 @@ const mapApiToFallback = (date: string): CaloriesSummaryResponse => ({
   consumedProteinGrams: 0,
   consumedCarbohydratesGrams: 0,
   consumedFatGrams: 0,
-  targetbreakfastkcal: 550,
-  consumedbreakfastkcal: 0,
-  targetlunchkcal: 770,
-  consumedlunchkcal: 0,
-  targetdinnerkcal: 660,
-  consumeddinnerkcal: 0,
-  targetsnackkcal: 220,
-  consumedsnackkcal: 0,
+  targetBreakfastKcal: 550,
+  consumedBreakfastKcal: 0,
+  targetLunchKcal: 770,
+  consumedLunchKcal: 0,
+  targetDinnerKcal: 660,
+  consumedDinnerKcal: 0,
+  targetSnackKcal: 220,
+  consumedSnackKcal: 0,
 });
 
 const getMealCalories = (
@@ -66,30 +65,30 @@ const getMealCalories = (
   switch (mealType) {
     case "BREAKFAST":
       return {
-        consumed: summary.consumedbreakfastkcal,
-        target: summary.targetbreakfastkcal,
+        consumed: summary.consumedBreakfastKcal,
+        target: summary.targetBreakfastKcal,
       };
     case "LUNCH":
       return {
-        consumed: summary.consumedlunchkcal,
-        target: summary.targetlunchkcal,
+        consumed: summary.consumedLunchKcal,
+        target: summary.targetLunchKcal,
       };
     case "DINNER":
       return {
-        consumed: summary.consumeddinnerkcal,
-        target: summary.targetdinnerkcal,
+        consumed: summary.consumedDinnerKcal,
+        target: summary.targetDinnerKcal,
       };
     case "SNACK":
       return {
-        consumed: summary.consumedsnackkcal,
-        target: summary.targetsnackkcal,
+        consumed: summary.consumedSnackKcal,
+        target: summary.targetSnackKcal,
       };
     default:
       return { consumed: 0, target: 0 };
   }
 };
 
-export default function DiaryScreen() {
+export default function DiaryPage() {
   const navigate = useNavigate();
   const { getSummaryByDate } = useCaloriesSummaryService();
 

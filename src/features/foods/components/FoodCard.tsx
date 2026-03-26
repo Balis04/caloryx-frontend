@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { Food } from "../types/food.types";
+import type { Food } from "../model/food.model";
 import { useFoodCalculator } from "../hooks/useFoodCalculator";
 import { useFoodService } from "../hooks/useFoodService";
-import { createFoodLogPayload } from "../utils/foodMapper";
+import { createFoodLogPayload } from "../lib/food.mapper";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
