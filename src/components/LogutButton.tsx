@@ -1,6 +1,6 @@
 import { useAuth } from "@/features/auth/use-auth";
 
-export default function LoginButton() {
+export default function LogoutButton() {
   const { logout } = useAuth();
 
   return (
