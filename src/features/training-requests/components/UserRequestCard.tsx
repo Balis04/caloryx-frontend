@@ -65,7 +65,7 @@ export default function UserRequestCard({ request }: Props) {
 
         <div className="rounded-xl border bg-background p-4 text-sm">
             <p className="font-medium">Your request description</p>
-          <p className="mt-2 leading-6 text-muted-foreground">{request.coachNote}</p>
+          <p className="mt-2 leading-6 text-muted-foreground">{request.description}</p>
         </div>
 
         {decisionDescription && (

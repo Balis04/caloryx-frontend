@@ -42,8 +42,7 @@ export const formatDate = (value: string) => {
 };
 
 export const getDecisionDescription = (request: TrainingRequestResponse) =>
-  request.description?.trim() ||
-  "";
+  request.coachNote.trim();
 
 export const getTrainingPlanDescription = (request: TrainingRequestResponse) =>
   request.planDescription?.trim() || "";

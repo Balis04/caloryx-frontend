@@ -1,3 +1,5 @@
+import { useTrainingRequestApi } from "@/features/training-request/api/training-request.api";
+import { mapTrainingRequestDtoToModel } from "@/features/training-request/lib/training-request.mapper";
 import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
 import { isCoachRole } from "@/shared/utils/profileRole";
 import { useApi } from "@/hooks/useApi";
@@ -23,6 +25,7 @@ import {
 
 export const useTrainingRequests = () => {
   const { request } = useApi();
+  const { getMyTrainingRequests } = useTrainingRequestApi();
   const { profile, loading: profileLoading } = useViewerProfile();
   const isTrainer = isCoachRole(profile?.role);
 
@@ -58,7 +61,7 @@ export const useTrainingRequests = () => {
         closedResponse,
         rejectedResponse,
       ] = await Promise.all([
-        request<TrainingRequestResponse[]>("/api/training-requests/me"),
+        getMyTrainingRequests(),
         isTrainer
           ? request<TrainingRequestResponse[]>("/api/coach-profiles/me/training-requests")
           : Promise.resolve([]),
@@ -79,7 +82,7 @@ export const useTrainingRequests = () => {
           : Promise.resolve([]),
       ]);
 
-      setOutgoingRequests(outgoingResponse);
+      setOutgoingRequests(outgoingResponse.map(mapTrainingRequestDtoToModel));
       setPendingRequests(dedupeRequests(pendingResponse));
       setApprovedRequests(dedupeRequests(approvedResponse));
       setClosedRequests(dedupeRequests(closedResponse));
@@ -131,7 +134,7 @@ export const useTrainingRequests = () => {
     } finally {
       setLoading(false);
     }
-  }, [isTrainer, request]);
+  }, [getMyTrainingRequests, isTrainer, request]);
 
   useEffect(() => {
     if (profileLoading) {
@@ -168,7 +171,7 @@ export const useTrainingRequests = () => {
 
         const normalizedResponse = {
           ...response,
-          description: getDecisionDescription(response) || trimmedDescription,
+          coachNote: getDecisionDescription(response) || trimmedDescription,
         };
 
         setPendingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));

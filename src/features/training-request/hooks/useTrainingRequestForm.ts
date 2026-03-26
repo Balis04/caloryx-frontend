@@ -1,8 +1,9 @@
 import { useProfileApi } from "@/features/profile/api/profile.api";
 import { mapProfileDtoToModel } from "@/features/profile/lib/profile.mapper";
 import type { Profile } from "@/features/profile/model/profile.model";
-import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTrainingRequestApi } from "../api/training-request.api";
+import { mapTrainingRequestFormToCreateDto } from "../lib/training-request.mapper";
 import type { TrainingRequestFormData } from "../types/training-request-form.types";
 
 const createInitialFormData = (
@@ -19,8 +20,8 @@ const createInitialFormData = (
 });
 
 export const useTrainingRequestForm = (coachProfileId: string | null) => {
-  const { request } = useApi();
   const { getProfile } = useProfileApi();
+  const { createTrainingRequest } = useTrainingRequestApi();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
     createInitialFormData()
@@ -73,15 +74,10 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
     setSubmitMessage(null);
 
     try {
-      await request(`/api/coach-profiles/${coachProfileId}/training-requests`, {
-        method: "POST",
-        body: {
-          weeklyTrainingCount: Number(formData.weeklyWorkouts),
-          sessionDurationMinutes: Number(formData.preferredSessionLength),
-          preferredLocation: formData.trainingLocation,
-          coachNote: formData.customerDescription,
-        },
-      });
+      await createTrainingRequest(
+        coachProfileId,
+        mapTrainingRequestFormToCreateDto(formData)
+      );
       setSubmitMessage("Your training plan request was sent successfully to the trainer.");
       return true;
     } catch (err) {
@@ -92,7 +88,7 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
     } finally {
       setSubmitting(false);
     }
-  }, [coachProfileId, formData, request]);
+  }, [coachProfileId, createTrainingRequest, formData]);
 
   const canSubmit = useMemo(
     () =>

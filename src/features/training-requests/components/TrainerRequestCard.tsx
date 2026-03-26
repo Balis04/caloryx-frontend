@@ -84,7 +84,7 @@ export default function TrainerRequestCard({
 
       <CardContent className="space-y-5 pt-6">
         <TrainingRequestMetrics request={request} />
-        <RequestTextPanel label="Client note" value={request.coachNote} />
+        <RequestTextPanel label="Client note" value={request.description} />
         <RequestTextPanel
           label="Statusz comment"
           value={decisionDescription || "No status comment yet."}
