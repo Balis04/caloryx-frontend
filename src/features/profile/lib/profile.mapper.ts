@@ -33,12 +33,15 @@ export const mapProfileToFormValues = (
 
 export const mapProfileFormValuesToUpdateRequest = (
   values: ProfileFormValues
-): UpdateProfileRequestDto => ({
-  ...values,
-  role: values.userRole,
-  heightCm: Number(values.heightCm),
-  startWeightKg: Number(values.startWeightKg),
-  actualWeightKg: Number(values.actualWeightKg),
-  targetWeightKg: Number(values.targetWeightKg),
-  weeklyGoalKg: Number(values.weeklyGoalKg),
-});
+): UpdateProfileRequestDto => {
+  const { userRole, ...restValues } = values;
+  return {
+    ...restValues,
+    role: userRole,
+    heightCm: Number(values.heightCm),
+    startWeightKg: Number(values.startWeightKg),
+    actualWeightKg: Number(values.actualWeightKg),
+    targetWeightKg: Number(values.targetWeightKg),
+    weeklyGoalKg: Number(values.weeklyGoalKg),
+  };
+};

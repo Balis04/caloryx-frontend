@@ -23,6 +23,8 @@ export const useProfileEditForm = () => {
   const navigate = useNavigate();
 
   const loadProfile = useCallback(async () => {
+    setLoading(true);
+
     try {
       const response = await getProfile();
       const profile = mapProfileDtoToModel(response);

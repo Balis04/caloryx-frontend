@@ -30,11 +30,6 @@ const normalizeAuthState = (
   emailVerified: payload?.emailVerified ?? false,
   fullName: payload?.fullName ?? null,
   role: payload?.role ?? null,
-  roles: Array.isArray(payload?.roles)
-    ? payload.roles.filter((role): role is string => typeof role === "string")
-    : payload?.role
-      ? [payload.role]
-      : [],
   hasProfile: payload?.hasProfile ?? false,
 });
 
@@ -145,7 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const hasAnyRole = useCallback(
     (requiredRoles: string | string[]) => {
-      if (!authState) {
+      if (!authState || !authState.role) {
         return false;
       }
 
@@ -153,7 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ? requiredRoles
         : [requiredRoles];
 
-      return required.some((role) => authState.roles.includes(role));
+      return required.includes(authState.role);
     },
     [authState]
   );

@@ -39,7 +39,8 @@ const getCookieValue = (name: string) => {
   }
 
   const cookie = document.cookie
-    .split("; ")
+    .split(";")
+    .map((c) => c.trim())
     .find((entry) => entry.startsWith(`${name}=`));
 
   if (!cookie) {
