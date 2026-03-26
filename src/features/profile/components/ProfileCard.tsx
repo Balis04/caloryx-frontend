@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import ProfileField from "./ProfileField";
-import type { ProfileResponse } from "../types/profile.types";
+import type { Profile } from "../model/profile.model";
 import {
   Card,
   CardContent,
@@ -8,118 +7,38 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { User, Target, Activity, Edit3, Briefcase } from "lucide-react";
-import {
-  getProgressMessage,
-  calculateProgress,
-  formatWeeklyGoal,
-} from "../utils/profile.utils";
-import {
-  GENDER_OPTIONS,
-  ACTIVITY_OPTIONS,
-  GOAL_OPTIONS,
-  USER_ROLE_OPTIONS,
-} from "@/shared/constants/user-options";
-import { getLabelFromOptions } from "@/shared/utils/optionMapper";
+import { Edit3, Briefcase } from "lucide-react";
+import { canManageCoachProfile } from "../lib/profile.permissions";
+import ProfileBodySection from "./ProfileBodySection";
+import ProfileGoalSection from "./ProfileGoalSection";
+import ProfileSummarySection from "./ProfileSummarySection";
 
 interface Props {
-  profile: ProfileResponse;
+  profile: Profile;
 }
 
 export default function ProfileCard({ profile }: Props) {
   const navigate = useNavigate();
 
-  const formattedDate = new Date(profile.birthDate).toLocaleDateString("hu-HU");
-  const message = getProgressMessage(profile);
-  const progressValue = calculateProgress(profile);
-
   return (
     <Card className="w-full max-w-4xl shadow-xl border-t-4 border-t-primary">
       <CardHeader className="py-4 border-b">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <User className="w-5 h-5 text-primary" /> User Profile
-          </CardTitle>
-          <Badge variant="secondary" className="capitalize">
-            {USER_ROLE_OPTIONS.find((o) => o.value === profile.role)?.label ?? "User"}
-          </Badge>
-        </div>
+        <CardTitle>
+          <ProfileSummarySection profile={profile} />
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="pt-6 space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <User className="w-3 h-3" /> Basic Information
-              </h3>
-              <ProfileField label="Name" value={profile.fullName} />
-              <ProfileField label="Birth date" value={formattedDate} />
-              <ProfileField
-                label="Gender"
-                value={getLabelFromOptions(GENDER_OPTIONS, profile.gender)}
-              />
-              <ProfileField label="Height" value={`${profile.heightCm} cm`} />
-            </div>
-
-            <Separator className="lg:hidden" />
-
-            <div className="space-y-1">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Activity className="w-3 h-3" /> Physical Stats
-              </h3>
-              <ProfileField label="Starting weight" value={`${profile.startWeightKg} kg`} />
-              <ProfileField label="Current weight" value={`${profile.actualWeightKg} kg`} />
-              <ProfileField
-                label="Activity level"
-                value={getLabelFromOptions(ACTIVITY_OPTIONS, profile.activityLevel)}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-1">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Target className="w-3 h-3" /> Goals
-              </h3>
-              <ProfileField label="Target weight" value={`${profile.targetWeightKg} kg`} />
-              <ProfileField
-                label="Weekly target"
-                value={formatWeeklyGoal(profile.goal, profile.weeklyGoalKg)}
-              />
-              <ProfileField
-                label="Goal type"
-                value={getLabelFromOptions(GOAL_OPTIONS, profile.goal)}
-              />
-            </div>
-
-            <div className="bg-slate-50 p-4 rounded-xl border space-y-3">
-              <div className="flex justify-between items-end">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  Progress
-                </span>
-                <span className="text-lg font-black text-primary leading-none">
-                  {progressValue.toFixed(0)}%
-                </span>
-              </div>
-
-              <Progress value={progressValue} className="h-2.5 w-full" />
-
-              <p className="text-[11px] text-center text-muted-foreground leading-tight italic pt-1">
-                {message}
-              </p>
-            </div>
-          </div>
+          <ProfileBodySection profile={profile} />
+          <ProfileGoalSection profile={profile} />
         </div>
       </CardContent>
 
       <CardFooter className="border-t bg-slate-50/50 py-4">
         <div className="flex w-full flex-col gap-3 lg:ml-auto lg:w-auto lg:flex-row">
-          {profile.role === "TRAINER" && (
+          {canManageCoachProfile(profile.role) && (
             <Button
               variant="outline"
               onClick={() => navigate("/trainer-profile")}

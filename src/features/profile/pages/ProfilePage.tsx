@@ -1,19 +1,8 @@
 import ProfileCard from "../components/ProfileCard";
-import { useProfileService } from "../hooks/useProfileService";
-import { useEffect, useState } from "react";
-import type { ProfileResponse } from "../types/profile.types";
+import { useProfileQuery } from "../hooks/useProfileQuery";
 
 export default function ProfilePage() {
-  const { getProfile } = useProfileService();
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getProfile()
-      .then(setProfile)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [getProfile]);
+  const { profile, loading } = useProfileQuery();
 
   if (loading) return <div className="p-10 italic">Loading...</div>;
 

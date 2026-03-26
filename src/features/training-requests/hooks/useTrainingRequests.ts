@@ -1,4 +1,5 @@
 import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
+import { isCoachRole } from "@/shared/utils/profileRole";
 import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
@@ -23,7 +24,7 @@ import {
 export const useTrainingRequests = () => {
   const { request } = useApi();
   const { profile, loading: profileLoading } = useViewerProfile();
-  const isTrainer = profile?.role === "TRAINER";
+  const isTrainer = isCoachRole(profile?.role);
 
   const [trainerViewMode, setTrainerViewMode] = useState<TrainerViewMode>("trainer");
   const [trainerRequestFilter, setTrainerRequestFilter] =

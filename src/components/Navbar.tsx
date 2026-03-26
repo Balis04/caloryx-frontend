@@ -1,12 +1,10 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
+import { useAuth } from "@/features/auth/use-auth";
 
 export default function Navbar() {
-  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+  const { authState, isAuthenticated, login, logout, hasAnyRole } = useAuth();
   const navigate = useNavigate();
-  const { profile } = useViewerProfile(isAuthenticated);
-  const isTrainer = profile?.role === "TRAINER";
+  const isTrainer = hasAnyRole("COACH");
 
   return (
     <nav
@@ -24,7 +22,9 @@ export default function Navbar() {
 
       {isAuthenticated ? (
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <span style={{ fontSize: "0.9rem", color: "#666" }}>{user?.email}</span>
+          <span style={{ fontSize: "0.9rem", color: "#666" }}>
+            {authState?.email}
+          </span>
 
           {isTrainer && (
             <button onClick={() => navigate("/trainer-profile")}>
@@ -35,17 +35,13 @@ export default function Navbar() {
           <button onClick={() => navigate("/profile")}>Profile</button>
 
           <button
-            onClick={() =>
-              logout({
-                logoutParams: { returnTo: window.location.origin },
-              })
-            }
+            onClick={() => void logout("/")}
           >
             Logout
           </button>
         </div>
       ) : (
-        <button onClick={() => loginWithRedirect()}>Login</button>
+        <button onClick={login}>Login</button>
       )}
     </nav>
   );

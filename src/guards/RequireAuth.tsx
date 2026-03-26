@@ -1,18 +1,18 @@
 import { useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "@/features/auth/use-auth";
 
 export default function RequireAuth({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, isLoading, login } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      loginWithRedirect();
+      login();
     }
-  }, [isLoading, isAuthenticated, loginWithRedirect]);
+  }, [isAuthenticated, isLoading, login]);
 
   if (isLoading || !isAuthenticated) {
     return <div>Redirecting to login...</div>;

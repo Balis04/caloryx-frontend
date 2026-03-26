@@ -1,57 +1,19 @@
-import { useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate } from "react-router-dom";
-import { apiClient } from "../lib/api-client";
+import { useAuth } from "@/features/auth/use-auth";
 
 export default function RequireOnboarding({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { getAccessTokenSilently, logout, isAuthenticated } = useAuth0();
-  const [status, setStatus] = useState<
-    "loading" | "needsRegister" | "ok" | "error"
-  >("loading");
+  const { authState, isLoading } = useAuth();
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const checkStatus = async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        const data = await apiClient<{ hasProfile: boolean }>(
-          "/api/account/has-profile",
-          { token }
-        );
-
-        setStatus(data.hasProfile ? "ok" : "needsRegister");
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-
-        if (message.includes("401") || message.includes("403")) {
-          logout({ logoutParams: { returnTo: window.location.origin } });
-        } else {
-          console.error("Onboarding error:", message);
-          setStatus("error");
-        }
-      }
-    };
-
-    checkStatus();
-  }, [getAccessTokenSilently, logout, isAuthenticated]);
-
-  if (status === "loading") {
+  if (isLoading) {
     return <div className="flex justify-center p-10">Checking profile...</div>;
   }
 
-  if (status === "needsRegister") return <Navigate to="/register" replace />;
-
-  if (status === "error") {
-    return (
-      <div className="p-10 text-red-500">
-        An error occurred during authentication.
-      </div>
-    );
+  if (!authState?.hasProfile) {
+    return <Navigate to="/register" replace />;
   }
 
   return <>{children}</>;
