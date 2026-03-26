@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchFoodsFromProxy } from "../services/usdaApi";
-import type { Food } from "../types/food.types";
+import { fetchFoodsFromProxy } from "../api/usda.api";
+import { mapUsdaFoodToFood } from "../lib/usda.mapper";
+import type { Food } from "../model/food.model";
 
 export function useFoodSearch(initialProduct: string, initialBrand: string) {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -19,9 +20,10 @@ export function useFoodSearch(initialProduct: string, initialBrand: string) {
           activeSearch.product,
           activeSearch.brand
         );
-        setFoods(data.foods || []);
+        setFoods((data ?? []).map(mapUsdaFoodToFood));
       } catch (err) {
         console.error(err);
+        setFoods([]);
       } finally {
         setIsLoading(false);
       }

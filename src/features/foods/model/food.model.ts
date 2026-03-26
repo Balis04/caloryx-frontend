@@ -28,14 +28,14 @@ export interface CaloriesSummaryResponse {
   consumedProteinGrams: number;
   consumedCarbohydratesGrams: number;
   consumedFatGrams: number;
-  targetbreakfastkcal: number;
-  consumedbreakfastkcal: number;
-  targetlunchkcal: number;
-  consumedlunchkcal: number;
-  targetdinnerkcal: number;
-  consumeddinnerkcal: number;
-  targetsnackkcal: number;
-  consumedsnackkcal: number;
+  targetBreakfastKcal: number;
+  consumedBreakfastKcal: number;
+  targetLunchKcal: number;
+  consumedLunchKcal: number;
+  targetDinnerKcal: number;
+  consumedDinnerKcal: number;
+  targetSnackKcal: number;
+  consumedSnackKcal: number;
 }
 
 export interface MealTimeSummaryResponse {
@@ -80,11 +80,22 @@ export interface Food {
   fdcId: number;
   description: string;
   brandOwner?: string;
-
   servingSizeUnit: string;
   servingSize: number;
   foodNutrients: Nutrient[];
   customFoodId?: string;
+}
+
+export interface UsdaFoodSearchItem {
+  fdcId: number;
+  name: string;
+  brand?: string;
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  servingSize: number;
+  servingUnit: string;
 }
 
 export interface Nutrient {

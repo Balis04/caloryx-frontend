@@ -1,4 +1,4 @@
-import type { Nutrient } from "../types/food.types";
+import type { Nutrient } from "../model/food.model";
 
 interface NutrientListProps {
   nutrients: Nutrient[];

@@ -5,11 +5,11 @@ import RegisterPage from "./features/register/pages/RegisterPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirect from "./pages/AuthRedirect";
-import FoodSearch from "./features/foods/FoodSearch";
+import FoodSearchPage from "./features/foods/pages/FoodSearchPage";
 import { Outlet } from "react-router-dom";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
-import DiaryScreen from "./features/foods/components/DiaryScreen";
+import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
 import TrainerRequestPage from "./features/training-request/pages/TrainerRequestPage";
 import TrainerProfilePage from "./features/trainer-profile/pages/TrainerProfilePage";
@@ -61,8 +61,8 @@ function App() {
                 </RequireTrainer>
               }
             />
-            <Route path="/calorie-counter" element={<DiaryScreen />} />
-            <Route path="/foods/:mealTime" element={<FoodSearch />} />
+            <Route path="/calorie-counter" element={<DiaryPage />} />
+            <Route path="/foods/:mealTime" element={<FoodSearchPage />} />
             <Route
               path="/calorie-counter/meal/:mealTime"
               element={<MealTimeDetailsPage />}

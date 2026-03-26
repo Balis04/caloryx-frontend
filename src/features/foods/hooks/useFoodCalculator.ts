@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Food } from "../types/food.types";
+import type { Food } from "../model/food.model";
 
 export function useFoodCalculator(food: Food) {
   const [value, setValue] = useState<number>(100);

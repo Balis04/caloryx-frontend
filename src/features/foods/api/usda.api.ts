@@ -1,17 +1,12 @@
-import { apiClient } from "../../../lib/api-client";
-import type { Food } from "../types/food.types";
-
-export interface FoodSearchResponse {
-  foods: Food[];
-  totalHits: number;
-}
+import { apiClient } from "@/lib/api-client";
+import type { UsdaFoodSearchItem } from "../model/food.model";
 
 export const fetchFoodsFromProxy = async (product: string, brand: string) => {
   const params = new URLSearchParams();
   if (product) params.append("query", product);
   if (brand) params.append("brand", brand);
 
-  return apiClient<FoodSearchResponse>(
+  return apiClient<UsdaFoodSearchItem[]>(
     `/api/foods/search?${params.toString()}`
   );
 };

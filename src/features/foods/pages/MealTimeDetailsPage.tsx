@@ -12,7 +12,7 @@ import type {
   FoodLogResponse,
   MealTime,
   MealTimeSummaryResponse,
-} from "../types/food.types";
+} from "../model/food.model";
 
 const VALID_MEALS: MealTime[] = ["BREAKFAST", "LUNCH", "DINNER", "SNACK"];
 

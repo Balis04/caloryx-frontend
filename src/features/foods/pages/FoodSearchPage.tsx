@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useParams, Navigate, useSearchParams } from "react-router-dom";
 import { Loader2, Trash2, UtensilsCrossed } from "lucide-react";
-import FoodCard from "./components/FoodCard";
-import { FoodSearchForm } from "./components/FoodSearchForm";
+import FoodCard from "../components/FoodCard";
+import { FoodSearchForm } from "../components/FoodSearchForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,9 @@ import type {
   Food,
   MealTime,
   Nutrient,
-} from "./types/food.types";
-import { useFoodSearch } from "./hooks/useFoodSearch";
-import { useFoodService } from "./hooks/useFoodService";
+} from "../model/food.model";
+import { useFoodSearch } from "../hooks/useFoodSearch";
+import { useFoodService } from "../hooks/useFoodService";
 
 const VALID_MEALS: MealTime[] = ["BREAKFAST", "LUNCH", "DINNER", "SNACK"];
 
@@ -82,7 +82,7 @@ const toFoodFromCustom = (food: CustomFoodResponse): Food => {
   };
 };
 
-export default function FoodSearch() {
+export default function FoodSearchPage() {
   const { mealTime } = useParams<{ mealTime: string }>();
   const [searchParams] = useSearchParams();
   const consumedDate = searchParams.get("date") ?? undefined;

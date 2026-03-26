@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import type { Food } from "../types/food.types";
+import type { Food } from "../model/food.model";
 
 interface UnitSelectProps {
   unit: "g" | "serv";
