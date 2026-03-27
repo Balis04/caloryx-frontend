@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FileText, Upload } from "lucide-react";
-import type { ApprovedRequestDraft, TrainingRequestResponse } from "../types/training-requests.types";
+import type {
+  CoachTrainingRequest,
+  TrainingPlanDraft,
+} from "../model/coach-training-request.model";
 
 interface Props {
-  draft: ApprovedRequestDraft;
+  draft: TrainingPlanDraft;
   isExpanded: boolean;
   isSaving: boolean;
-  onDraftChange: (draft: ApprovedRequestDraft) => void;
+  onDraftChange: (draft: TrainingPlanDraft) => void;
   onSave: () => void;
   onToggle: () => void;
-  request: TrainingRequestResponse;
+  request: CoachTrainingRequest;
 }
 
 export default function TrainingPlanEditor({

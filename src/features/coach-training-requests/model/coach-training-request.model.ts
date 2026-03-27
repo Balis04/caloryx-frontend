@@ -5,13 +5,13 @@ import type {
 
 export type { TrainingRequestStatus };
 
-export type TrainerViewMode = "trainer" | "user";
+export type CoachTrainingRequest = TrainingRequest;
 
-export type TrainerRequestFilter = "pending" | "approved" | "rejected" | "closed";
+export type CoachRequestViewMode = "trainer" | "user";
 
-export type TrainingRequestResponse = TrainingRequest;
+export type CoachRequestFilter = "pending" | "approved" | "rejected" | "closed";
 
-export interface ApprovedRequestDraft {
+export interface TrainingPlanDraft {
   planName: string;
   planDescription: string;
   file: File | null;

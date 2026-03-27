@@ -2,12 +2,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import TrainerRequestCard from "../components/TrainerRequestCard";
 import TrainingRequestsHeader from "../components/TrainingRequestsHeader";
 import UserRequestCard from "../components/UserRequestCard";
-import { useTrainingRequests } from "../hooks/useTrainingRequests";
+import { useCoachTrainingRequests } from "../hooks/useCoachTrainingRequests";
+import { createTrainingPlanDraft } from "../lib/coach-training-requests.utils";
 
-export default function TrainingRequestsPage() {
+export default function CoachTrainingRequestsPage() {
   const {
-    approvedDrafts,
     decisionDescriptions,
+    downloadingRequestId,
     error,
     expandedApprovedRequestId,
     isTrainer,
@@ -16,16 +17,18 @@ export default function TrainingRequestsPage() {
     savingApprovedRequestId,
     trainerRequestFilter,
     trainerViewMode,
+    trainingPlanDrafts,
     updatingRequestId,
     visibleRequests,
+    downloadTrainingPlan,
     saveTrainingPlan,
-    setApprovedDrafts,
     setDecisionDescriptions,
     setExpandedApprovedRequestId,
     setTrainerRequestFilter,
     setTrainerViewMode,
+    setTrainingPlanDrafts,
     updateRequestStatus,
-  } = useTrainingRequests();
+  } = useCoachTrainingRequests();
 
   const showTrainerIncomingRequests = isTrainer && trainerViewMode === "trainer";
 
@@ -72,13 +75,17 @@ export default function TrainingRequestsPage() {
                 {visibleRequests.map((request) => (
                   <TrainerRequestCard
                     key={request.id}
-                    approvedDraft={approvedDrafts[request.id]}
+                    approvedDraft={
+                      trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request)
+                    }
                     decisionDescription={decisionDescriptions[request.id] ?? ""}
+                    downloadingRequestId={downloadingRequestId}
                     expandedApprovedRequestId={expandedApprovedRequestId}
                     filter={trainerRequestFilter}
                     onApprovedDraftChange={(draft) =>
-                      setApprovedDrafts((prev) => ({ ...prev, [request.id]: draft }))
+                      setTrainingPlanDrafts((prev) => ({ ...prev, [request.id]: draft }))
                     }
+                    onDownloadTrainingPlan={() => void downloadTrainingPlan(request)}
                     onDecisionDescriptionChange={(value) =>
                       setDecisionDescriptions((prev) => ({ ...prev, [request.id]: value }))
                     }
@@ -104,7 +111,12 @@ export default function TrainingRequestsPage() {
             ) : (
               <div className="grid gap-6">
                 {visibleRequests.map((request) => (
-                  <UserRequestCard key={request.id} request={request} />
+                  <UserRequestCard
+                    key={request.id}
+                    downloadingRequestId={downloadingRequestId}
+                    onDownloadTrainingPlan={() => void downloadTrainingPlan(request)}
+                    request={request}
+                  />
                 ))}
               </div>
             )}

@@ -8,12 +8,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { API_BASE_URL } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
-import { Check, Clock3, Dumbbell, Mail, ShieldCheck } from "lucide-react";
+import { Check, Clock3, Download, Dumbbell, Mail, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
-import type { TrainerCardData } from "../types/trainer.types";
+import type { TrainerCardData, TrainerCertificateData } from "../types/trainer.types";
+
+const openCertificate = (certificate: TrainerCertificateData) => {
+  if (!certificate.fileUrl) {
+    return;
+  }
+
+  const fileUrl = /^https?:\/\//i.test(certificate.fileUrl)
+    ? certificate.fileUrl
+    : `${API_BASE_URL}${certificate.fileUrl.startsWith("/") ? "" : "/"}${certificate.fileUrl}`;
+
+  window.open(fileUrl, "_blank", "noopener,noreferrer");
+};
 
 const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected: boolean }) => (
   <div className="flex h-full flex-col gap-4">
@@ -60,6 +73,32 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <ShieldCheck className="h-4 w-4 shrink-0" />
           <span>{trainer.experienceLabel}</span>
+        </div>
+
+        <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
+          <div className="text-sm font-medium">Contact note</div>
+          <p className="text-sm text-muted-foreground">{trainer.contactNote || "-"}</p>
+        </div>
+
+        <div className="space-y-3 rounded-xl border bg-muted/20 p-4">
+          <div className="text-sm font-medium">Certificates</div>
+          {trainer.certificates && trainer.certificates.length > 0 ? (
+            <div className="grid gap-2">
+              {trainer.certificates.map((certificate) => (
+                <button
+                  key={certificate.id}
+                  type="button"
+                  onClick={() => openCertificate(certificate)}
+                  className="flex items-center justify-between rounded-lg border bg-background px-3 py-2 text-left text-sm transition-colors hover:bg-muted/50"
+                >
+                  <span className="truncate">{certificate.certificateName}</span>
+                  <Download className="h-4 w-4 shrink-0" />
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No certificates available.</p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">

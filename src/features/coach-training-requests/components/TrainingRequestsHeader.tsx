@@ -4,17 +4,17 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRightLeft } from "lucide-react";
 import type {
-  TrainerRequestFilter,
-  TrainerViewMode,
-} from "../types/training-requests.types";
+  CoachRequestFilter,
+  CoachRequestViewMode,
+} from "../model/coach-training-request.model";
 
 interface Props {
   isTrainer: boolean;
   showTrainerIncomingRequests: boolean;
-  trainerRequestFilter: TrainerRequestFilter;
-  trainerViewMode: TrainerViewMode;
-  onFilterChange: (value: TrainerRequestFilter) => void;
-  onViewModeChange: (value: TrainerViewMode) => void;
+  trainerRequestFilter: CoachRequestFilter;
+  trainerViewMode: CoachRequestViewMode;
+  onFilterChange: (value: CoachRequestFilter) => void;
+  onViewModeChange: (value: CoachRequestViewMode) => void;
 }
 
 export default function TrainingRequestsHeader({
@@ -63,7 +63,7 @@ export default function TrainingRequestsHeader({
         )}
 
         {showTrainerIncomingRequests && (
-          <Tabs value={trainerRequestFilter} onValueChange={(value) => onFilterChange(value as TrainerRequestFilter)}>
+          <Tabs value={trainerRequestFilter} onValueChange={(value) => onFilterChange(value as CoachRequestFilter)}>
             <TabsList className="flex h-auto w-full max-w-2xl flex-row gap-1 p-1">
               <TabsTrigger value="pending" className="flex-1">
                 Pending

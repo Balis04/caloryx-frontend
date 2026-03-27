@@ -5,7 +5,7 @@ import type { TrainerCardData } from "../types/trainer.types";
 interface CoachProfileListResponse {
   id?: string;
   userId?: string;
-  trainerName?: string | null;
+  coachName?: string | null;
   shortDescription?: string | null;
   trainingStartedAt?: string | null;
   trainingFormat?: string | null;
@@ -15,6 +15,14 @@ interface CoachProfileListResponse {
   priceTo?: number | null;
   contactNote?: string | null;
   email?: string | null;
+  certificates?: Array<{
+    id?: string | null;
+    certificateName?: string | null;
+    issuer?: string | null;
+    issuedAt?: string | null;
+    fileName?: string | null;
+    fileUrl?: string | null;
+  }>;
   availabilities?: Array<{
     dayOfWeek?: string;
     available?: boolean;
@@ -84,12 +92,13 @@ const normalizeTrainer = (
 
   return {
     id: trainer.id ?? `trainer-${index}`,
-    fullName: trainer.trainerName ?? `Trainer #${index + 1}`,
+    fullName: trainer.coachName ?? `Trainer #${index + 1}`,
     email: trainer.email ?? "No email provided",
     bio:
       trainer.shortDescription ??
       trainer.contactNote ??
       "This trainer has not added an introduction yet.",
+    contactNote: trainer.contactNote?.trim() || "-",
     specialties: [
       trainer.trainingFormat
         ? `Format: ${trainer.trainingFormat}`
@@ -102,6 +111,15 @@ const normalizeTrainer = (
     weeklyAvailability: availability.summary,
     availabilitySlots: availability.slots,
     experienceLabel: formatExperience(trainer.trainingStartedAt),
+    certificates:
+      trainer.certificates?.map((certificate, certificateIndex) => ({
+        id: certificate.id?.trim() || `${trainer.id ?? index}-certificate-${certificateIndex}`,
+        certificateName: certificate.certificateName?.trim() || "Unnamed certificate",
+        issuer: certificate.issuer?.trim() || "",
+        issuedAt: certificate.issuedAt?.trim() || "",
+        fileName: certificate.fileName?.trim() || "",
+        fileUrl: certificate.fileUrl?.trim() || "",
+      })) ?? [],
   };
 };
 
