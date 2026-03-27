@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Clock3, Mail, UserRound, X } from "lucide-react";
-import type { ApprovedRequestDraft, TrainerRequestFilter, TrainingRequestResponse } from "../types/training-requests.types";
 import {
   formatDate,
   getTrainingPlanDescription,
@@ -10,22 +9,29 @@ import {
   getTrainingPlanName,
   statusLabelMap,
   statusVariantMap,
-} from "../utils/training-requests.utils";
+} from "../lib/coach-training-requests.utils";
+import type {
+  CoachRequestFilter,
+  CoachTrainingRequest,
+  TrainingPlanDraft,
+} from "../model/coach-training-request.model";
 import RequestTextPanel from "./RequestTextPanel";
 import TrainingPlanEditor from "./TrainingPlanEditor";
 import TrainingRequestMetrics from "./TrainingRequestMetrics";
 
 interface Props {
-  approvedDraft: ApprovedRequestDraft;
+  approvedDraft: TrainingPlanDraft;
   decisionDescription: string;
+  downloadingRequestId: string | null;
   expandedApprovedRequestId: string | null;
-  filter: TrainerRequestFilter;
-  onApprovedDraftChange: (draft: ApprovedRequestDraft) => void;
+  filter: CoachRequestFilter;
+  onApprovedDraftChange: (draft: TrainingPlanDraft) => void;
+  onDownloadTrainingPlan: () => void;
   onDecisionDescriptionChange: (value: string) => void;
   onSaveTrainingPlan: () => void;
   onStatusChange: (status: "APPROVED" | "REJECTED") => void;
   onToggleTrainingPlanEditor: () => void;
-  request: TrainingRequestResponse;
+  request: CoachTrainingRequest;
   savingApprovedRequestId: string | null;
   updatingRequestId: string | null;
 }
@@ -33,9 +39,11 @@ interface Props {
 export default function TrainerRequestCard({
   approvedDraft,
   decisionDescription,
+  downloadingRequestId,
   expandedApprovedRequestId,
   filter,
   onApprovedDraftChange,
+  onDownloadTrainingPlan,
   onDecisionDescriptionChange,
   onSaveTrainingPlan,
   onStatusChange,
@@ -48,6 +56,7 @@ export default function TrainerRequestCard({
   const isClosedTab = filter === "closed";
   const isExpanded = expandedApprovedRequestId === request.id;
   const isSavingApprovedContent = savingApprovedRequestId === request.id;
+  const isDownloading = downloadingRequestId === request.id;
   const isUpdating = updatingRequestId === request.id;
   const canSubmit = decisionDescription.trim().length > 0;
   const canReject = request.status === "PENDING" || request.status === "APPROVED";
@@ -99,16 +108,23 @@ export default function TrainerRequestCard({
                 value={getTrainingPlanDescription(request)}
               />
             )}
-            {(getTrainingPlanFileName(request) ||
-              request.uploadedAt) && (
-              <div className="rounded-xl border bg-background p-4 text-sm">
-                <p className="font-medium">Training plan fajl</p>
-                <div className="mt-2 space-y-2 text-muted-foreground">
-                  {getTrainingPlanFileName(request) && <p>File name: {getTrainingPlanFileName(request)}</p>}
-                  {request.uploadedAt && <p>Uploaded: {formatDate(request.uploadedAt)}</p>}
-                </div>
+            <div className="rounded-xl border bg-background p-4 text-sm">
+              <p className="font-medium">Training plan fajl</p>
+              <div className="mt-2 space-y-2 text-muted-foreground">
+                {getTrainingPlanFileName(request) && <p>File name: {getTrainingPlanFileName(request)}</p>}
+                {request.uploadedAt && <p>Uploaded: {formatDate(request.uploadedAt)}</p>}
               </div>
-            )}
+              <div className="mt-4 flex justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isDownloading}
+                  onClick={onDownloadTrainingPlan}
+                >
+                  {isDownloading ? "Downloading..." : "Download training plan"}
+                </Button>
+              </div>
+            </div>
           </>
         )}
 

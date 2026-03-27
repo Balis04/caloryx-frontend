@@ -15,7 +15,7 @@ import TrainerRequestPage from "./features/training-request/pages/TrainerRequest
 import TrainerProfilePage from "./features/trainer-profile/pages/TrainerProfilePage";
 import RequireTrainer from "./guards/RequireTrainer";
 import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
-import TrainingRequestsPage from "./features/training-requests/pages/TrainingRequestsPage";
+import CoachTrainingRequestsPage from "./features/coach-training-requests/pages/CoachTrainingRequestsPage";
 
 function App() {
   return (
@@ -48,7 +48,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/training-request" element={<TrainerRequestPage />} />
-            <Route path="/training-requests" element={<TrainingRequestsPage />} />
+            <Route path="/training-requests" element={<CoachTrainingRequestsPage />} />
             <Route
               path="/training-request/:trainerId"
               element={<TrainingRequestFormPage />}

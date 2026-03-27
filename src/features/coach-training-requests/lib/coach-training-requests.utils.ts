@@ -1,12 +1,9 @@
 import { API_BASE_URL } from "@/lib/api-client";
 import type {
-  ApprovedRequestDraft,
-  TrainingRequestResponse,
+  CoachTrainingRequest,
+  TrainingPlanDraft,
   TrainingRequestStatus,
-} from "../types/training-requests.types";
-
-export const TRAINING_PLAN_UPLOAD_ENDPOINT = (trainingRequestId: string) =>
-  `/api/training-requests/${trainingRequestId}/training-plan`;
+} from "../model/coach-training-request.model";
 
 export const statusLabelMap: Record<TrainingRequestStatus, string> = {
   PENDING: "Pending",
@@ -41,21 +38,21 @@ export const formatDate = (value: string) => {
   });
 };
 
-export const getDecisionDescription = (request: TrainingRequestResponse) =>
+export const getDecisionDescription = (request: CoachTrainingRequest) =>
   request.coachResponse.trim() || "";
 
-export const getTrainingPlanDescription = (request: TrainingRequestResponse) =>
+export const getTrainingPlanDescription = (request: CoachTrainingRequest) =>
   request.planDescription?.trim() || "";
 
-export const getTrainingPlanFileName = (request: TrainingRequestResponse) =>
+export const getTrainingPlanFileName = (request: CoachTrainingRequest) =>
   request.fileName?.trim() || "";
 
-export const getTrainingPlanName = (request: TrainingRequestResponse) =>
+export const getTrainingPlanName = (request: CoachTrainingRequest) =>
   request.planName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
 
-export const createApprovedDraft = (
-  request: TrainingRequestResponse
-): ApprovedRequestDraft => ({
+export const createTrainingPlanDraft = (
+  request: CoachTrainingRequest
+): TrainingPlanDraft => ({
   planName: getTrainingPlanName(request),
   planDescription: getTrainingPlanDescription(request),
   file: null,
@@ -63,8 +60,8 @@ export const createApprovedDraft = (
 });
 
 export const upsertRequest = (
-  list: TrainingRequestResponse[],
-  nextRequest: TrainingRequestResponse
+  list: CoachTrainingRequest[],
+  nextRequest: CoachTrainingRequest
 ) => {
   const hasMatch = list.some((request) => request.id === nextRequest.id);
 
@@ -75,8 +72,8 @@ export const upsertRequest = (
   return list.map((request) => (request.id === nextRequest.id ? nextRequest : request));
 };
 
-export const dedupeRequests = (requests: TrainingRequestResponse[]) => {
-  const byId = new Map<string, TrainingRequestResponse>();
+export const dedupeRequests = (requests: CoachTrainingRequest[]) => {
+  const byId = new Map<string, CoachTrainingRequest>();
 
   requests.forEach((request) => {
     byId.set(request.id, request);

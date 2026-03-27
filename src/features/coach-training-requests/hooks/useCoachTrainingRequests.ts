@@ -1,5 +1,4 @@
 import { useTrainingRequestApi } from "@/features/training-request/api/training-request.api";
-import type { ClosedTrainingRequestResponseDto } from "@/features/training-request/api/training-request.dto";
 import {
   mapClosedTrainingRequestDtoToModel,
   mapTrainingRequestDtoToModel,
@@ -7,50 +6,54 @@ import {
 } from "@/features/training-request/lib/training-request.mapper";
 import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
 import { isCoachRole } from "@/shared/utils/profileRole";
-import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type {
-  ApprovedRequestDraft,
-  TrainerRequestFilter,
-  TrainerViewMode,
-  TrainingRequestResponse,
-  TrainingRequestStatus,
-} from "../types/training-requests.types";
+import { useCoachTrainingRequestsApi } from "../api/coach-training-requests.api";
 import {
-  createApprovedDraft,
+  createTrainingPlanDraft,
   dedupeRequests,
   getDecisionDescription,
   getTrainingPlanDescription,
   getTrainingPlanFileName,
   getTrainingPlanName,
   upsertRequest,
-} from "../utils/training-requests.utils";
+} from "../lib/coach-training-requests.utils";
+import type {
+  CoachRequestFilter,
+  CoachRequestViewMode,
+  CoachTrainingRequest,
+  TrainingPlanDraft,
+  TrainingRequestStatus,
+} from "../model/coach-training-request.model";
 
-export const useTrainingRequests = () => {
-  const { request } = useApi();
+export const useCoachTrainingRequests = () => {
+  const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
   const {
-    getMyTrainingRequests,
-    updateTrainingRequestStatus: updateTrainingRequestStatusRequest,
-    uploadTrainingPlan,
-  } = useTrainingRequestApi();
+    getCoachTrainingRequests,
+    getClosedCoachTrainingRequests,
+    updateCoachTrainingRequestStatus,
+    uploadCoachTrainingPlan,
+  } = useCoachTrainingRequestsApi();
   const { profile, loading: profileLoading } = useViewerProfile();
   const isTrainer = isCoachRole(profile?.role);
 
-  const [trainerViewMode, setTrainerViewMode] = useState<TrainerViewMode>("trainer");
+  const [trainerViewMode, setTrainerViewMode] = useState<CoachRequestViewMode>("trainer");
   const [trainerRequestFilter, setTrainerRequestFilter] =
-    useState<TrainerRequestFilter>("pending");
-  const [pendingRequests, setPendingRequests] = useState<TrainingRequestResponse[]>([]);
-  const [approvedRequests, setApprovedRequests] = useState<TrainingRequestResponse[]>([]);
-  const [closedRequests, setClosedRequests] = useState<TrainingRequestResponse[]>([]);
-  const [rejectedRequests, setRejectedRequests] = useState<TrainingRequestResponse[]>([]);
-  const [outgoingRequests, setOutgoingRequests] = useState<TrainingRequestResponse[]>([]);
+    useState<CoachRequestFilter>("pending");
+  const [pendingRequests, setPendingRequests] = useState<CoachTrainingRequest[]>([]);
+  const [approvedRequests, setApprovedRequests] = useState<CoachTrainingRequest[]>([]);
+  const [closedRequests, setClosedRequests] = useState<CoachTrainingRequest[]>([]);
+  const [rejectedRequests, setRejectedRequests] = useState<CoachTrainingRequest[]>([]);
+  const [outgoingRequests, setOutgoingRequests] = useState<CoachTrainingRequest[]>([]);
   const [decisionDescriptions, setDecisionDescriptions] = useState<Record<string, string>>({});
-  const [approvedDrafts, setApprovedDrafts] = useState<Record<string, ApprovedRequestDraft>>({});
+  const [trainingPlanDrafts, setTrainingPlanDrafts] = useState<Record<string, TrainingPlanDraft>>(
+    {}
+  );
   const [expandedApprovedRequestId, setExpandedApprovedRequestId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
   const [savingApprovedRequestId, setSavingApprovedRequestId] = useState<string | null>(null);
+  const [downloadingRequestId, setDownloadingRequestId] = useState<string | null>(null);
 
   useEffect(() => {
     setTrainerViewMode(isTrainer ? "trainer" : "user");
@@ -69,55 +72,47 @@ export const useTrainingRequests = () => {
         rejectedResponse,
       ] = await Promise.all([
         getMyTrainingRequests(),
-        isTrainer
-          ? request<TrainingRequestResponse[]>("/api/coach-profiles/me/training-requests")
-          : Promise.resolve([]),
-        isTrainer
-          ? request<TrainingRequestResponse[]>(
-              "/api/coach-profiles/me/training-requests/approved"
-            )
-          : Promise.resolve([]),
-        isTrainer
-          ? request<ClosedTrainingRequestResponseDto[]>(
-              "/api/coach-profiles/me/training-requests/closed"
-            )
-          : Promise.resolve([]),
-        isTrainer
-          ? request<TrainingRequestResponse[]>(
-              "/api/coach-profiles/me/training-requests/rejected"
-            )
-          : Promise.resolve([]),
+        isTrainer ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
+        isTrainer ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
+        isTrainer ? getClosedCoachTrainingRequests() : Promise.resolve([]),
+        isTrainer ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
       ]);
 
       const mappedOutgoingRequests = outgoingResponse.map(mapTrainingRequestDtoToModel);
+      const mappedPendingRequests = pendingResponse.map(mapTrainingRequestDtoToModel);
+      const mappedApprovedRequests = approvedResponse.map(mapTrainingRequestDtoToModel);
       const mappedClosedRequests = closedResponse.map(mapClosedTrainingRequestDtoToModel);
+      const mappedRejectedRequests = rejectedResponse.map(mapTrainingRequestDtoToModel);
 
       setOutgoingRequests(mappedOutgoingRequests);
-      setPendingRequests(dedupeRequests(pendingResponse));
-      setApprovedRequests(dedupeRequests(approvedResponse));
+      setPendingRequests(dedupeRequests(mappedPendingRequests));
+      setApprovedRequests(dedupeRequests(mappedApprovedRequests));
       setClosedRequests(dedupeRequests(mappedClosedRequests));
-      setRejectedRequests(dedupeRequests(rejectedResponse));
+      setRejectedRequests(dedupeRequests(mappedRejectedRequests));
       setDecisionDescriptions((prev) => {
         const next = { ...prev };
 
-        [...pendingResponse, ...approvedResponse, ...mappedClosedRequests, ...rejectedResponse].forEach(
-          (requestItem) => {
-            if (!next[requestItem.id]) {
-              next[requestItem.id] = getDecisionDescription(requestItem);
-            }
+        [
+          ...mappedPendingRequests,
+          ...mappedApprovedRequests,
+          ...mappedClosedRequests,
+          ...mappedRejectedRequests,
+        ].forEach((requestItem) => {
+          if (!next[requestItem.id]) {
+            next[requestItem.id] = getDecisionDescription(requestItem);
           }
-        );
+        });
 
         return next;
       });
-      setApprovedDrafts((prev) => {
+      setTrainingPlanDrafts((prev) => {
         const next = { ...prev };
 
-        approvedResponse.forEach((requestItem) => {
+        mappedApprovedRequests.forEach((requestItem) => {
           const currentDraft = next[requestItem.id];
 
           if (!currentDraft) {
-            next[requestItem.id] = createApprovedDraft(requestItem);
+            next[requestItem.id] = createTrainingPlanDraft(requestItem);
             return;
           }
 
@@ -133,8 +128,7 @@ export const useTrainingRequests = () => {
         return next;
       });
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load requests.";
+      const message = err instanceof Error ? err.message : "Failed to load requests.";
       setError(message);
       setOutgoingRequests([]);
       setPendingRequests([]);
@@ -144,7 +138,7 @@ export const useTrainingRequests = () => {
     } finally {
       setLoading(false);
     }
-  }, [getMyTrainingRequests, isTrainer, request]);
+  }, [getCoachTrainingRequests, getClosedCoachTrainingRequests, getMyTrainingRequests, isTrainer]);
 
   useEffect(() => {
     if (profileLoading) {
@@ -176,7 +170,7 @@ export const useTrainingRequests = () => {
       setError(null);
 
       try {
-        const response = await updateTrainingRequestStatusRequest(
+        const response = await updateCoachTrainingRequestStatus(
           trainingRequestId,
           mapTrainingRequestStatusToUpdateDto(status, trimmedCoachResponse)
         );
@@ -198,9 +192,9 @@ export const useTrainingRequests = () => {
           setClosedRequests((prev) =>
             prev.filter((requestItem) => requestItem.id !== trainingRequestId)
           );
-          setApprovedDrafts((prev) => ({
+          setTrainingPlanDrafts((prev) => ({
             ...prev,
-            [trainingRequestId]: prev[trainingRequestId] ?? createApprovedDraft(normalizedResponse),
+            [trainingRequestId]: prev[trainingRequestId] ?? createTrainingPlanDraft(normalizedResponse),
           }));
           setExpandedApprovedRequestId(trainingRequestId);
         } else {
@@ -215,7 +209,7 @@ export const useTrainingRequests = () => {
           setClosedRequests((prev) =>
             prev.filter((requestItem) => requestItem.id !== trainingRequestId)
           );
-          setApprovedDrafts((prev) => {
+          setTrainingPlanDrafts((prev) => {
             const next = { ...prev };
             delete next[trainingRequestId];
             return next;
@@ -227,19 +221,18 @@ export const useTrainingRequests = () => {
 
         void loadRequests();
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to update status.";
+        const message = err instanceof Error ? err.message : "Failed to update status.";
         setError(message);
       } finally {
         setUpdatingRequestId(null);
       }
     },
-    [loadRequests, updateTrainingRequestStatusRequest]
+    [loadRequests, updateCoachTrainingRequestStatus]
   );
 
   const saveTrainingPlan = useCallback(
-    async (requestItem: TrainingRequestResponse) => {
-      const draft = approvedDrafts[requestItem.id] ?? createApprovedDraft(requestItem);
+    async (requestItem: CoachTrainingRequest) => {
+      const draft = trainingPlanDrafts[requestItem.id] ?? createTrainingPlanDraft(requestItem);
       const trimmedPlanName = draft.planName.trim();
       const trimmedPlanDescription = draft.planDescription.trim();
 
@@ -268,10 +261,9 @@ export const useTrainingRequests = () => {
           formData.append("planDescription", trimmedPlanDescription);
         }
 
-        const response = await uploadTrainingPlan(requestItem.id, formData);
+        const response = await uploadCoachTrainingPlan(requestItem.id, formData);
 
-        const fallbackTrainingPlanName =
-          trimmedPlanName || requestItem.planName || null;
+        const fallbackTrainingPlanName = trimmedPlanName || requestItem.planName || null;
         const fallbackTrainingPlanDescription =
           trimmedPlanDescription || requestItem.planDescription || null;
         const normalizedResponse = mapClosedTrainingRequestDtoToModel({
@@ -292,7 +284,7 @@ export const useTrainingRequests = () => {
         );
         setClosedRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
         setOutgoingRequests((prev) => dedupeRequests(upsertRequest(prev, normalizedResponse)));
-        setApprovedDrafts((prev) => ({
+        setTrainingPlanDrafts((prev) => ({
           ...prev,
           [requestItem.id]: {
             planName: trimmedPlanName || getTrainingPlanName(normalizedResponse),
@@ -311,7 +303,34 @@ export const useTrainingRequests = () => {
         setSavingApprovedRequestId(null);
       }
     },
-    [approvedDrafts, loadRequests, uploadTrainingPlan]
+    [loadRequests, trainingPlanDrafts, uploadCoachTrainingPlan]
+  );
+
+  const downloadTrainingPlan = useCallback(
+    async (requestItem: CoachTrainingRequest) => {
+      setDownloadingRequestId(requestItem.id);
+      setError(null);
+
+      try {
+        const { blob, fileName } = await downloadTrainingPlanFile(requestItem.id);
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to download the training plan.";
+        setError(message);
+      } finally {
+        setDownloadingRequestId(null);
+      }
+    },
+    [downloadTrainingPlanFile]
   );
 
   const visibleRequests = useMemo(() => {
@@ -342,7 +361,7 @@ export const useTrainingRequests = () => {
 
   return {
     decisionDescriptions,
-    approvedDrafts,
+    downloadingRequestId,
     error,
     expandedApprovedRequestId,
     isTrainer,
@@ -351,14 +370,16 @@ export const useTrainingRequests = () => {
     savingApprovedRequestId,
     trainerRequestFilter,
     trainerViewMode,
+    trainingPlanDrafts,
     updatingRequestId,
     visibleRequests,
-    setApprovedDrafts,
+    saveTrainingPlan,
+    downloadTrainingPlan,
     setDecisionDescriptions,
     setExpandedApprovedRequestId,
     setTrainerRequestFilter,
     setTrainerViewMode,
-    saveTrainingPlan,
+    setTrainingPlanDrafts,
     updateRequestStatus,
   };
 };

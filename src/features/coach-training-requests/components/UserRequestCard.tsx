@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock3, Mail } from "lucide-react";
-import type { TrainingRequestResponse } from "../types/training-requests.types";
 import {
   formatDate,
   getDecisionDescription,
@@ -9,14 +9,22 @@ import {
   getTrainingPlanFileName,
   statusLabelMap,
   statusVariantMap,
-} from "../utils/training-requests.utils";
+} from "../lib/coach-training-requests.utils";
+import type { CoachTrainingRequest } from "../model/coach-training-request.model";
 
 interface Props {
-  request: TrainingRequestResponse;
+  downloadingRequestId: string | null;
+  onDownloadTrainingPlan: () => void;
+  request: CoachTrainingRequest;
 }
 
-export default function UserRequestCard({ request }: Props) {
+export default function UserRequestCard({
+  downloadingRequestId,
+  onDownloadTrainingPlan,
+  request,
+}: Props) {
   const decisionDescription = getDecisionDescription(request);
+  const isDownloading = downloadingRequestId === request.id;
   const trainingPlanDescription = getTrainingPlanDescription(request);
   const trainingPlanFileName = getTrainingPlanFileName(request);
 
@@ -60,7 +68,7 @@ export default function UserRequestCard({ request }: Props) {
         </div>
 
         <div className="rounded-xl border bg-background p-4 text-sm">
-            <p className="font-medium">Your request description</p>
+          <p className="font-medium">Your request description</p>
           <p className="mt-2 leading-6 text-muted-foreground">{request.requestDescription}</p>
         </div>
 
@@ -73,19 +81,32 @@ export default function UserRequestCard({ request }: Props) {
 
         {(request.status === "APPROVED" || request.status === "CLOSED") &&
           trainingPlanDescription && (
-          <div className="rounded-xl border bg-background p-4 text-sm">
-            <p className="font-medium">Training plan description</p>
-            <p className="mt-2 leading-6 text-muted-foreground">{trainingPlanDescription}</p>
-          </div>
-        )}
+            <div className="rounded-xl border bg-background p-4 text-sm">
+              <p className="font-medium">Training plan description</p>
+              <p className="mt-2 leading-6 text-muted-foreground">{trainingPlanDescription}</p>
+            </div>
+          )}
 
         {(request.status === "APPROVED" || request.status === "CLOSED") &&
           trainingPlanFileName && (
-          <div className="rounded-xl border bg-background p-4 text-sm">
-            <p className="font-medium">Attached file</p>
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <span className="text-muted-foreground">{trainingPlanFileName}</span>
+            <div className="rounded-xl border bg-background p-4 text-sm">
+              <p className="font-medium">Attached file</p>
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <span className="text-muted-foreground">{trainingPlanFileName}</span>
+              </div>
             </div>
+          )}
+
+        {request.status === "CLOSED" && (
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isDownloading}
+              onClick={onDownloadTrainingPlan}
+            >
+              {isDownloading ? "Downloading..." : "Download training plan"}
+            </Button>
           </div>
         )}
       </CardContent>

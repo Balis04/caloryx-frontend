@@ -1,7 +1,7 @@
-import type { TrainingRequestResponse } from "../types/training-requests.types";
+import type { CoachTrainingRequest } from "../model/coach-training-request.model";
 
 interface Props {
-  request: TrainingRequestResponse;
+  request: CoachTrainingRequest;
 }
 
 export default function TrainingRequestMetrics({ request }: Props) {
