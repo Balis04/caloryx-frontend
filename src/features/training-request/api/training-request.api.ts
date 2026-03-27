@@ -63,7 +63,7 @@ export const useTrainingRequestApi = () => {
 
     if (!response.ok) {
       throw new ApiError(
-        `Hiba: ${response.status} ${response.statusText}`,
+        `Failed to download the training plan: ${response.status} ${response.statusText}`,
         response.status
       );
     }
