@@ -3,6 +3,7 @@ import { ApiError } from "@/lib/api-client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   AvailabilitySlot,
+  PendingTrainerCertificateUpload,
   TrainerCertificate,
   TrainerProfileFormData,
 } from "../types/trainer-profile.types";
@@ -187,6 +188,7 @@ export const useTrainerProfileForm = () => {
   const [coachProfileId, setCoachProfileId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingCertificateId, setDeletingCertificateId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isForbidden, setIsForbidden] = useState(false);
@@ -234,14 +236,22 @@ export const useTrainerProfileForm = () => {
   }, [request]);
 
   const uploadCertificates = useCallback(
-    async (profileId: string, files: File[]) => {
-      for (const file of files) {
+    async (profileId: string, certificates: PendingTrainerCertificateUpload[]) => {
+      for (const certificate of certificates) {
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append(
-          "certificateName",
-          file.name.replace(/\.pdf$/i, "")
-        );
+        formData.append("file", certificate.file);
+        formData.append("certificateName", certificate.certificateName.trim());
+
+        if (certificate.issuer.trim()) {
+          formData.append("issuer", certificate.issuer.trim());
+        }
+
+        if (certificate.issuedAt.trim()) {
+          formData.append(
+            "issuedAt",
+            new Date(`${certificate.issuedAt}T00:00:00.000Z`).toISOString()
+          );
+        }
 
         await request<CoachCertificateResponse>(
           `/api/coach-profiles/${profileId}/certificates`,
@@ -281,7 +291,7 @@ export const useTrainerProfileForm = () => {
     []
   );
 
-  const saveTrainerProfile = useCallback(async (certificateFiles: File[] = []) => {
+  const saveTrainerProfile = useCallback(async (certificateFiles: PendingTrainerCertificateUpload[] = []) => {
     setSaving(true);
     setErrorMessage(null);
 
@@ -340,6 +350,42 @@ export const useTrainerProfileForm = () => {
     }
   }, [coachProfileId, formData, loadTrainerProfile, request, uploadCertificates]);
 
+  const deleteCertificate = useCallback(
+    async (certificateId: string) => {
+      if (!coachProfileId) {
+        setErrorMessage("Trainer profile not found.");
+        return false;
+      }
+
+      setDeletingCertificateId(certificateId);
+      setErrorMessage(null);
+      setStatusMessage(null);
+
+      try {
+        await request<void>(`/api/coach-profiles/${coachProfileId}/certificates/${certificateId}`, {
+          method: "DELETE",
+        });
+
+        setFormData((prev) => ({
+          ...prev,
+          certificates: prev.certificates.filter(
+            (certificate) => certificate.id !== certificateId
+          ),
+        }));
+        setStatusMessage("Certificate deleted successfully.");
+        return true;
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Certificate deletion failed.";
+        setErrorMessage(message);
+        return false;
+      } finally {
+        setDeletingCertificateId(null);
+      }
+    },
+    [coachProfileId, request]
+  );
+
   const startEditing = useCallback(() => {
     setStatusMessage(null);
     setIsEditing(true);
@@ -380,6 +426,7 @@ export const useTrainerProfileForm = () => {
     formData,
     loading,
     saving,
+    deletingCertificateId,
     statusMessage,
     errorMessage,
     isForbidden,
@@ -388,6 +435,7 @@ export const useTrainerProfileForm = () => {
     setField,
     setAvailabilityField,
     saveTrainerProfile,
+    deleteCertificate,
     startEditing,
     cancelEditing,
     canSave,

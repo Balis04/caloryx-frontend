@@ -18,6 +18,14 @@ export interface TrainerCertificate {
   fileUrl: string;
 }
 
+export interface PendingTrainerCertificateUpload {
+  id: string;
+  file: File;
+  certificateName: string;
+  issuer: string;
+  issuedAt: string;
+}
+
 export interface TrainerProfileFormData {
   description: string;
   startedCoachingAt: string;

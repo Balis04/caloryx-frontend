@@ -15,6 +15,7 @@ import {
   FileText,
   Save,
   Shield,
+  Trash2,
   Users,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -22,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { useTrainerProfileForm } from "../hooks/useTrainerProfileForm";
 import type {
   Currency,
+  PendingTrainerCertificateUpload,
   TrainerCertificate,
   TrainingFormat,
 } from "../types/trainer-profile.types";
@@ -44,6 +46,7 @@ export default function TrainerProfilePage() {
     formData,
     loading,
     saving,
+    deletingCertificateId,
     statusMessage,
     errorMessage,
     isForbidden,
@@ -52,22 +55,14 @@ export default function TrainerProfilePage() {
     setField,
     setAvailabilityField,
     saveTrainerProfile,
+    deleteCertificate,
     startEditing,
     cancelEditing,
     canSave,
   } = useTrainerProfileForm();
-  const [selectedPdfFiles, setSelectedPdfFiles] = useState<File[]>([]);
-  const [selectedPdfNames, setSelectedPdfNames] = useState<string[]>([]);
-
-  const allCertificateNames = useMemo(
-    () => [
-      ...new Set([
-        ...formData.certificates.map((certificate) => certificate.certificateName),
-        ...selectedPdfNames,
-      ]),
-    ],
-    [formData.certificates, selectedPdfNames]
-  );
+  const [pendingCertificates, setPendingCertificates] = useState<
+    PendingTrainerCertificateUpload[]
+  >([]);
 
   const downloadableCertificates = useMemo(
     () => formData.certificates.filter((certificate) => certificate.fileUrl),
@@ -77,8 +72,28 @@ export default function TrainerProfilePage() {
   const handlePdfSelection = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     const pdfFiles = files.filter((file) => file.type === "application/pdf");
-    setSelectedPdfFiles(pdfFiles);
-    setSelectedPdfNames(pdfFiles.map((file) => file.name));
+    const nextCertificates = pdfFiles.map((file, index) => ({
+      id: `${file.name}-${file.lastModified}-${index}`,
+      file,
+      certificateName: file.name.replace(/\.pdf$/i, ""),
+      issuer: "",
+      issuedAt: "",
+    }));
+
+    setPendingCertificates(nextCertificates);
+    event.target.value = "";
+  };
+
+  const updatePendingCertificate = (
+    id: string,
+    key: keyof Omit<PendingTrainerCertificateUpload, "id" | "file">,
+    value: string
+  ) => {
+    setPendingCertificates((prev) =>
+      prev.map((certificate) =>
+        certificate.id === id ? { ...certificate, [key]: value } : certificate
+      )
+    );
   };
 
   const handleCertificateDownload = (certificate: TrainerCertificate) => {
@@ -368,14 +383,70 @@ export default function TrainerProfilePage() {
                         </p>
                       </div>
 
-                      {allCertificateNames.length > 0 ? (
+                      {pendingCertificates.length > 0 ? (
                         <div className="grid gap-2">
-                          {allCertificateNames.map((certificate) => (
+                          {pendingCertificates.map((certificate) => (
                             <div
-                              key={certificate}
-                              className="rounded-lg border bg-muted/30 px-3 py-2 text-sm"
+                              key={certificate.id}
+                              className="grid gap-3 rounded-lg border bg-muted/30 px-3 py-3 md:grid-cols-2"
                             >
-                              {certificate}
+                              <div className="space-y-2 md:col-span-2">
+                                <p className="text-sm font-medium">{certificate.certificateName}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Source file: {certificate.file.name}
+                                </p>
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`certificate-name-${certificate.id}`}>
+                                  Certificate name
+                                </Label>
+                                <Input
+                                  id={`certificate-name-${certificate.id}`}
+                                  value={certificate.certificateName}
+                                  onChange={(event) =>
+                                    updatePendingCertificate(
+                                      certificate.id,
+                                      "certificateName",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="e.g. NASM Certified Personal Trainer"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`certificate-issuer-${certificate.id}`}>
+                                  Issuer
+                                </Label>
+                                <Input
+                                  id={`certificate-issuer-${certificate.id}`}
+                                  value={certificate.issuer}
+                                  onChange={(event) =>
+                                    updatePendingCertificate(
+                                      certificate.id,
+                                      "issuer",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="e.g. NASM"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor={`certificate-issued-at-${certificate.id}`}>
+                                  Issued at
+                                </Label>
+                                <Input
+                                  id={`certificate-issued-at-${certificate.id}`}
+                                  type="date"
+                                  value={certificate.issuedAt}
+                                  onChange={(event) =>
+                                    updatePendingCertificate(
+                                      certificate.id,
+                                      "issuedAt",
+                                      event.target.value
+                                    )
+                                  }
+                                />
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -407,16 +478,32 @@ export default function TrainerProfilePage() {
                                   ) : null}
                                 </div>
 
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleCertificateDownload(certificate)}
-                                  className="shrink-0 gap-2"
-                                >
-                                  <Download className="h-4 w-4" />
-                                  Download
-                                </Button>
+                                <div className="ml-auto flex shrink-0 items-center gap-2">
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleCertificateDownload(certificate)}
+                                    disabled={saving || deletingCertificateId === certificate.id}
+                                    className="gap-2"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                    Download
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => void deleteCertificate(certificate.id)}
+                                    disabled={saving || deletingCertificateId !== null}
+                                    className="gap-2"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                    {deletingCertificateId === certificate.id
+                                      ? "Deleting..."
+                                      : "Delete"}
+                                  </Button>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -437,13 +524,19 @@ export default function TrainerProfilePage() {
                     )}
                     <Button
                       onClick={async () => {
-                        const saved = await saveTrainerProfile(selectedPdfFiles);
+                        const saved = await saveTrainerProfile(pendingCertificates);
                         if (saved) {
-                          setSelectedPdfFiles([]);
-                          setSelectedPdfNames([]);
+                          setPendingCertificates([]);
                         }
                       }}
-                      disabled={!canSave || saving}
+                      disabled={
+                        !canSave ||
+                        saving ||
+                        deletingCertificateId !== null ||
+                        pendingCertificates.some(
+                          (certificate) => certificate.certificateName.trim().length === 0
+                        )
+                      }
                       className="gap-2"
                     >
                       <Save className="h-4 w-4" />
