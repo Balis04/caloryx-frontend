@@ -29,10 +29,10 @@ export default function Home() {
             >
               <CardHeader>
                 <Dumbbell className="w-8 h-8 text-primary mb-4" />
-                <CardTitle>Find a Trainer</CardTitle>
+                <CardTitle>Find a Coach</CardTitle>
               </CardHeader>
               <CardContent className="text-muted-foreground">
-                Choose a personal trainer and request a training plan for your goals.
+                Choose a coach and request a training plan for your goals.
               </CardContent>
             </button>
           </Card>

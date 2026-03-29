@@ -3,10 +3,10 @@ import { ApiError } from "@/lib/api-client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   AvailabilitySlot,
-  PendingTrainerCertificateUpload,
-  TrainerCertificate,
-  TrainerProfileFormData,
-} from "../types/trainer-profile.types";
+  PendingCoachCertificateUpload,
+  CoachCertificate,
+  CoachProfileFormData,
+} from "../types/coach-profile.types";
 
 const createInitialAvailability = (): AvailabilitySlot[] => [
   {
@@ -60,7 +60,7 @@ const createInitialAvailability = (): AvailabilitySlot[] => [
   },
 ];
 
-const initialFormData: TrainerProfileFormData = {
+const initialFormData: CoachProfileFormData = {
   description: "",
   startedCoachingAt: "",
   maxCapacity: "",
@@ -77,10 +77,10 @@ interface CoachProfileResponse {
   id: string;
   trainingStartedAt: string | null;
   shortDescription: string | null;
-  trainingFormat: TrainerProfileFormData["sessionFormat"];
+  trainingFormat: CoachProfileFormData["sessionFormat"];
   priceFrom: number | null;
   priceTo: number | null;
-  currency: TrainerProfileFormData["currency"];
+  currency: CoachProfileFormData["currency"];
   maxCapacity: number | null;
   contactNote: string | null;
   availabilities?: Array<{
@@ -125,7 +125,7 @@ interface CoachCertificateResponse {
 const normalizeCertificate = (
   certificate: CoachProfileCertificate,
   index: number
-): TrainerCertificate => {
+): CoachCertificate => {
   if (typeof certificate === "string") {
     return {
       id: `legacy-${index}-${certificate}`,
@@ -152,7 +152,7 @@ const normalizeCertificate = (
 
 const normalizeCoachProfileResponse = (
   data: CoachProfileResponse
-): TrainerProfileFormData => ({
+): CoachProfileFormData => ({
   description: data.shortDescription ?? "",
   startedCoachingAt: data.trainingStartedAt ?? "",
   maxCapacity: String(data.maxCapacity ?? ""),
@@ -182,9 +182,9 @@ const normalizeCoachProfileResponse = (
     : createInitialAvailability()
 });
 
-export const useTrainerProfileForm = () => {
+export const useCoachProfileForm = () => {
   const { request } = useApi();
-  const [formData, setFormData] = useState<TrainerProfileFormData>(initialFormData);
+  const [formData, setFormData] = useState<CoachProfileFormData>(initialFormData);
   const [coachProfileId, setCoachProfileId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -192,10 +192,10 @@ export const useTrainerProfileForm = () => {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isForbidden, setIsForbidden] = useState(false);
-  const [hasTrainerProfile, setHasTrainerProfile] = useState(false);
+  const [hasCoachProfile, setHasCoachProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const loadTrainerProfile = useCallback(async () => {
+  const loadCoachProfile = useCallback(async () => {
     setLoading(true);
     setErrorMessage(null);
     setStatusMessage(null);
@@ -210,24 +210,24 @@ export const useTrainerProfileForm = () => {
       );
       setFormData(normalizeCoachProfileResponse(response));
       setCoachProfileId(response.id);
-      setHasTrainerProfile(true);
+      setHasCoachProfile(true);
       setIsEditing(false);
     } catch (error) {
       if (error instanceof ApiError && error.status === 400) {
         setFormData(initialFormData);
         setCoachProfileId(null);
-        setHasTrainerProfile(false);
+        setHasCoachProfile(false);
         setIsEditing(false);
       } else if (error instanceof ApiError && error.status === 403) {
         setFormData(initialFormData);
         setCoachProfileId(null);
-        setHasTrainerProfile(false);
+        setHasCoachProfile(false);
         setIsEditing(false);
         setIsForbidden(true);
         setErrorMessage(error.message);
       } else {
         const message =
-          error instanceof Error ? error.message : "Failed to load trainer profile.";
+          error instanceof Error ? error.message : "Failed to load coach profile.";
         setErrorMessage(message);
       }
     } finally {
@@ -236,7 +236,7 @@ export const useTrainerProfileForm = () => {
   }, [request]);
 
   const uploadCertificates = useCallback(
-    async (profileId: string, certificates: PendingTrainerCertificateUpload[]) => {
+    async (profileId: string, certificates: PendingCoachCertificateUpload[]) => {
       for (const certificate of certificates) {
         const formData = new FormData();
         formData.append("file", certificate.file);
@@ -266,13 +266,13 @@ export const useTrainerProfileForm = () => {
   );
 
   useEffect(() => {
-    void loadTrainerProfile();
-  }, [loadTrainerProfile]);
+    void loadCoachProfile();
+  }, [loadCoachProfile]);
 
   const setField = useCallback(
-    <K extends keyof TrainerProfileFormData>(
+    <K extends keyof CoachProfileFormData>(
       key: K,
-      value: TrainerProfileFormData[K]
+      value: CoachProfileFormData[K]
     ) => {
       setFormData((prev) => ({ ...prev, [key]: value }));
     },
@@ -291,7 +291,7 @@ export const useTrainerProfileForm = () => {
     []
   );
 
-  const saveTrainerProfile = useCallback(async (certificateFiles: PendingTrainerCertificateUpload[] = []) => {
+  const saveCoachProfile = useCallback(async (certificateFiles: PendingCoachCertificateUpload[] = []) => {
     setSaving(true);
     setErrorMessage(null);
 
@@ -326,18 +326,18 @@ export const useTrainerProfileForm = () => {
 
       if (certificateFiles.length > 0) {
         await uploadCertificates(response.id, certificateFiles);
-        await loadTrainerProfile();
+        await loadCoachProfile();
       } else {
         setFormData(normalizeCoachProfileResponse(response));
         setCoachProfileId(response.id);
       }
 
-      setHasTrainerProfile(true);
+      setHasCoachProfile(true);
       setIsEditing(false);
       setStatusMessage(
         coachProfileId
-          ? "Trainer profile updated successfully."
-          : "Trainer profile created successfully."
+          ? "Coach profile updated successfully."
+          : "Coach profile created successfully."
       );
       return true;
     } catch (error) {
@@ -348,12 +348,12 @@ export const useTrainerProfileForm = () => {
     } finally {
       setSaving(false);
     }
-  }, [coachProfileId, formData, loadTrainerProfile, request, uploadCertificates]);
+  }, [coachProfileId, formData, loadCoachProfile, request, uploadCertificates]);
 
   const deleteCertificate = useCallback(
     async (certificateId: string) => {
       if (!coachProfileId) {
-        setErrorMessage("Trainer profile not found.");
+        setErrorMessage("Coach profile not found.");
         return false;
       }
 
@@ -393,14 +393,14 @@ export const useTrainerProfileForm = () => {
 
   const cancelEditing = useCallback(() => {
     setStatusMessage(null);
-    if (hasTrainerProfile) {
-      void loadTrainerProfile();
+    if (hasCoachProfile) {
+      void loadCoachProfile();
     } else {
       setFormData(initialFormData);
       setCoachProfileId(null);
       setIsEditing(false);
     }
-  }, [hasTrainerProfile, loadTrainerProfile]);
+  }, [hasCoachProfile, loadCoachProfile]);
 
   const canSave = useMemo(() => {
     const hasDescription = formData.description.trim().length >= 20;
@@ -430,11 +430,11 @@ export const useTrainerProfileForm = () => {
     statusMessage,
     errorMessage,
     isForbidden,
-    hasTrainerProfile,
+    hasCoachProfile,
     isEditing,
     setField,
     setAvailabilityField,
-    saveTrainerProfile,
+    saveCoachProfile,
     deleteCertificate,
     startEditing,
     cancelEditing,

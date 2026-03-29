@@ -11,9 +11,9 @@ import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
-import TrainerRequestPage from "./features/training-request/pages/TrainerRequestPage";
-import TrainerProfilePage from "./features/trainer-profile/pages/TrainerProfilePage";
-import RequireTrainer from "./guards/RequireTrainer";
+import CoachRequestPage from "./features/training-request/pages/CoachRequestPage";
+import CoachProfilePage from "./features/coach-profile/pages/CoachProfilePage";
+import RequireCoach from "./guards/RequireCoach";
 import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
 import CoachTrainingRequestsPage from "./features/coach-training-requests/pages/CoachTrainingRequestsPage";
 
@@ -47,18 +47,18 @@ function App() {
           >
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
-            <Route path="/training-request" element={<TrainerRequestPage />} />
+            <Route path="/training-request" element={<CoachRequestPage />} />
             <Route path="/training-requests" element={<CoachTrainingRequestsPage />} />
             <Route
-              path="/training-request/:trainerId"
+              path="/training-request/:coachId"
               element={<TrainingRequestFormPage />}
             />
             <Route
-              path="/trainer-profile"
+              path="/coach-profile"
               element={
-                <RequireTrainer>
-                  <TrainerProfilePage />
-                </RequireTrainer>
+                <RequireCoach>
+                  <CoachProfilePage />
+                </RequireCoach>
               }
             />
             <Route path="/calorie-counter" element={<DiaryPage />} />

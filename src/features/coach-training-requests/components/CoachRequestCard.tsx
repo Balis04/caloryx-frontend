@@ -36,7 +36,7 @@ interface Props {
   updatingRequestId: string | null;
 }
 
-export default function TrainerRequestCard({
+export default function CoachRequestCard({
   approvedDraft,
   decisionDescription,
   downloadingRequestId,

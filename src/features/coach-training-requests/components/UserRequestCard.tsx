@@ -37,7 +37,7 @@ export default function UserRequestCard({
             <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                Trainer
+                Coach
               </span>
               <span className="flex items-center gap-2">
                 <Clock3 className="h-4 w-4" />

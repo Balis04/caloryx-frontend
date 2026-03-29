@@ -9,7 +9,7 @@ export interface AvailabilitySlot {
   until: string;
 }
 
-export interface TrainerCertificate {
+export interface CoachCertificate {
   id: string;
   certificateName: string;
   issuer: string;
@@ -18,7 +18,7 @@ export interface TrainerCertificate {
   fileUrl: string;
 }
 
-export interface PendingTrainerCertificateUpload {
+export interface PendingCoachCertificateUpload {
   id: string;
   file: File;
   certificateName: string;
@@ -26,7 +26,7 @@ export interface PendingTrainerCertificateUpload {
   issuedAt: string;
 }
 
-export interface TrainerProfileFormData {
+export interface CoachProfileFormData {
   description: string;
   startedCoachingAt: string;
   maxCapacity: string;
@@ -35,6 +35,6 @@ export interface TrainerProfileFormData {
   priceTo: string;
   currency: Currency | "";
   contactNote: string;
-  certificates: TrainerCertificate[];
+  certificates: CoachCertificate[];
   availability: AvailabilitySlot[];
 }

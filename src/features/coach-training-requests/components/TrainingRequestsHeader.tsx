@@ -9,23 +9,23 @@ import type {
 } from "../model/coach-training-request.model";
 
 interface Props {
-  isTrainer: boolean;
-  showTrainerIncomingRequests: boolean;
-  trainerRequestFilter: CoachRequestFilter;
-  trainerViewMode: CoachRequestViewMode;
+  isCoach: boolean;
+  showCoachIncomingRequests: boolean;
+  coachRequestFilter: CoachRequestFilter;
+  coachViewMode: CoachRequestViewMode;
   onFilterChange: (value: CoachRequestFilter) => void;
   onViewModeChange: (value: CoachRequestViewMode) => void;
 }
 
 export default function TrainingRequestsHeader({
-  isTrainer,
-  showTrainerIncomingRequests,
-  trainerRequestFilter,
-  trainerViewMode,
+  isCoach,
+  showCoachIncomingRequests,
+  coachRequestFilter,
+  coachViewMode,
   onFilterChange,
   onViewModeChange,
 }: Props) {
-  const pageDescription = showTrainerIncomingRequests
+  const pageDescription = showCoachIncomingRequests
     ? "Here you can see the training plan requests sent to you."
     : "Here you can see the training plan requests you have sent and their status.";
 
@@ -41,20 +41,20 @@ export default function TrainingRequestsHeader({
             <p className="mt-2 text-sm text-muted-foreground">{pageDescription}</p>
           </div>
           <Badge variant="secondary" className="w-fit">
-            {showTrainerIncomingRequests ? "Trainer view" : "User view"}
+            {showCoachIncomingRequests ? "Coach view" : "User view"}
           </Badge>
         </div>
 
-        {isTrainer && (
+        {isCoach && (
           <div className="flex flex-wrap gap-3">
             <Button
-              variant={trainerViewMode === "trainer" ? "default" : "outline"}
-              onClick={() => onViewModeChange("trainer")}
+              variant={coachViewMode === "coach" ? "default" : "outline"}
+              onClick={() => onViewModeChange("coach")}
             >
-              Trainer view
+              Coach view
             </Button>
             <Button
-              variant={trainerViewMode === "user" ? "default" : "outline"}
+              variant={coachViewMode === "user" ? "default" : "outline"}
               onClick={() => onViewModeChange("user")}
             >
               User view
@@ -62,8 +62,8 @@ export default function TrainingRequestsHeader({
           </div>
         )}
 
-        {showTrainerIncomingRequests && (
-          <Tabs value={trainerRequestFilter} onValueChange={(value) => onFilterChange(value as CoachRequestFilter)}>
+        {showCoachIncomingRequests && (
+          <Tabs value={coachRequestFilter} onValueChange={(value) => onFilterChange(value as CoachRequestFilter)}>
             <TabsList className="flex h-auto w-full max-w-2xl flex-row gap-1 p-1">
               <TabsTrigger value="pending" className="flex-1">
                 Pending

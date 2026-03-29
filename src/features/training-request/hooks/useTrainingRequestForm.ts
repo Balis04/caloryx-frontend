@@ -65,7 +65,7 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
 
   const submit = useCallback(async () => {
     if (!coachProfileId) {
-      setError("The selected trainer ID is missing.");
+      setError("The selected coach ID is missing.");
       return false;
     }
 
@@ -78,7 +78,7 @@ export const useTrainingRequestForm = (coachProfileId: string | null) => {
         coachProfileId,
         mapTrainingRequestFormToCreateDto(formData)
       );
-      setSubmitMessage("Your training plan request was sent successfully to the trainer.");
+      setSubmitMessage("Your training plan request was sent successfully to the coach.");
       return true;
     } catch (err) {
       const message =

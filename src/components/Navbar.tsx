@@ -4,7 +4,7 @@ import { useAuth } from "@/features/auth/use-auth";
 export default function Navbar() {
   const { authState, isAuthenticated, login, logout, hasAnyRole } = useAuth();
   const navigate = useNavigate();
-  const isTrainer = hasAnyRole("COACH");
+  const isCoach = hasAnyRole("COACH");
 
   return (
     <nav
@@ -26,9 +26,9 @@ export default function Navbar() {
             {authState?.email}
           </span>
 
-          {isTrainer && (
-            <button onClick={() => navigate("/trainer-profile")}>
-              Trainer Profile
+          {isCoach && (
+            <button onClick={() => navigate("/coach-profile")}>
+              Coach Profile
             </button>
           )}
 

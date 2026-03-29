@@ -1,6 +1,6 @@
 import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useState } from "react";
-import type { TrainerCardData } from "../types/trainer.types";
+import type { CoachCardData } from "../types/coach.types";
 
 interface CoachProfileListResponse {
   id?: string;
@@ -84,36 +84,36 @@ const formatExperience = (trainingStartedAt?: string | null) => {
   return years === 0 ? "Less than 1 year of experience" : `${years} years of experience`;
 };
 
-const normalizeTrainer = (
-  trainer: CoachProfileListResponse,
+const normalizeCoach = (
+  coach: CoachProfileListResponse,
   index: number
-): TrainerCardData => {
-  const availability = formatAvailability(trainer.availabilities);
+): CoachCardData => {
+  const availability = formatAvailability(coach.availabilities);
 
   return {
-    id: trainer.id ?? `trainer-${index}`,
-    fullName: trainer.coachName ?? `Trainer #${index + 1}`,
-    email: trainer.email ?? "No email provided",
+    id: coach.id ?? `coach-${index}`,
+    fullName: coach.coachName ?? `Coach #${index + 1}`,
+    email: coach.email ?? "No email provided",
     bio:
-      trainer.shortDescription ??
-      trainer.contactNote ??
-      "This trainer has not added an introduction yet.",
-    contactNote: trainer.contactNote?.trim() || "-",
+      coach.shortDescription ??
+      coach.contactNote ??
+      "This coach has not added an introduction yet.",
+    contactNote: coach.contactNote?.trim() || "-",
     specialties: [
-      trainer.trainingFormat
-        ? `Format: ${trainer.trainingFormat}`
+      coach.trainingFormat
+        ? `Format: ${coach.trainingFormat}`
         : "Format not provided",
-      trainer.maxCapacity ? `Capacity: ${trainer.maxCapacity} people` : "Capacity not provided",
-      trainer.priceFrom != null || trainer.priceTo != null
-        ? `Price: ${trainer.priceFrom ?? 0}-${trainer.priceTo ?? 0} ${trainer.currency ?? ""}`.trim()
+      coach.maxCapacity ? `Capacity: ${coach.maxCapacity} people` : "Capacity not provided",
+      coach.priceFrom != null || coach.priceTo != null
+        ? `Price: ${coach.priceFrom ?? 0}-${coach.priceTo ?? 0} ${coach.currency ?? ""}`.trim()
         : "Price not provided",
     ],
     weeklyAvailability: availability.summary,
     availabilitySlots: availability.slots,
-    experienceLabel: formatExperience(trainer.trainingStartedAt),
+    experienceLabel: formatExperience(coach.trainingStartedAt),
     certificates:
-      trainer.certificates?.map((certificate, certificateIndex) => ({
-        id: certificate.id?.trim() || `${trainer.id ?? index}-certificate-${certificateIndex}`,
+      coach.certificates?.map((certificate, certificateIndex) => ({
+        id: certificate.id?.trim() || `${coach.id ?? index}-certificate-${certificateIndex}`,
         certificateName: certificate.certificateName?.trim() || "Unnamed certificate",
         issuer: certificate.issuer?.trim() || "",
         issuedAt: certificate.issuedAt?.trim() || "",
@@ -123,35 +123,35 @@ const normalizeTrainer = (
   };
 };
 
-export const useTrainerDirectory = () => {
+export const useCoachDirectory = () => {
   const { request } = useApi();
-  const [trainers, setTrainers] = useState<TrainerCardData[]>([]);
+  const [coaches, setCoaches] = useState<CoachCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadTrainers = useCallback(async () => {
+  const loadCoaches = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
       const response = await request<CoachProfileListResponse[]>("/api/coach-profiles");
-      setTrainers(response.map(normalizeTrainer));
+      setCoaches(response.map(normalizeCoach));
     } catch {
-      setTrainers([]);
-      setError("Failed to load the trainer list from the backend.");
+      setCoaches([]);
+      setError("Failed to load the coach list from the backend.");
     } finally {
       setLoading(false);
     }
   }, [request]);
 
   useEffect(() => {
-    loadTrainers();
-  }, [loadTrainers]);
+    loadCoaches();
+  }, [loadCoaches]);
 
   return {
-    trainers,
+    coaches,
     loading,
     error,
-    reload: loadTrainers,
+    reload: loadCoaches,
   };
 };
