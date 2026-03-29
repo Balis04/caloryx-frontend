@@ -71,7 +71,14 @@ export default function TrainerProfilePage() {
 
   const handlePdfSelection = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
-    const pdfFiles = files.filter((file) => file.type === "application/pdf");
+    const pdfFiles = files.filter((file) => {
+      const isPdfType = file.type === "application/pdf" || !file.type;
+      const hasPdfExtension = /\.pdf$/i.test(file.name);
+      return isPdfType && hasPdfExtension;
+    });
+    if (files.length > 0 && pdfFiles.length !== files.length) {
+      window.alert("Only PDF files can be uploaded as certificates.");
+    }
     const nextCertificates = pdfFiles.map((file, index) => ({
       id: `${file.name}-${file.lastModified}-${index}`,
       file,
