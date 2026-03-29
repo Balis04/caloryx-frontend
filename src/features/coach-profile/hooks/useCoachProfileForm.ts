@@ -1,11 +1,12 @@
 import { ApiError } from "@/lib/api-client";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createCoachCertificateUploadFormData } from "../lib/coach-profile.upload";
 import { canSaveCoachProfileForm } from "../lib/coach-profile.validation";
 import {
-  initialCoachProfileFormData,
   mapCoachProfileFormDataToRequest,
   mapCoachProfileResponseToFormData,
 } from "../lib/coach-profile.mapper";
+import { initialCoachProfileFormData } from "../model/coach-profile.form";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
@@ -70,22 +71,10 @@ export const useCoachProfileForm = () => {
   const uploadCertificates = useCallback(
     async (profileId: string, certificates: PendingCoachCertificateUpload[]) => {
       for (const certificate of certificates) {
-        const formData = new FormData();
-        formData.append("file", certificate.file);
-        formData.append("certificateName", certificate.certificateName.trim());
-
-        if (certificate.issuer.trim()) {
-          formData.append("issuer", certificate.issuer.trim());
-        }
-
-        if (certificate.issuedAt.trim()) {
-          formData.append(
-            "issuedAt",
-            new Date(`${certificate.issuedAt}T00:00:00.000Z`).toISOString()
-          );
-        }
-
-        await uploadCoachCertificate(profileId, formData);
+        await uploadCoachCertificate(
+          profileId,
+          createCoachCertificateUploadFormData(certificate)
+        );
       }
     },
     [uploadCoachCertificate]

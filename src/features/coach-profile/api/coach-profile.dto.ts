@@ -1,4 +1,4 @@
-import type { CoachProfileFormData } from "../types/coach-profile.types";
+import type { Currency, TrainingFormat } from "../types/coach-profile.types";
 
 export interface CoachProfileAvailabilityDto {
   dayOfWeek?: string;
@@ -31,30 +31,32 @@ export interface CoachProfileResponseDto {
   id: string;
   trainingStartedAt: string | null;
   shortDescription: string | null;
-  trainingFormat: CoachProfileFormData["sessionFormat"];
+  trainingFormat: TrainingFormat | "";
   priceFrom: number | null;
   priceTo: number | null;
-  currency: CoachProfileFormData["currency"];
+  currency: Currency | "";
   maxCapacity: number | null;
   contactNote: string | null;
   availabilities?: CoachProfileAvailabilityDto[];
   certificates?: CoachProfileCertificateDto[];
 }
 
+export interface SaveCoachProfileAvailabilityRequestDto {
+  dayOfWeek: string;
+  available: boolean;
+  startTime: string | null;
+  endTime: string | null;
+}
+
 export interface SaveCoachProfileRequestDto {
   trainingStartedAt: string;
   shortDescription: string;
-  trainingFormat: CoachProfileFormData["sessionFormat"];
+  trainingFormat: TrainingFormat | "";
   priceFrom: number | null;
   priceTo: number | null;
-  currency: CoachProfileFormData["currency"] | null;
+  currency: Currency | "" | null;
   maxCapacity: number;
   contactNote: string | null;
-  availabilities: Array<{
-    dayOfWeek: string;
-    available: boolean;
-    startTime: string | null;
-    endTime: string | null;
-  }>;
+  availabilities: SaveCoachProfileAvailabilityRequestDto[];
   certificates: [];
 }

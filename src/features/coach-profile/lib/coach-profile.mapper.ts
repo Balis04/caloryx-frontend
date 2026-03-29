@@ -3,34 +3,14 @@ import type {
   CoachProfileResponseDto,
   SaveCoachProfileRequestDto,
 } from "../api/coach-profile.dto";
+import {
+  createInitialAvailability,
+  initialCoachProfileFormData,
+} from "../model/coach-profile.form";
 import type {
-  AvailabilitySlot,
   CoachCertificate,
   CoachProfileFormData,
 } from "../types/coach-profile.types";
-
-export const createInitialAvailability = (): AvailabilitySlot[] => [
-  { dayOfWeek: "MONDAY", label: "Monday", enabled: true, from: "08:00", until: "16:00" },
-  { dayOfWeek: "TUESDAY", label: "Tuesday", enabled: true, from: "08:00", until: "16:00" },
-  { dayOfWeek: "WEDNESDAY", label: "Wednesday", enabled: true, from: "08:00", until: "16:00" },
-  { dayOfWeek: "THURSDAY", label: "Thursday", enabled: true, from: "08:00", until: "16:00" },
-  { dayOfWeek: "FRIDAY", label: "Friday", enabled: true, from: "08:00", until: "14:00" },
-  { dayOfWeek: "SATURDAY", label: "Saturday", enabled: false, from: "09:00", until: "12:00" },
-  { dayOfWeek: "SUNDAY", label: "Sunday", enabled: false, from: "09:00", until: "12:00" },
-];
-
-export const initialCoachProfileFormData: CoachProfileFormData = {
-  description: "",
-  startedCoachingAt: "",
-  maxCapacity: "",
-  sessionFormat: "",
-  priceFrom: "",
-  priceTo: "",
-  currency: "HUF",
-  contactNote: "",
-  certificates: [],
-  availability: createInitialAvailability(),
-};
 
 export const mapCoachCertificateDtoToModel = (
   certificate: CoachProfileCertificateDto,
@@ -63,17 +43,18 @@ export const mapCoachCertificateDtoToModel = (
 export const mapCoachProfileResponseToFormData = (
   data: CoachProfileResponseDto
 ): CoachProfileFormData => ({
-  description: data.shortDescription ?? "",
-  startedCoachingAt: data.trainingStartedAt ?? "",
-  maxCapacity: String(data.maxCapacity ?? ""),
-  sessionFormat: data.trainingFormat ?? "",
-  priceFrom: String(data.priceFrom ?? ""),
-  priceTo: String(data.priceTo ?? ""),
-  currency: data.currency ?? "HUF",
-  contactNote: data.contactNote ?? "",
+  ...initialCoachProfileFormData,
+  description: data.shortDescription ?? initialCoachProfileFormData.description,
+  startedCoachingAt: data.trainingStartedAt ?? initialCoachProfileFormData.startedCoachingAt,
+  maxCapacity: String(data.maxCapacity ?? initialCoachProfileFormData.maxCapacity),
+  sessionFormat: data.trainingFormat ?? initialCoachProfileFormData.sessionFormat,
+  priceFrom: String(data.priceFrom ?? initialCoachProfileFormData.priceFrom),
+  priceTo: String(data.priceTo ?? initialCoachProfileFormData.priceTo),
+  currency: data.currency ?? initialCoachProfileFormData.currency,
+  contactNote: data.contactNote ?? initialCoachProfileFormData.contactNote,
   certificates: Array.isArray(data.certificates)
     ? data.certificates.map(mapCoachCertificateDtoToModel)
-    : [],
+    : initialCoachProfileFormData.certificates,
   availability:
     Array.isArray(data.availabilities) && data.availabilities.length > 0
       ? createInitialAvailability().map((defaultSlot) => {
