@@ -58,5 +58,5 @@ export interface SaveCoachProfileRequestDto {
   maxCapacity: number;
   contactNote: string | null;
   availabilities: SaveCoachProfileAvailabilityRequestDto[];
-  certificates: [];
+  certificates: CoachProfileCertificateDto[];
 }
