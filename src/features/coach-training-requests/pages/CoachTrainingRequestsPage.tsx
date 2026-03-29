@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import TrainerRequestCard from "../components/TrainerRequestCard";
+import CoachRequestCard from "../components/CoachRequestCard";
 import TrainingRequestsHeader from "../components/TrainingRequestsHeader";
 import UserRequestCard from "../components/UserRequestCard";
 import { useCoachTrainingRequests } from "../hooks/useCoachTrainingRequests";
@@ -11,12 +11,12 @@ export default function CoachTrainingRequestsPage() {
     downloadingRequestId,
     error,
     expandedApprovedRequestId,
-    isTrainer,
+    isCoach,
     loading,
     profileLoading,
     savingApprovedRequestId,
-    trainerRequestFilter,
-    trainerViewMode,
+    coachRequestFilter,
+    coachViewMode,
     trainingPlanDrafts,
     updatingRequestId,
     visibleRequests,
@@ -24,13 +24,13 @@ export default function CoachTrainingRequestsPage() {
     saveTrainingPlan,
     setDecisionDescriptions,
     setExpandedApprovedRequestId,
-    setTrainerRequestFilter,
-    setTrainerViewMode,
+    setCoachRequestFilter,
+    setCoachViewMode,
     setTrainingPlanDrafts,
     updateRequestStatus,
   } = useCoachTrainingRequests();
 
-  const showTrainerIncomingRequests = isTrainer && trainerViewMode === "trainer";
+  const showCoachIncomingRequests = isCoach && coachViewMode === "coach";
 
   if (profileLoading || loading) {
     return <div className="p-10 italic text-muted-foreground">Loading requests...</div>;
@@ -47,33 +47,33 @@ export default function CoachTrainingRequestsPage() {
 
         <Card className="border-t-4 border-t-primary shadow-lg">
           <TrainingRequestsHeader
-            isTrainer={isTrainer}
-            showTrainerIncomingRequests={showTrainerIncomingRequests}
-            trainerRequestFilter={trainerRequestFilter}
-            trainerViewMode={trainerViewMode}
-            onFilterChange={setTrainerRequestFilter}
-            onViewModeChange={setTrainerViewMode}
+            isCoach={isCoach}
+            showCoachIncomingRequests={showCoachIncomingRequests}
+            coachRequestFilter={coachRequestFilter}
+            coachViewMode={coachViewMode}
+            onFilterChange={setCoachRequestFilter}
+            onViewModeChange={setCoachViewMode}
           />
 
           <CardContent className="space-y-6 pt-6">
             {visibleRequests.length === 0 ? (
               <Card className="border-dashed">
                 <CardContent className="p-6 text-sm text-muted-foreground">
-                  {showTrainerIncomingRequests
-                    ? trainerRequestFilter === "pending"
+                  {showCoachIncomingRequests
+                    ? coachRequestFilter === "pending"
                       ? "There are currently no pending requests."
-                      : trainerRequestFilter === "approved"
+                      : coachRequestFilter === "approved"
                         ? "There are currently no approved requests."
-                        : trainerRequestFilter === "rejected"
+                        : coachRequestFilter === "rejected"
                           ? "There are currently no rejected requests."
                           : "There are currently no completed requests."
                     : "You have not sent any training plan requests yet."}
                 </CardContent>
               </Card>
-            ) : showTrainerIncomingRequests ? (
+            ) : showCoachIncomingRequests ? (
               <div className="grid gap-6">
                 {visibleRequests.map((request) => (
-                  <TrainerRequestCard
+                  <CoachRequestCard
                     key={request.id}
                     approvedDraft={
                       trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request)
@@ -81,7 +81,7 @@ export default function CoachTrainingRequestsPage() {
                     decisionDescription={decisionDescriptions[request.id] ?? ""}
                     downloadingRequestId={downloadingRequestId}
                     expandedApprovedRequestId={expandedApprovedRequestId}
-                    filter={trainerRequestFilter}
+                    filter={coachRequestFilter}
                     onApprovedDraftChange={(draft) =>
                       setTrainingPlanDrafts((prev) => ({ ...prev, [request.id]: draft }))
                     }

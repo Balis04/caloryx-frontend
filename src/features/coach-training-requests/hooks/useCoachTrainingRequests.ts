@@ -34,10 +34,10 @@ export const useCoachTrainingRequests = () => {
     uploadCoachTrainingPlan,
   } = useCoachTrainingRequestsApi();
   const { profile, loading: profileLoading } = useViewerProfile();
-  const isTrainer = isCoachRole(profile?.role);
+  const isCoach = isCoachRole(profile?.role);
 
-  const [trainerViewMode, setTrainerViewMode] = useState<CoachRequestViewMode>("trainer");
-  const [trainerRequestFilter, setTrainerRequestFilter] =
+  const [coachViewMode, setCoachViewMode] = useState<CoachRequestViewMode>("coach");
+  const [coachRequestFilter, setCoachRequestFilter] =
     useState<CoachRequestFilter>("pending");
   const [pendingRequests, setPendingRequests] = useState<CoachTrainingRequest[]>([]);
   const [approvedRequests, setApprovedRequests] = useState<CoachTrainingRequest[]>([]);
@@ -56,8 +56,8 @@ export const useCoachTrainingRequests = () => {
   const [downloadingRequestId, setDownloadingRequestId] = useState<string | null>(null);
 
   useEffect(() => {
-    setTrainerViewMode(isTrainer ? "trainer" : "user");
-  }, [isTrainer]);
+    setCoachViewMode(isCoach ? "coach" : "user");
+  }, [isCoach]);
 
   const loadRequests = useCallback(async () => {
     setLoading(true);
@@ -72,10 +72,10 @@ export const useCoachTrainingRequests = () => {
         rejectedResponse,
       ] = await Promise.all([
         getMyTrainingRequests(),
-        isTrainer ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
-        isTrainer ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
-        isTrainer ? getClosedCoachTrainingRequests() : Promise.resolve([]),
-        isTrainer ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
+        isCoach ? getClosedCoachTrainingRequests() : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
       ]);
 
       const mappedOutgoingRequests = outgoingResponse.map(mapTrainingRequestDtoToModel);
@@ -138,7 +138,7 @@ export const useCoachTrainingRequests = () => {
     } finally {
       setLoading(false);
     }
-  }, [getCoachTrainingRequests, getClosedCoachTrainingRequests, getMyTrainingRequests, isTrainer]);
+  }, [getCoachTrainingRequests, getClosedCoachTrainingRequests, getMyTrainingRequests, isCoach]);
 
   useEffect(() => {
     if (profileLoading) {
@@ -334,11 +334,11 @@ export const useCoachTrainingRequests = () => {
   );
 
   const visibleRequests = useMemo(() => {
-    if (!isTrainer || trainerViewMode === "user") {
+    if (!isCoach || coachViewMode === "user") {
       return outgoingRequests;
     }
 
-    switch (trainerRequestFilter) {
+    switch (coachRequestFilter) {
       case "approved":
         return approvedRequests;
       case "rejected":
@@ -351,12 +351,12 @@ export const useCoachTrainingRequests = () => {
   }, [
     approvedRequests,
     closedRequests,
-    isTrainer,
+    isCoach,
     outgoingRequests,
     pendingRequests,
     rejectedRequests,
-    trainerRequestFilter,
-    trainerViewMode,
+    coachRequestFilter,
+    coachViewMode,
   ]);
 
   return {
@@ -364,12 +364,12 @@ export const useCoachTrainingRequests = () => {
     downloadingRequestId,
     error,
     expandedApprovedRequestId,
-    isTrainer,
+    isCoach,
     loading,
     profileLoading,
     savingApprovedRequestId,
-    trainerRequestFilter,
-    trainerViewMode,
+    coachRequestFilter,
+    coachViewMode,
     trainingPlanDrafts,
     updatingRequestId,
     visibleRequests,
@@ -377,8 +377,8 @@ export const useCoachTrainingRequests = () => {
     downloadTrainingPlan,
     setDecisionDescriptions,
     setExpandedApprovedRequestId,
-    setTrainerRequestFilter,
-    setTrainerViewMode,
+    setCoachRequestFilter,
+    setCoachViewMode,
     setTrainingPlanDrafts,
     updateRequestStatus,
   };

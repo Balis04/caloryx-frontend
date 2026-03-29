@@ -7,7 +7,7 @@ import type { ActivityLevel, Goal } from "@/shared/types/profile.types";
 import { ArrowLeft, Dumbbell, Mail, Send, UserRound } from "lucide-react";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
+import { useCoachDirectory } from "../hooks/useCoachDirectory";
 import { useTrainingRequestForm } from "../hooks/useTrainingRequestForm";
 
 const GOAL_OPTIONS = [
@@ -25,9 +25,9 @@ const ACTIVITY_OPTIONS = [
 
 export default function TrainingRequestFormPage() {
   const navigate = useNavigate();
-  const { trainerId } = useParams();
-  const { trainers, loading: trainersLoading, error: trainersError } =
-    useTrainerDirectory();
+  const { coachId } = useParams();
+  const { coaches, loading: coachesLoading, error: coachesError } =
+    useCoachDirectory();
   const {
     profile,
     formData,
@@ -38,14 +38,14 @@ export default function TrainingRequestFormPage() {
     setField,
     submit,
     canSubmit,
-  } = useTrainingRequestForm(trainerId ?? null);
+  } = useTrainingRequestForm(coachId ?? null);
 
-  const selectedTrainer = useMemo(
-    () => trainers.find((trainer) => trainer.id === trainerId) ?? null,
-    [trainerId, trainers]
+  const selectedCoach = useMemo(
+    () => coaches.find((coach) => coach.id === coachId) ?? null,
+    [coachId, coaches]
   );
 
-  if (loading || trainersLoading) {
+  if (loading || coachesLoading) {
     return <div className="p-10 italic text-muted-foreground">Loading...</div>;
   }
 
@@ -59,13 +59,13 @@ export default function TrainingRequestFormPage() {
           className="w-fit text-xs text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-3 w-3" />
-          Back to trainer selection
+          Back to coach selection
         </Button>
 
-        {(error || trainersError) && (
+        {(error || coachesError) && (
           <Card className="border-red-300 bg-red-50">
             <CardContent className="p-4 text-sm text-red-700">
-              {error ?? trainersError}
+              {error ?? coachesError}
             </CardContent>
           </Card>
         )}
@@ -219,14 +219,14 @@ export default function TrainingRequestFormPage() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="customerDescription">Short description for the trainer</Label>
+                    <Label htmlFor="customerDescription">Short description for the coach</Label>
                     <textarea
                       id="customerDescription"
                       value={formData.customerDescription}
                       onChange={(event) =>
                         setField("customerDescription", event.target.value)
                       }
-                      placeholder="Describe your goals, experience level, any injuries, or anything else the trainer should know."
+                      placeholder="Describe your goals, experience level, any injuries, or anything else the coach should know."
                       className="min-h-36 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     />
                   </div>
@@ -236,11 +236,11 @@ export default function TrainingRequestFormPage() {
               <div className="flex justify-end">
                 <Button
                   onClick={() => void submit()}
-                  disabled={!canSubmit || !selectedTrainer || submitting}
+                  disabled={!canSubmit || !selectedCoach || submitting}
                   className="gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  {submitting ? "Sending..." : "Send to trainer"}
+                  {submitting ? "Sending..." : "Send to coach"}
                 </Button>
               </div>
             </CardContent>
@@ -249,21 +249,21 @@ export default function TrainingRequestFormPage() {
           <div className="space-y-6">
             <Card className="shadow-sm">
               <CardHeader>
-                <CardTitle>Selected trainer</CardTitle>
+                <CardTitle>Selected coach</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
-                {selectedTrainer ? (
+                {selectedCoach ? (
                   <>
                     <div className="rounded-xl border bg-muted/20 p-4">
-                      <p className="font-medium">{selectedTrainer.fullName}</p>
+                      <p className="font-medium">{selectedCoach.fullName}</p>
                       <p className="mt-1 flex items-center gap-2 text-muted-foreground">
                         <Mail className="h-4 w-4" />
-                        {selectedTrainer.email}
+                        {selectedCoach.email}
                       </p>
                     </div>
-                    <p className="text-muted-foreground">{selectedTrainer.bio}</p>
+                    <p className="text-muted-foreground">{selectedCoach.bio}</p>
                     <div className="flex flex-wrap gap-2">
-                      {selectedTrainer.availabilitySlots.map((slot) => (
+                      {selectedCoach.availabilitySlots.map((slot) => (
                         <Badge key={slot} variant="outline">
                           {slot}
                         </Badge>
@@ -272,7 +272,7 @@ export default function TrainingRequestFormPage() {
                   </>
                 ) : (
                   <div className="rounded-xl border border-dashed p-4 text-muted-foreground">
-                    The selected trainer could not be found. Go back to the list and choose again.
+                    The selected coach could not be found. Go back to the list and choose again.
                   </div>
                 )}
               </CardContent>
@@ -284,7 +284,7 @@ export default function TrainingRequestFormPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-muted-foreground">
                 <p>
-                  The backend sends this form to the selected trainer&apos;s coach profile ID
+                  The backend sends this form to the selected coach&apos;s profile ID
                   and can then handle the related notification flow.
                 </p>
                 <p>

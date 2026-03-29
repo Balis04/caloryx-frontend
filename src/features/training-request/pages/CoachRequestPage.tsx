@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils";
 import { Check, Clock3, Download, Dumbbell, Mail, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTrainerDirectory } from "../hooks/useTrainerDirectory";
-import type { TrainerCardData, TrainerCertificateData } from "../types/trainer.types";
+import { useCoachDirectory } from "../hooks/useCoachDirectory";
+import type { CoachCardData, CoachCertificateData } from "../types/coach.types";
 
-const openCertificate = (certificate: TrainerCertificateData) => {
+const openCertificate = (certificate: CoachCertificateData) => {
   if (!certificate.fileUrl) {
     return;
   }
@@ -28,7 +28,7 @@ const openCertificate = (certificate: TrainerCertificateData) => {
   window.open(fileUrl, "_blank", "noopener,noreferrer");
 };
 
-const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected: boolean }) => (
+const CoachInfo = ({ coach, selected }: { coach: CoachCardData; selected: boolean }) => (
   <div className="flex h-full flex-col gap-4">
     <Card
       className={cn(
@@ -39,17 +39,17 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
       <CardHeader className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <CardTitle className="break-words text-xl">{trainer.fullName}</CardTitle>
+            <CardTitle className="break-words text-xl">{coach.fullName}</CardTitle>
             <CardDescription className="mt-2 flex items-start gap-2 break-all text-sm">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>{trainer.email}</span>
+              <span>{coach.email}</span>
             </CardDescription>
           </div>
           <Badge variant={selected ? "default" : "secondary"} className="w-fit shrink-0">
             {selected ? "Selected" : "Available"}
           </Badge>
         </div>
-        <p className="text-sm leading-6 text-muted-foreground">{trainer.bio}</p>
+        <p className="text-sm leading-6 text-muted-foreground">{coach.bio}</p>
       </CardHeader>
 
       <CardContent className="space-y-5">
@@ -59,7 +59,7 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
             <span>Available time slots</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {trainer.availabilitySlots.map((slot) => (
+            {coach.availabilitySlots.map((slot) => (
               <span
                 key={slot}
                 className="rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground"
@@ -72,19 +72,19 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
 
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <ShieldCheck className="h-4 w-4 shrink-0" />
-          <span>{trainer.experienceLabel}</span>
+          <span>{coach.experienceLabel}</span>
         </div>
 
         <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
           <div className="text-sm font-medium">Contact note</div>
-          <p className="text-sm text-muted-foreground">{trainer.contactNote || "-"}</p>
+          <p className="text-sm text-muted-foreground">{coach.contactNote || "-"}</p>
         </div>
 
         <div className="space-y-3 rounded-xl border bg-muted/20 p-4">
           <div className="text-sm font-medium">Certificates</div>
-          {trainer.certificates && trainer.certificates.length > 0 ? (
+          {coach.certificates && coach.certificates.length > 0 ? (
             <div className="grid gap-2">
-              {trainer.certificates.map((certificate) => (
+              {coach.certificates.map((certificate) => (
                 <button
                   key={certificate.id}
                   type="button"
@@ -102,7 +102,7 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {trainer.specialties.map((specialty) => (
+          {coach.specialties.map((specialty) => (
             <Badge key={specialty} variant="outline" className="rounded-full px-3 py-1">
               {specialty}
             </Badge>
@@ -113,16 +113,16 @@ const TrainerInfo = ({ trainer, selected }: { trainer: TrainerCardData; selected
   </div>
 );
 
-export default function TrainerRequestPage() {
+export default function CoachRequestPage() {
   const navigate = useNavigate();
-  const { trainers, loading, error } = useTrainerDirectory();
-  const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(null);
+  const { coaches, loading, error } = useCoachDirectory();
+  const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
 
-  const selectedTrainer =
-    trainers.find((trainer) => trainer.id === selectedTrainerId) ?? null;
+  const selectedCoach =
+    coaches.find((coach) => coach.id === selectedCoachId) ?? null;
 
   if (loading) {
-    return <div className="p-10 italic text-muted-foreground">Loading trainers...</div>;
+    return <div className="p-10 italic text-muted-foreground">Loading coaches...</div>;
   }
 
   return (
@@ -138,16 +138,16 @@ export default function TrainerRequestPage() {
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_340px]">
           <div className="grid gap-6 sm:grid-cols-2 2xl:grid-cols-3">
-            {trainers.map((trainer) => {
-              const isSelected = trainer.id === selectedTrainerId;
+            {coaches.map((coach) => {
+              const isSelected = coach.id === selectedCoachId;
 
               return (
-                <div key={trainer.id} className="flex h-full flex-col gap-4">
-                  <TrainerInfo trainer={trainer} selected={isSelected} />
+                <div key={coach.id} className="flex h-full flex-col gap-4">
+                  <CoachInfo coach={coach} selected={isSelected} />
                   <Button
                     className="mt-auto w-full gap-2"
                     variant={isSelected ? "secondary" : "default"}
-                    onClick={() => setSelectedTrainerId(trainer.id)}
+                    onClick={() => setSelectedCoachId(coach.id)}
                   >
                     {isSelected ? (
                       <>
@@ -157,17 +157,17 @@ export default function TrainerRequestPage() {
                     ) : (
                       <>
                         <Dumbbell className="h-4 w-4" />
-                        Choose this trainer
+                        Choose this coach
                       </>
                     )}
                   </Button>
                 </div>
               );
             })}
-            {!error && trainers.length === 0 && (
+            {!error && coaches.length === 0 && (
               <Card className="sm:col-span-2 2xl:col-span-3">
                 <CardContent className="p-6 text-sm text-muted-foreground">
-                  No trainer profiles are currently available.
+                  No coach profiles are currently available.
                 </CardContent>
               </Card>
             )}
@@ -180,26 +180,26 @@ export default function TrainerRequestPage() {
               </Badge>
               <CardTitle>Training plan request</CardTitle>
               <CardDescription className="text-sm leading-6">
-                Open a dedicated request page for the selected trainer, where you can
+                Open a dedicated request page for the selected coach, where you can
                 provide your main details, goals, and a short description.
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4 text-sm">
-              {selectedTrainer ? (
+              {selectedCoach ? (
                 <>
                   <div className="rounded-lg border bg-muted/40 p-4">
-                    <p className="font-medium">Selected trainer</p>
-                    <p className="mt-1 text-muted-foreground">{selectedTrainer.fullName}</p>
-                    <p className="text-muted-foreground">{selectedTrainer.email}</p>
+                    <p className="font-medium">Selected coach</p>
+                    <p className="mt-1 text-muted-foreground">{selectedCoach.fullName}</p>
+                    <p className="text-muted-foreground">{selectedCoach.email}</p>
                   </div>
                   <p className="text-muted-foreground">
-                    On the next page, your training plan request will be linked to this trainer.
+                    On the next page, your training plan request will be linked to this coach.
                   </p>
                 </>
               ) : (
                 <div className="rounded-lg border border-dashed p-4 text-muted-foreground">
-                  Select a trainer from the cards to open the training request form.
+                  Select a coach from the cards to open the training request form.
                 </div>
               )}
             </CardContent>
@@ -207,8 +207,8 @@ export default function TrainerRequestPage() {
             <CardFooter>
               <Button
                 className="w-full"
-                disabled={!selectedTrainer}
-                onClick={() => navigate(`/training-request/${selectedTrainerId}`)}
+                disabled={!selectedCoach}
+                onClick={() => navigate(`/training-request/${selectedCoachId}`)}
               >
                 Open training request form
               </Button>

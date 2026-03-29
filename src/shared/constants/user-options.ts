@@ -18,5 +18,5 @@ export const GOAL_OPTIONS = [
 
 export const USER_ROLE_OPTIONS = [
   { value: "USER", label: "User" },
-  { value: "COACH", label: "Trainer" },
+  { value: "COACH", label: "Coach" },
 ] as const;

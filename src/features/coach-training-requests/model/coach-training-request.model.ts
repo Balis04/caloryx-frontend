@@ -7,7 +7,7 @@ export type { TrainingRequestStatus };
 
 export type CoachTrainingRequest = TrainingRequest;
 
-export type CoachRequestViewMode = "trainer" | "user";
+export type CoachRequestViewMode = "coach" | "user";
 
 export type CoachRequestFilter = "pending" | "approved" | "rejected" | "closed";
 

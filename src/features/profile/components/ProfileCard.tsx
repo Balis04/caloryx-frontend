@@ -41,11 +41,11 @@ export default function ProfileCard({ profile }: Props) {
           {canManageCoachProfile(profile.role) && (
             <Button
               variant="outline"
-              onClick={() => navigate("/trainer-profile")}
+              onClick={() => navigate("/coach-profile")}
               className="w-full lg:w-auto font-bold"
             >
               <Briefcase className="mr-2 w-4 h-4" />
-              Trainer Profile
+              Coach Profile
             </Button>
           )}
           <Button

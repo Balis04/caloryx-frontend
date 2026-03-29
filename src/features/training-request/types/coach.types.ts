@@ -1,4 +1,4 @@
-export interface TrainerCardData {
+export interface CoachCardData {
   id: string;
   fullName: string;
   email: string;
@@ -8,10 +8,10 @@ export interface TrainerCardData {
   weeklyAvailability: string;
   availabilitySlots: string[];
   experienceLabel: string;
-  certificates?: TrainerCertificateData[];
+  certificates?: CoachCertificateData[];
 }
 
-export interface TrainerCertificateData {
+export interface CoachCertificateData {
   id: string;
   certificateName: string;
   issuer: string;

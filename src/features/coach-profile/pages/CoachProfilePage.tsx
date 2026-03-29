@@ -20,13 +20,13 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTrainerProfileForm } from "../hooks/useTrainerProfileForm";
+import { useCoachProfileForm } from "../hooks/useCoachProfileForm";
 import type {
   Currency,
-  PendingTrainerCertificateUpload,
-  TrainerCertificate,
+  PendingCoachCertificateUpload,
+  CoachCertificate,
   TrainingFormat,
-} from "../types/trainer-profile.types";
+} from "../types/coach-profile.types";
 
 const TRAINING_FORMAT_OPTIONS = [
   { value: "ONLINE", label: "Online" },
@@ -40,7 +40,7 @@ const CURRENCY_OPTIONS = [
   { value: "USD", label: "USD" },
 ] as const;
 
-export default function TrainerProfilePage() {
+export default function CoachProfilePage() {
   const navigate = useNavigate();
   const {
     formData,
@@ -50,18 +50,18 @@ export default function TrainerProfilePage() {
     statusMessage,
     errorMessage,
     isForbidden,
-    hasTrainerProfile,
+    hasCoachProfile,
     isEditing,
     setField,
     setAvailabilityField,
-    saveTrainerProfile,
+    saveCoachProfile,
     deleteCertificate,
     startEditing,
     cancelEditing,
     canSave,
-  } = useTrainerProfileForm();
+  } = useCoachProfileForm();
   const [pendingCertificates, setPendingCertificates] = useState<
-    PendingTrainerCertificateUpload[]
+    PendingCoachCertificateUpload[]
   >([]);
 
   const downloadableCertificates = useMemo(
@@ -93,7 +93,7 @@ export default function TrainerProfilePage() {
 
   const updatePendingCertificate = (
     id: string,
-    key: keyof Omit<PendingTrainerCertificateUpload, "id" | "file">,
+    key: keyof Omit<PendingCoachCertificateUpload, "id" | "file">,
     value: string
   ) => {
     setPendingCertificates((prev) =>
@@ -103,7 +103,7 @@ export default function TrainerProfilePage() {
     );
   };
 
-  const handleCertificateDownload = (certificate: TrainerCertificate) => {
+  const handleCertificateDownload = (certificate: CoachCertificate) => {
     if (!certificate.fileUrl) {
       return;
     }
@@ -116,7 +116,7 @@ export default function TrainerProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-10 italic">Loading trainer profile...</div>;
+    return <div className="flex justify-center p-10 italic">Loading coach profile...</div>;
   }
 
   if (isForbidden) {
@@ -143,8 +143,8 @@ export default function TrainerProfilePage() {
     );
   }
 
-  const showForm = !hasTrainerProfile || isEditing;
-  const primaryActionLabel = hasTrainerProfile ? "Save changes" : "Create trainer profile";
+  const showForm = !hasCoachProfile || isEditing;
+  const primaryActionLabel = hasCoachProfile ? "Save changes" : "Create coach profile";
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-start px-4 pb-6 pt-2">
@@ -177,10 +177,10 @@ export default function TrainerProfilePage() {
               <div className="flex items-center justify-between gap-4">
                 <CardTitle className="flex items-center gap-2 text-xl font-bold">
                   <Briefcase className="h-5 w-5" />
-                  {hasTrainerProfile ? "Edit trainer profile" : "Create trainer profile"}
+                  {hasCoachProfile ? "Edit coach profile" : "Create coach profile"}
                 </CardTitle>
                 <Badge variant="secondary" className="capitalize">
-                  Trainer profile
+                  Coach profile
                 </Badge>
               </div>
             </CardHeader>
@@ -386,7 +386,7 @@ export default function TrainerProfilePage() {
                           onChange={handlePdfSelection}
                         />
                         <p className="text-xs text-muted-foreground">
-                          Upload selected certificate PDFs for your public trainer profile.
+                          Upload selected certificate PDFs for your public coach profile.
                         </p>
                       </div>
 
@@ -417,7 +417,7 @@ export default function TrainerProfilePage() {
                                       event.target.value
                                     )
                                   }
-                                  placeholder="e.g. NASM Certified Personal Trainer"
+                                  placeholder="e.g. NASM Certified Coach"
                                 />
                               </div>
                               <div className="space-y-2">
@@ -524,14 +524,14 @@ export default function TrainerProfilePage() {
                   </Card>
 
                   <div className="flex justify-end gap-3">
-                    {hasTrainerProfile && (
+                    {hasCoachProfile && (
                       <Button variant="outline" onClick={cancelEditing}>
                         Cancel
                       </Button>
                     )}
                     <Button
                       onClick={async () => {
-                        const saved = await saveTrainerProfile(pendingCertificates);
+                        const saved = await saveCoachProfile(pendingCertificates);
                         if (saved) {
                           setPendingCertificates([]);
                         }
@@ -623,7 +623,7 @@ export default function TrainerProfilePage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-xl font-bold">
                   <Briefcase className="h-5 w-5 text-primary" />
-                  Trainer profile
+                  Coach profile
                 </CardTitle>
                 <Badge variant="secondary">Completed</Badge>
               </div>
