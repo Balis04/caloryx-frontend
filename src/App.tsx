@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
@@ -17,6 +18,10 @@ import RequireCoach from "./guards/RequireCoach";
 import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
 import CoachTrainingRequestsPage from "./features/coach-training-requests/pages/CoachTrainingRequestsPage";
 
+const CommunityTrainingPlansPage = lazy(
+  () => import("./features/community-training-plans/pages/CommunityTrainingPlansPage")
+);
+
 function App() {
   return (
     <>
@@ -24,6 +29,14 @@ function App() {
       <Routes>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
+        <Route
+          path="/community-training-plans"
+          element={
+            <Suspense fallback={<div className="container mx-auto px-6 py-16">Loading plans...</div>}>
+              <CommunityTrainingPlansPage />
+            </Suspense>
+          }
+        />
 
         <Route path="/auth-redirect" element={<AuthRedirect />} />
 

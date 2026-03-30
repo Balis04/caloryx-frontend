@@ -1,0 +1,9 @@
+import { apiClient, buildApiUrl } from "@/lib/api-client";
+
+import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
+
+export const getCommunityTrainingPlans = async () =>
+  apiClient<CommunityTrainingPlan[]>("/api/community-training-plans");
+
+export const getCommunityTrainingPlanDownloadUrl = (downloadUrl: string) =>
+  buildApiUrl(downloadUrl);
