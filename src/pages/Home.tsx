@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import {
   AccentButton,
+  type AccentTone,
   CaloriexPage,
   FeatureCard,
   GlassCardSoft,
@@ -21,7 +22,7 @@ type HomeFeature = {
   title: string;
   description: string;
   eyebrow: string;
-  tone: "emerald" | "rose" | "violet" | "sky";
+  tone: AccentTone;
   signal: string;
   points: string[];
   path: string;
