@@ -91,8 +91,11 @@ export function CaloriexPage({ children, className }: HTMLAttributes<HTMLDivElem
   );
 }
 
-export function HeroBadge({ className, ...props }: ComponentProps<typeof Badge>) {
-  return <Badge variant="outline" className={cn("cx-hero-badge", className)} {...props} />;
+export function HeroBadge({
+  className,
+  ...props
+}: Omit<ComponentProps<typeof Badge>, "variant">) {
+  return <Badge {...props} variant="outline" className={cn("cx-hero-badge", className)} />;
 }
 
 export function GlassCard({ className, ...props }: ComponentProps<typeof Card>) {
@@ -220,16 +223,16 @@ export function AccentButton({
   tone,
   className,
   ...props
-}: { tone: AccentTone } & ButtonProps) {
+}: { tone: AccentTone } & Omit<ButtonProps, "variant">) {
   return (
     <Button
+      {...props}
       variant="outline"
       className={cn(
         "h-12 w-full rounded-2xl border shadow-sm backdrop-blur",
         ACCENT_STYLES[tone].button,
         className
       )}
-      {...props}
     />
   );
 }
