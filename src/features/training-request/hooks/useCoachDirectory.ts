@@ -101,7 +101,7 @@ const normalizeCoach = (
     contactNote: coach.contactNote?.trim() || "-",
     specialties: [
       coach.trainingFormat
-        ? `Format: ${coach.trainingFormat}`
+        ? `${coach.trainingFormat}`
         : "Format not provided",
       coach.maxCapacity ? `Capacity: ${coach.maxCapacity} people` : "Capacity not provided",
       coach.priceFrom != null || coach.priceTo != null
