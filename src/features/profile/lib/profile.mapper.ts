@@ -19,12 +19,15 @@ export const mapProfileToFormValues = (
     return initialProfileFormValues;
   }
 
+  const safeActualWeight =
+    profile.actualWeightKg > 0 ? profile.actualWeightKg : profile.startWeightKg;
+
   return {
     ...profile,
     birthDate: profile.birthDate ? profile.birthDate.split("T")[0] : "",
     heightCm: String(profile.heightCm ?? ""),
     startWeightKg: String(profile.startWeightKg ?? ""),
-    actualWeightKg: String(profile.actualWeightKg ?? ""),
+    actualWeightKg: String(safeActualWeight ?? ""),
     targetWeightKg: String(profile.targetWeightKg ?? ""),
     weeklyGoalKg: String(profile.weeklyGoalKg ?? ""),
     userRole: profile.role,
