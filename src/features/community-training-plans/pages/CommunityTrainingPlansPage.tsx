@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownToLine,
+  ArrowUpRight,
   Clock3,
   Dumbbell,
+  Orbit,
   Scale,
   ShieldCheck,
+  Sparkles,
   TrendingDown,
 } from "lucide-react";
 
@@ -31,7 +34,14 @@ type PlanVariant = {
   badgeLabel: string;
   accentClassName: string;
   surfaceClassName: string;
+  glowClassName: string;
+  iconWrapClassName: string;
+  badgeClassName: string;
+  buttonClassName: string;
   icon: typeof ShieldCheck;
+  signal: string;
+  recommendedFor: string;
+  highlights: string[];
 };
 
 const PLAN_VARIANTS: Record<PlanVariant["key"], PlanVariant> = {
@@ -40,36 +50,68 @@ const PLAN_VARIANTS: Record<PlanVariant["key"], PlanVariant> = {
     title: "Maintenance plan",
     subtitle: "Balanced weekly structure to maintain performance and recovery.",
     badgeLabel: "Maintenance",
-    accentClassName: "from-emerald-500/20 via-teal-500/10 to-transparent",
-    surfaceClassName: "border-emerald-200 bg-emerald-50/70",
+    accentClassName: "from-emerald-400/30 via-cyan-300/10 to-slate-950/0",
+    surfaceClassName: "border-emerald-300/40 bg-white/60",
+    glowClassName: "bg-emerald-400/20",
+    iconWrapClassName: "border-emerald-300/50 bg-emerald-100/70 text-emerald-950",
+    badgeClassName: "border-emerald-400/40 bg-emerald-200/50 text-emerald-950",
+    buttonClassName:
+      "border-emerald-300/50 bg-emerald-100/80 text-emerald-950 hover:bg-emerald-200/90",
     icon: ShieldCheck,
+    signal: "Stable output",
+    recommendedFor: "Users who want consistency, recovery, and a steady weekly rhythm.",
+    highlights: ["Recovery-friendly split", "Sustainable weekly volume", "Built for long-term adherence"],
   },
   weightloss: {
     key: "weightloss",
     title: "Weight loss plan",
     subtitle: "Higher activity volume with a clear structure for fat-loss phases.",
     badgeLabel: "Weight loss",
-    accentClassName: "from-orange-500/20 via-amber-500/10 to-transparent",
-    surfaceClassName: "border-orange-200 bg-orange-50/70",
+    accentClassName: "from-amber-300/35 via-orange-300/15 to-slate-950/0",
+    surfaceClassName: "border-amber-300/40 bg-white/60",
+    glowClassName: "bg-amber-300/20",
+    iconWrapClassName: "border-amber-300/50 bg-amber-100/80 text-amber-950",
+    badgeClassName: "border-amber-400/40 bg-amber-200/60 text-amber-950",
+    buttonClassName:
+      "border-amber-300/50 bg-amber-100/80 text-amber-950 hover:bg-amber-200/90",
     icon: TrendingDown,
+    signal: "Lean phase",
+    recommendedFor: "Users in a calorie deficit who still want structure and momentum.",
+    highlights: ["More output per week", "Conditioning support", "Fat-loss friendly exercise flow"],
   },
   bulk: {
     key: "bulk",
     title: "Muscle gain plan",
     subtitle: "Progressive overload oriented split for gaining size and strength.",
     badgeLabel: "Bulk",
-    accentClassName: "from-sky-500/20 via-cyan-500/10 to-transparent",
-    surfaceClassName: "border-sky-200 bg-sky-50/70",
+    accentClassName: "from-sky-300/30 via-cyan-300/15 to-slate-950/0",
+    surfaceClassName: "border-sky-300/40 bg-white/60",
+    glowClassName: "bg-sky-300/20",
+    iconWrapClassName: "border-sky-300/50 bg-sky-100/80 text-sky-950",
+    badgeClassName: "border-sky-400/40 bg-sky-200/55 text-sky-950",
+    buttonClassName:
+      "border-sky-300/50 bg-sky-100/80 text-sky-950 hover:bg-sky-200/90",
     icon: Dumbbell,
+    signal: "Growth cycle",
+    recommendedFor: "Users aiming for extra training volume, muscle gain, and stronger main lifts.",
+    highlights: ["Hypertrophy-forward", "Extra working sets", "Strength and size emphasis"],
   },
   generic: {
     key: "generic",
     title: "Community plan",
     subtitle: "Download a ready-to-use public training plan assembled by the platform.",
     badgeLabel: "Community",
-    accentClassName: "from-slate-500/20 via-slate-400/10 to-transparent",
-    surfaceClassName: "border-slate-200 bg-slate-50/70",
+    accentClassName: "from-violet-300/30 via-cyan-300/10 to-slate-950/0",
+    surfaceClassName: "border-slate-300/40 bg-white/60",
+    glowClassName: "bg-cyan-300/20",
+    iconWrapClassName: "border-slate-300/50 bg-slate-100/80 text-slate-950",
+    badgeClassName: "border-slate-400/40 bg-slate-200/60 text-slate-950",
+    buttonClassName:
+      "border-slate-300/50 bg-slate-100/80 text-slate-950 hover:bg-slate-200/90",
     icon: ShieldCheck,
+    signal: "Open access",
+    recommendedFor: "Anyone who wants a fast starting point before moving to a custom plan.",
+    highlights: ["Public PDF library", "Instant download", "Useful baseline structure"],
   },
 };
 
@@ -128,6 +170,8 @@ const formatDate = (value: string) =>
     day: "numeric",
   }).format(new Date(value));
 
+const getPlanCountLabel = (count: number) => `${count.toString().padStart(2, "0")} online`;
+
 export default function CommunityTrainingPlansPage() {
   const [plans, setPlans] = useState<CommunityTrainingPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -180,41 +224,102 @@ export default function CommunityTrainingPlansPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <section className="border-b bg-gradient-to-b from-slate-100 via-background to-background">
-        <div className="container mx-auto px-6 py-16">
-          <div className="max-w-3xl space-y-5">
-            <Badge variant="outline" className="bg-background/80">
-              Public training library
-            </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-              Ready-made training plans you can download right away.
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Pick the goal that fits your current phase and start with a pre-generated PDF.
-              Each plan is public, instant to download, and designed to give users a fast
-              starting point before requesting custom coaching.
-            </p>
+    <div className="relative min-h-screen overflow-hidden bg-[#f3f7fb] text-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(110,231,183,0.22),_transparent_26%),radial-gradient(circle_at_top_right,_rgba(125,211,252,0.18),_transparent_28%),linear-gradient(180deg,_rgba(255,255,255,0.82),_rgba(239,246,255,0.94))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40" />
+      <div className="absolute left-[10%] top-24 h-48 w-48 rounded-full bg-emerald-300/20 blur-3xl" />
+      <div className="absolute right-[12%] top-12 h-64 w-64 rounded-full bg-sky-300/20 blur-3xl" />
+
+      <section className="relative border-b border-white/40">
+        <div className="container mx-auto px-6 py-16 md:py-20">
+          <div className="grid gap-10 lg:grid-cols-[1.35fr_0.9fr] lg:items-end">
+            <div className="space-y-6">
+              <Badge
+                variant="outline"
+                className="border-cyan-300/40 bg-white/65 px-4 py-1 text-[11px] uppercase tracking-[0.35em] text-slate-700 backdrop-blur"
+              >
+                Community training plans
+              </Badge>
+
+              <div className="space-y-4">
+                <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-slate-950 md:text-7xl">
+                  Find the right training plan for maintenance, fat loss, or muscle gain.
+                </h1>
+                <p className="max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
+                  Choose a ready-made community program and download it instantly. These plans
+                  are meant to give users a clear starting point based on their current goal,
+                  whether that is maintaining, cutting, or building muscle.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur">
+                  Instant PDF download
+                </div>
+                <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur">
+                  Goal-based presets
+                </div>
+                <div className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur">
+                  Community-ready programs
+                </div>
+              </div>
+            </div>
+
+            <Card className="overflow-hidden border-white/50 bg-white/55 shadow-[0_20px_80px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl">
+              <CardContent className="p-0">
+                <div className="border-b border-white/50 px-6 py-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
+                        Signal board
+                      </p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                        Public plan library
+                      </h2>
+                    </div>
+                    <div className="rounded-full border border-cyan-300/40 bg-cyan-100/60 p-3 text-slate-700">
+                      <Orbit className="h-5 w-5" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 p-6 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/60 bg-white/65 p-4 backdrop-blur">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Plans</p>
+                    <p className="mt-3 text-3xl font-semibold">{getPlanCountLabel(sortedPlans.length)}</p>
+                    <p className="mt-2 text-sm text-slate-600">Maintenance, fat loss, and muscle gain plans.</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/60 bg-white/65 p-4 backdrop-blur">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Access</p>
+                    <p className="mt-3 text-3xl font-semibold">Instant</p>
+                    <p className="mt-2 text-sm text-slate-600">Download a PDF immediately and start training.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      <section className="container mx-auto px-6 py-12">
+      <section className="relative container mx-auto px-6 py-12 md:py-16">
         {isLoading ? (
           <div className="grid gap-6 lg:grid-cols-3">
             {[0, 1, 2].map((item) => (
-              <Card key={item} className="overflow-hidden">
-                <div className="h-40 animate-pulse bg-muted" />
+              <Card
+                key={item}
+                className="overflow-hidden border-white/60 bg-white/55 backdrop-blur-xl"
+              >
+                <div className="h-52 animate-pulse bg-slate-200/70" />
                 <CardContent className="space-y-3 p-6">
-                  <div className="h-4 w-24 animate-pulse rounded bg-muted" />
-                  <div className="h-6 w-2/3 animate-pulse rounded bg-muted" />
-                  <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                  <div className="h-4 w-24 animate-pulse rounded bg-slate-200/70" />
+                  <div className="h-6 w-2/3 animate-pulse rounded bg-slate-200/70" />
+                  <div className="h-4 w-full animate-pulse rounded bg-slate-200/70" />
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : error ? (
-          <Card className="border-destructive/30">
+          <Card className="border-red-200/70 bg-white/70 backdrop-blur-xl">
             <CardHeader>
               <CardTitle>Community plans are currently unavailable</CardTitle>
               <CardDescription>{error}</CardDescription>
@@ -229,80 +334,120 @@ export default function CommunityTrainingPlansPage() {
               return (
                 <Card
                   key={plan.fileName}
-                  className="group overflow-hidden border-border/70 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
+                  className="group relative overflow-hidden border-white/60 bg-white/50 shadow-[0_22px_70px_-28px_rgba(15,23,42,0.35)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_30px_90px_-28px_rgba(15,23,42,0.4)]"
                 >
-                  <div className={`bg-gradient-to-br p-5 ${variant.accentClassName}`}>
+                  <div className={`absolute inset-x-8 top-6 h-24 rounded-full blur-3xl ${variant.glowClassName}`} />
+
+                  <div className={`relative bg-gradient-to-br p-5 ${variant.accentClassName}`}>
                     <div
-                      className={`rounded-2xl border p-5 shadow-sm backdrop-blur ${variant.surfaceClassName}`}
+                      className={`rounded-[28px] border p-5 shadow-sm backdrop-blur-xl ${variant.surfaceClassName}`}
                     >
                       <div className="mb-6 flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
+                          <p className="text-xs font-medium uppercase tracking-[0.32em] text-slate-500">
                             Goal focus
                           </p>
-                          <h2 className="mt-2 text-2xl font-semibold">{variant.title}</h2>
+                          <h2 className="mt-3 text-2xl font-semibold tracking-tight">{variant.title}</h2>
                         </div>
-                        <div className="rounded-full bg-background/80 p-3">
+                        <div
+                          className={`rounded-2xl border p-3 shadow-sm backdrop-blur ${variant.iconWrapClassName}`}
+                        >
                           <Icon className="h-5 w-5" />
                         </div>
                       </div>
 
-                      <div className="rounded-2xl border border-dashed bg-background/80 p-5">
-                        <div className="grid gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 rounded-full bg-foreground/70" />
-                            <span>{variant.subtitle}</span>
+                      <div className="rounded-[24px] border border-white/60 bg-white/60 p-5">
+                        <div className="mb-4 flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500">
+                              Signal
+                            </p>
+                            <p className="mt-2 text-lg font-semibold text-slate-900">
+                              {variant.signal}
+                            </p>
                           </div>
+                          <Sparkles className="h-5 w-5 text-slate-500" />
+                        </div>
+
+                        <div className="grid gap-3 text-sm text-slate-600">
                           <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 rounded-full bg-foreground/70" />
-                            <span>Ready-made PDF you can download immediately.</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 rounded-full bg-foreground/70" />
-                            <span>Good starting point before requesting a custom coach plan.</span>
+                            <div className="h-2 w-2 rounded-full bg-slate-700" />
+                            <span>{variant.recommendedFor}</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <CardHeader className="space-y-3">
-                    <Badge variant="secondary" className="w-fit">
-                      {variant.badgeLabel}
-                    </Badge>
-                    <CardTitle className="text-2xl">{variant.title}</CardTitle>
-                    <CardDescription className="text-sm leading-6">
+                  <CardHeader className="space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <Badge
+                        variant="outline"
+                        className={`w-fit border backdrop-blur ${variant.badgeClassName}`}
+                      >
+                        {variant.badgeLabel}
+                      </Badge>
+                      <span className="text-xs uppercase tracking-[0.24em] text-slate-400">
+                        CalorieX community
+                      </span>
+                    </div>
+                    <CardTitle className="text-2xl tracking-tight text-slate-950">
+                      {variant.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm leading-7 text-slate-600">
                       {variant.subtitle}
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="space-y-5">
+                  <CardContent className="space-y-6">
+                    <div className="grid gap-3">
+                      {variant.highlights.map((highlight) => (
+                        <div
+                          key={highlight}
+                          className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/60 px-4 py-3 text-sm text-slate-700 backdrop-blur"
+                        >
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-white">
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </div>
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="rounded-xl border bg-muted/40 p-3">
-                        <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+                      <div className="rounded-[22px] border border-white/70 bg-white/65 p-4 backdrop-blur">
+                        <div className="mb-3 flex items-center gap-2 text-slate-500">
                           <Scale className="h-4 w-4" />
                           Size
                         </div>
-                        <p className="font-medium text-foreground">{formatFileSize(plan.size)}</p>
+                        <p className="text-lg font-semibold text-slate-950">
+                          {formatFileSize(plan.size)}
+                        </p>
                       </div>
-                      <div className="rounded-xl border bg-muted/40 p-3">
-                        <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+                      <div className="rounded-[22px] border border-white/70 bg-white/65 p-4 backdrop-blur">
+                        <div className="mb-3 flex items-center gap-2 text-slate-500">
                           <Clock3 className="h-4 w-4" />
                           Updated
                         </div>
-                        <p className="font-medium text-foreground">{formatDate(plan.lastModified)}</p>
+                        <p className="text-lg font-semibold text-slate-950">
+                          {formatDate(plan.lastModified)}
+                        </p>
                       </div>
                     </div>
 
-                    <div className="rounded-xl border border-dashed bg-muted/30 p-3 text-sm text-muted-foreground">
-                      File: <span className="font-medium text-foreground">{plan.fileName}</span>
+                    <div className="rounded-[22px] border border-dashed border-white/70 bg-white/55 p-4 text-sm text-slate-600 backdrop-blur">
+                      <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500">
+                        Source file
+                      </p>
+                      <p className="mt-2 font-medium text-slate-900">{plan.fileName}</p>
                     </div>
 
-                    <Button asChild className="w-full">
-                      <a
-                        href={getCommunityTrainingPlanDownloadUrl(plan.downloadUrl)}
-                        download
-                      >
+                    <Button
+                      asChild
+                      variant="outline"
+                      className={`h-12 w-full rounded-2xl border shadow-sm backdrop-blur ${variant.buttonClassName}`}
+                    >
+                      <a href={getCommunityTrainingPlanDownloadUrl(plan.downloadUrl)} download>
                         <ArrowDownToLine />
                         Download PDF
                       </a>
@@ -313,6 +458,38 @@ export default function CommunityTrainingPlansPage() {
             })}
           </div>
         )}
+      </section>
+
+      <section className="relative container mx-auto px-6 pb-16">
+        <Card className="overflow-hidden border-white/60 bg-white/50 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.25)] backdrop-blur-xl">
+          <CardContent className="grid gap-8 p-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.34em] text-slate-500">
+                Community downloads
+              </p>
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-950">
+                Start with a ready-made plan, then move to a custom one when you need more.
+              </h2>
+              <p className="max-w-2xl text-base leading-8 text-slate-600">
+                These community PDFs are a quick entry point for users who want structure
+                right away. They work well as a starting layer before choosing a coach and
+                requesting a more personalized training plan.
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="rounded-[24px] border border-white/70 bg-white/65 p-4 text-sm text-slate-700 backdrop-blur">
+                Maintenance: balanced volume for steady performance and recovery.
+              </div>
+              <div className="rounded-[24px] border border-white/70 bg-white/65 p-4 text-sm text-slate-700 backdrop-blur">
+                Weight loss: higher output and structure for deficit phases.
+              </div>
+              <div className="rounded-[24px] border border-white/70 bg-white/65 p-4 text-sm text-slate-700 backdrop-blur">
+                Bulk: extra workload and progression focus for muscle gain phases.
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </section>
     </div>
   );
