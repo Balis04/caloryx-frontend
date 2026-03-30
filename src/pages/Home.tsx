@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRightLeft, Dumbbell, Flame } from "lucide-react";
+import { ArrowDownToLine, ArrowRightLeft, Dumbbell, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
       </section>
 
       <section className="container mx-auto px-6 py-1">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
           <Card className="hover:shadow-lg transition">
             <button
               type="button"
@@ -65,6 +65,22 @@ export default function Home() {
               </CardHeader>
               <CardContent className="text-muted-foreground">
                 Track the status of incoming or sent training plan requests.
+              </CardContent>
+            </button>
+          </Card>
+
+          <Card className="hover:shadow-lg transition">
+            <button
+              type="button"
+              onClick={() => navigate("/community-training-plans")}
+              className="w-full text-left cursor-pointer"
+            >
+              <CardHeader>
+                <ArrowDownToLine className="w-8 h-8 text-primary mb-4" />
+                <CardTitle>Community Plans</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                Download ready-made maintenance, weight loss, and bulk PDF plans.
               </CardContent>
             </button>
           </Card>
