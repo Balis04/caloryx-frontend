@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
 
 export default function Navbar() {
-  const { authState, isAuthenticated, login, logout, hasAnyRole } = useAuth();
+  const { isAuthenticated, login, logout, hasAnyRole } = useAuth();
   const navigate = useNavigate();
   const isCoach = hasAnyRole("COACH");
 
@@ -16,16 +16,32 @@ export default function Navbar() {
         alignItems: "center",
       }}
     >
-      <div onClick={() => navigate("/")} style={{ fontWeight: 600 }}>
-        CalorieX
-      </div>
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+        }}
+        aria-label="Go to home page"
+      >
+        <img
+          src="/logo2.png"
+          alt="CalorieX"
+          style={{
+            height: "42px",
+            width: "auto",
+            display: "block",
+          }}
+        />
+      </button>
 
       {isAuthenticated ? (
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <span style={{ fontSize: "0.9rem", color: "#666" }}>
-            {authState?.email}
-          </span>
-
           {isCoach && (
             <button onClick={() => navigate("/coach-profile")}>
               Coach Profile
