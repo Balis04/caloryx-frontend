@@ -1,7 +1,10 @@
+import { Check, Clock3, Download, Mail, UserRound, X } from "lucide-react";
+
+import { GlassCard, GlassCardSoft, GlassChip } from "@/components/caloriex";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Clock3, Mail, UserRound, X } from "lucide-react";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   formatDate,
   getTrainingPlanDescription,
@@ -63,94 +66,114 @@ export default function CoachRequestCard({
   const canApprove = request.status === "PENDING" || request.status === "REJECTED";
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="border-b">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-xl">{request.requesterName}</CardTitle>
-            <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2">
+    <GlassCard className="overflow-hidden">
+      <CardHeader className="border-b border-white/50 pb-5">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <CardTitle className="text-2xl font-semibold tracking-tight text-slate-950">
+                {request.requesterName}
+              </CardTitle>
+              <Badge variant={statusVariantMap[request.status] ?? "secondary"} className="rounded-full">
+                {statusLabelMap[request.status] ?? request.status}
+              </Badge>
+            </div>
+
+            <div className="flex flex-wrap gap-2 text-sm text-slate-600">
+              <GlassChip className="flex items-center gap-2">
                 <UserRound className="h-4 w-4" />
                 Client
-              </span>
-              <span className="flex items-center gap-2">
+              </GlassChip>
+              <GlassChip className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 {request.requesterEmail}
-              </span>
-              <span className="flex items-center gap-2">
+              </GlassChip>
+              <GlassChip className="flex items-center gap-2">
                 <Clock3 className="h-4 w-4" />
                 {formatDate(request.createdAt)}
-              </span>
+              </GlassChip>
             </div>
           </div>
-          <Badge variant={statusVariantMap[request.status] ?? "secondary"}>
-            {statusLabelMap[request.status] ?? request.status}
-          </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-5 pt-6">
+      <CardContent className="space-y-5 p-6">
         <TrainingRequestMetrics request={request} />
-        <RequestTextPanel label="Client note" value={request.requestDescription} />
-        <RequestTextPanel
-          label="Statusz comment"
-          value={decisionDescription || "No status comment yet."}
-        />
 
-        {isClosedTab && (
+        <div className="grid gap-4 xl:grid-cols-2">
+          <RequestTextPanel label="Client note" value={request.requestDescription} />
+          <RequestTextPanel
+            label="Status comment"
+            value={decisionDescription || "No status comment yet."}
+          />
+        </div>
+
+        {isClosedTab ? (
           <>
-            {getTrainingPlanName(request) && (
+            {getTrainingPlanName(request) ? (
               <RequestTextPanel label="Training plan name" value={getTrainingPlanName(request)} />
-            )}
-            {getTrainingPlanDescription(request) && (
+            ) : null}
+            {getTrainingPlanDescription(request) ? (
               <RequestTextPanel
                 label="Training plan description"
                 value={getTrainingPlanDescription(request)}
               />
-            )}
-            <div className="rounded-xl border bg-background p-4 text-sm">
-              <p className="font-medium">Training plan fajl</p>
-              <div className="mt-2 space-y-2 text-muted-foreground">
-                {getTrainingPlanFileName(request) && <p>File name: {getTrainingPlanFileName(request)}</p>}
-                {request.uploadedAt && <p>Uploaded: {formatDate(request.uploadedAt)}</p>}
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isDownloading}
-                  onClick={onDownloadTrainingPlan}
-                >
-                  {isDownloading ? "Downloading..." : "Download training plan"}
-                </Button>
-              </div>
-            </div>
-          </>
-        )}
+            ) : null}
 
-        {!isApprovedTab && !isClosedTab && (
+            <GlassCardSoft>
+              <CardContent className="p-5 text-sm">
+                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Training plan file</p>
+                <div className="mt-4 space-y-2 text-slate-600">
+                  {getTrainingPlanFileName(request) ? (
+                    <p>File name: {getTrainingPlanFileName(request)}</p>
+                  ) : null}
+                  {request.uploadedAt ? <p>Uploaded: {formatDate(request.uploadedAt)}</p> : null}
+                </div>
+                <div className="mt-5 flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={isDownloading}
+                    onClick={onDownloadTrainingPlan}
+                    className="rounded-full"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    {isDownloading ? "Downloading..." : "Download training plan"}
+                  </Button>
+                </div>
+              </CardContent>
+            </GlassCardSoft>
+          </>
+        ) : null}
+
+        {!isApprovedTab && !isClosedTab ? (
           <>
-            <div className="rounded-xl border bg-background p-4 text-sm">
-              <label htmlFor={`decision-description-${request.id}`} className="font-medium">
-                Statusz comment
-              </label>
-              <textarea
-                id={`decision-description-${request.id}`}
-                className="mt-2 min-h-28 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="Explain why you approved or rejected the request."
-                value={decisionDescription}
-                onChange={(event) => onDecisionDescriptionChange(event.target.value)}
-                disabled={isUpdating}
-              />
-              <p className="mt-2 text-xs text-muted-foreground">
-                A comment is required when changing the status, and the user will be able to see it.
-              </p>
-            </div>
+            <GlassCardSoft>
+              <CardContent className="p-5 text-sm">
+                <label
+                  htmlFor={`decision-description-${request.id}`}
+                  className="text-xs uppercase tracking-[0.32em] text-slate-500"
+                >
+                  Status comment
+                </label>
+                <textarea
+                  id={`decision-description-${request.id}`}
+                  className="mt-3 min-h-28 w-full rounded-3xl border border-white/70 bg-white/80 px-4 py-3 text-sm outline-none ring-offset-background placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  placeholder="Explain why you approved or rejected the request."
+                  value={decisionDescription}
+                  onChange={(event) => onDecisionDescriptionChange(event.target.value)}
+                  disabled={isUpdating}
+                />
+                <p className="mt-3 text-xs text-slate-500">
+                  A comment is required when changing the status, and the user will be able to see it.
+                </p>
+              </CardContent>
+            </GlassCardSoft>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
               <Button
                 variant="outline"
-                className="gap-2"
+                className="gap-2 rounded-full"
                 disabled={isUpdating || !canSubmit || !canReject}
                 onClick={() => onStatusChange("REJECTED")}
               >
@@ -158,7 +181,7 @@ export default function CoachRequestCard({
                 {isUpdating ? "Updating..." : "Reject"}
               </Button>
               <Button
-                className="gap-2"
+                className="gap-2 rounded-full"
                 disabled={isUpdating || !canSubmit || !canApprove}
                 onClick={() => onStatusChange("APPROVED")}
               >
@@ -167,9 +190,9 @@ export default function CoachRequestCard({
               </Button>
             </div>
           </>
-        )}
+        ) : null}
 
-        {isApprovedTab && (
+        {isApprovedTab ? (
           <TrainingPlanEditor
             draft={approvedDraft}
             isExpanded={isExpanded}
@@ -179,8 +202,8 @@ export default function CoachRequestCard({
             onToggle={onToggleTrainingPlanEditor}
             request={request}
           />
-        )}
+        ) : null}
       </CardContent>
-    </Card>
+    </GlassCard>
   );
 }

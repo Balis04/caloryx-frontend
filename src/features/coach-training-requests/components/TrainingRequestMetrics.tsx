@@ -1,3 +1,5 @@
+import { GlassMetric } from "@/components/caloriex";
+
 import type { CoachTrainingRequest } from "../model/coach-training-request.model";
 
 interface Props {
@@ -6,19 +8,22 @@ interface Props {
 
 export default function TrainingRequestMetrics({ request }: Props) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <div className="rounded-xl border bg-muted/20 p-4 text-sm">
-        <p className="font-medium">Weekly sessions</p>
-        <p className="mt-2 text-muted-foreground">{request.weeklyTrainingCount} sessions</p>
-      </div>
-      <div className="rounded-xl border bg-muted/20 p-4 text-sm">
-        <p className="font-medium">Session length</p>
-        <p className="mt-2 text-muted-foreground">{request.sessionDurationMinutes} minutes</p>
-      </div>
-      <div className="rounded-xl border bg-muted/20 p-4 text-sm">
-        <p className="font-medium">Preferred location</p>
-        <p className="mt-2 text-muted-foreground">{request.preferredLocation}</p>
-      </div>
+    <div className="grid gap-3 md:grid-cols-3">
+      <GlassMetric
+        label="Weekly sessions"
+        value={`${request.weeklyTrainingCount}`}
+        description="Planned training frequency per week."
+      />
+      <GlassMetric
+        label="Session length"
+        value={`${request.sessionDurationMinutes} min`}
+        description="Preferred session duration from the requester."
+      />
+      <GlassMetric
+        label="Location"
+        value={request.preferredLocation}
+        description="Preferred place for workouts."
+      />
     </div>
   );
 }

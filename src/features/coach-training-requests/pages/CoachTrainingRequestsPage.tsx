@@ -1,9 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
-import CoachRequestCard from "../components/CoachRequestCard";
-import TrainingRequestsHeader from "../components/TrainingRequestsHeader";
-import UserRequestCard from "../components/UserRequestCard";
+import { CaloriexPage, HeroBadge, PageHero } from "@/components/caloriex";
+
+import TrainingRequestsContent from "../components/TrainingRequestsContent";
+import TrainingRequestsHeroAside from "../components/TrainingRequestsHeroAside";
+import TrainingRequestsOverviewPanel from "../components/TrainingRequestsOverviewPanel";
 import { useCoachTrainingRequests } from "../hooks/useCoachTrainingRequests";
-import { createTrainingPlanDraft } from "../lib/coach-training-requests.utils";
 
 export default function CoachTrainingRequestsPage() {
   const {
@@ -37,92 +37,53 @@ export default function CoachTrainingRequestsPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-72px)] bg-muted/30 px-4 py-6">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        {error && (
-          <Card className="border-red-300 bg-red-50">
-            <CardContent className="p-4 text-sm text-red-700">{error}</CardContent>
-          </Card>
-        )}
-
-        <Card className="border-t-4 border-t-primary shadow-lg">
-          <TrainingRequestsHeader
-            isCoach={isCoach}
+    <CaloriexPage>
+      <PageHero
+        badge={<HeroBadge>Training requests</HeroBadge>}
+        title="Manage coaching decisions and plan delivery from one shared workspace."
+        description="Incoming coach requests, outgoing user submissions, approval notes, and uploaded plans now live inside the same CalorieX design system."
+        chips={[
+          showCoachIncomingRequests ? "Coach inbox" : "User history",
+          `${visibleRequests.length} visible request${visibleRequests.length === 1 ? "" : "s"}`,
+          ...(showCoachIncomingRequests ? [coachRequestFilter] : []),
+        ]}
+        aside={
+          <TrainingRequestsHeroAside
+            coachRequestFilter={coachRequestFilter}
             showCoachIncomingRequests={showCoachIncomingRequests}
+            visibleCount={visibleRequests.length}
+          />
+        }
+      />
+
+      <section className="relative container mx-auto px-6 py-12 md:py-16">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
+          <TrainingRequestsContent
             coachRequestFilter={coachRequestFilter}
             coachViewMode={coachViewMode}
+            decisionDescriptions={decisionDescriptions}
+            downloadingRequestId={downloadingRequestId}
+            error={error}
+            expandedApprovedRequestId={expandedApprovedRequestId}
+            isCoach={isCoach}
+            onDecisionDescriptionsChange={setDecisionDescriptions}
+            onDownloadTrainingPlan={downloadTrainingPlan}
+            onExpandedApprovedRequestIdChange={setExpandedApprovedRequestId}
             onFilterChange={setCoachRequestFilter}
+            onSaveTrainingPlan={saveTrainingPlan}
+            onTrainingPlanDraftsChange={setTrainingPlanDrafts}
+            onUpdateRequestStatus={updateRequestStatus}
             onViewModeChange={setCoachViewMode}
+            savingApprovedRequestId={savingApprovedRequestId}
+            showCoachIncomingRequests={showCoachIncomingRequests}
+            trainingPlanDrafts={trainingPlanDrafts}
+            updatingRequestId={updatingRequestId}
+            visibleRequests={visibleRequests}
           />
 
-          <CardContent className="space-y-6 pt-6">
-            {visibleRequests.length === 0 ? (
-              <Card className="border-dashed">
-                <CardContent className="p-6 text-sm text-muted-foreground">
-                  {showCoachIncomingRequests
-                    ? coachRequestFilter === "pending"
-                      ? "There are currently no pending requests."
-                      : coachRequestFilter === "approved"
-                        ? "There are currently no approved requests."
-                        : coachRequestFilter === "rejected"
-                          ? "There are currently no rejected requests."
-                          : "There are currently no completed requests."
-                    : "You have not sent any training plan requests yet."}
-                </CardContent>
-              </Card>
-            ) : showCoachIncomingRequests ? (
-              <div className="grid gap-6">
-                {visibleRequests.map((request) => (
-                  <CoachRequestCard
-                    key={request.id}
-                    approvedDraft={
-                      trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request)
-                    }
-                    decisionDescription={decisionDescriptions[request.id] ?? ""}
-                    downloadingRequestId={downloadingRequestId}
-                    expandedApprovedRequestId={expandedApprovedRequestId}
-                    filter={coachRequestFilter}
-                    onApprovedDraftChange={(draft) =>
-                      setTrainingPlanDrafts((prev) => ({ ...prev, [request.id]: draft }))
-                    }
-                    onDownloadTrainingPlan={() => void downloadTrainingPlan(request)}
-                    onDecisionDescriptionChange={(value) =>
-                      setDecisionDescriptions((prev) => ({ ...prev, [request.id]: value }))
-                    }
-                    onSaveTrainingPlan={() => void saveTrainingPlan(request)}
-                    onStatusChange={(status) =>
-                      void updateRequestStatus(
-                        request.id,
-                        status,
-                        decisionDescriptions[request.id] ?? ""
-                      )
-                    }
-                    onToggleTrainingPlanEditor={() =>
-                      setExpandedApprovedRequestId((prev) =>
-                        prev === request.id ? null : request.id
-                      )
-                    }
-                    request={request}
-                    savingApprovedRequestId={savingApprovedRequestId}
-                    updatingRequestId={updatingRequestId}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {visibleRequests.map((request) => (
-                  <UserRequestCard
-                    key={request.id}
-                    downloadingRequestId={downloadingRequestId}
-                    onDownloadTrainingPlan={() => void downloadTrainingPlan(request)}
-                    request={request}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          <TrainingRequestsOverviewPanel showCoachIncomingRequests={showCoachIncomingRequests} />
+        </div>
+      </section>
+    </CaloriexPage>
   );
 }

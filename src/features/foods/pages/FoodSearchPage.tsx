@@ -62,11 +62,15 @@ const TAB_META: Record<MainTab, { label: string; description: string }> = {
 const formatDateLabel = (date?: string) => {
   if (!date) return "Today";
 
+  const parsedDate = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return date;
+  }
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }).format(new Date(`${date}T00:00:00`));
+  }).format(parsedDate);
 };
 
 const toNumber = (value: string): number => {
