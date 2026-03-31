@@ -1,0 +1,153 @@
+import { GlassCard } from "@/components/caloriex";
+import { CardContent } from "@/components/ui/card";
+
+import { createTrainingPlanDraft } from "../lib/coach-training-requests.utils";
+import type {
+  CoachRequestFilter,
+  CoachRequestViewMode,
+  CoachTrainingRequest,
+  TrainingPlanDraft,
+  TrainingRequestStatus,
+} from "../model/coach-training-request.model";
+import CoachRequestCard from "./CoachRequestCard";
+import TrainingRequestsHeader from "./TrainingRequestsHeader";
+import UserRequestCard from "./UserRequestCard";
+
+interface Props {
+  coachRequestFilter: CoachRequestFilter;
+  coachViewMode: CoachRequestViewMode;
+  decisionDescriptions: Record<string, string>;
+  downloadingRequestId: string | null;
+  error: string | null;
+  expandedApprovedRequestId: string | null;
+  isCoach: boolean;
+  onDecisionDescriptionsChange: React.Dispatch<
+    React.SetStateAction<Record<string, string>>
+  >;
+  onExpandedApprovedRequestIdChange: React.Dispatch<React.SetStateAction<string | null>>;
+  onFilterChange: (value: CoachRequestFilter) => void;
+  onTrainingPlanDraftsChange: React.Dispatch<
+    React.SetStateAction<Record<string, TrainingPlanDraft>>
+  >;
+  onViewModeChange: (value: CoachRequestViewMode) => void;
+  onDownloadTrainingPlan: (request: CoachTrainingRequest) => Promise<void>;
+  onSaveTrainingPlan: (request: CoachTrainingRequest) => Promise<void>;
+  onUpdateRequestStatus: (
+    trainingRequestId: string,
+    status: TrainingRequestStatus,
+    coachResponse: string
+  ) => Promise<void>;
+  savingApprovedRequestId: string | null;
+  showCoachIncomingRequests: boolean;
+  trainingPlanDrafts: Record<string, TrainingPlanDraft>;
+  updatingRequestId: string | null;
+  visibleRequests: CoachTrainingRequest[];
+}
+
+export default function TrainingRequestsContent({
+  coachRequestFilter,
+  coachViewMode,
+  decisionDescriptions,
+  downloadingRequestId,
+  error,
+  expandedApprovedRequestId,
+  isCoach,
+  onDecisionDescriptionsChange,
+  onExpandedApprovedRequestIdChange,
+  onFilterChange,
+  onTrainingPlanDraftsChange,
+  onViewModeChange,
+  onDownloadTrainingPlan,
+  onSaveTrainingPlan,
+  onUpdateRequestStatus,
+  savingApprovedRequestId,
+  showCoachIncomingRequests,
+  trainingPlanDrafts,
+  updatingRequestId,
+  visibleRequests,
+}: Props) {
+  const emptyMessage = showCoachIncomingRequests
+    ? coachRequestFilter === "pending"
+      ? "There are currently no pending requests."
+      : coachRequestFilter === "approved"
+        ? "There are currently no approved requests."
+        : coachRequestFilter === "rejected"
+          ? "There are currently no rejected requests."
+          : "There are currently no completed requests."
+    : "You have not sent any training plan requests yet.";
+
+  return (
+    <div className="space-y-6">
+      {error ? (
+        <GlassCard className="border-red-300/70 bg-red-50/70">
+          <CardContent className="p-4 text-sm text-red-700">{error}</CardContent>
+        </GlassCard>
+      ) : null}
+
+      <TrainingRequestsHeader
+        isCoach={isCoach}
+        showCoachIncomingRequests={showCoachIncomingRequests}
+        coachRequestFilter={coachRequestFilter}
+        coachViewMode={coachViewMode}
+        onFilterChange={onFilterChange}
+        onViewModeChange={onViewModeChange}
+      />
+
+      {visibleRequests.length === 0 ? (
+        <GlassCard>
+          <CardContent className="py-16 text-center">
+            <p className="text-lg font-semibold text-slate-950">{emptyMessage}</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Change the active view or come back later when a new request arrives.
+            </p>
+          </CardContent>
+        </GlassCard>
+      ) : showCoachIncomingRequests ? (
+        <div className="grid gap-6">
+          {visibleRequests.map((request) => (
+            <CoachRequestCard
+              key={request.id}
+              approvedDraft={trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request)}
+              decisionDescription={decisionDescriptions[request.id] ?? ""}
+              downloadingRequestId={downloadingRequestId}
+              expandedApprovedRequestId={expandedApprovedRequestId}
+              filter={coachRequestFilter}
+              onApprovedDraftChange={(draft) =>
+                onTrainingPlanDraftsChange((prev) => ({ ...prev, [request.id]: draft }))
+              }
+              onDownloadTrainingPlan={() => void onDownloadTrainingPlan(request)}
+              onDecisionDescriptionChange={(value) =>
+                onDecisionDescriptionsChange((prev) => ({ ...prev, [request.id]: value }))
+              }
+              onSaveTrainingPlan={() => void onSaveTrainingPlan(request)}
+              onStatusChange={(status) =>
+                void onUpdateRequestStatus(
+                  request.id,
+                  status,
+                  decisionDescriptions[request.id] ?? ""
+                )
+              }
+              onToggleTrainingPlanEditor={() =>
+                onExpandedApprovedRequestIdChange((prev) => (prev === request.id ? null : request.id))
+              }
+              request={request}
+              savingApprovedRequestId={savingApprovedRequestId}
+              updatingRequestId={updatingRequestId}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          {visibleRequests.map((request) => (
+            <UserRequestCard
+              key={request.id}
+              downloadingRequestId={downloadingRequestId}
+              onDownloadTrainingPlan={() => void onDownloadTrainingPlan(request)}
+              request={request}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
