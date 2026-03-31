@@ -14,11 +14,11 @@ import {
   CaloriexPage,
   FeatureCard,
   GlassCard,
-  GlassCardSoft,
-  GlassChip,
   GlassMetric,
   HeroBadge,
-} from "@/components/caloriex/design-system";
+  PageHero,
+  SummaryPanel,
+} from "@/components/caloriex";
 import {
   CardContent,
   CardHeader,
@@ -199,65 +199,28 @@ export default function CommunityTrainingPlansPage() {
 
   return (
     <CaloriexPage>
-      <section className="relative border-b border-white/40">
-        <div className="container mx-auto px-6 py-16 md:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.35fr_0.9fr] lg:items-end">
-            <div className="space-y-6">
-              <HeroBadge>Community training plans</HeroBadge>
-
-              <div className="space-y-4">
-                <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-slate-950 md:text-7xl">
-                  Find the right training plan for maintenance, fat loss, or muscle gain.
-                </h1>
-                <p className="max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
-                  Choose a ready-made community program and download it instantly. These plans
-                  are meant to give users a clear starting point based on their current goal,
-                  whether that is maintaining, cutting, or building muscle.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <GlassChip>Instant PDF download</GlassChip>
-                <GlassChip>Goal-based presets</GlassChip>
-                <GlassChip>Community-ready programs</GlassChip>
-              </div>
+      <PageHero
+        badge={<HeroBadge>Community training plans</HeroBadge>}
+        title="Find the right training plan for maintenance, fat loss, or muscle gain."
+        description="Choose a ready-made community program and download it instantly. These plans are meant to give users a clear starting point based on their current goal, whether that is maintaining, cutting, or building muscle."
+        chips={["Instant PDF download", "Goal-based presets", "Community-ready programs"]}
+        aside={
+          <SummaryPanel eyebrow="Signal board" title="Public plan library" icon={Orbit}>
+            <div className="grid gap-4 p-6 sm:grid-cols-2">
+              <GlassMetric
+                label="Plans"
+                value={getPlanCountLabel(sortedPlans.length)}
+                description="Maintenance, fat loss, and muscle gain plans."
+              />
+              <GlassMetric
+                label="Access"
+                value="Instant"
+                description="Download a PDF immediately and start training."
+              />
             </div>
-
-            <GlassCardSoft className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="border-b border-white/50 px-6 py-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
-                        Signal board
-                      </p>
-                      <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                        Public plan library
-                      </h2>
-                    </div>
-                    <div className="rounded-full border border-cyan-300/40 bg-cyan-100/60 p-3 text-slate-700">
-                      <Orbit className="h-5 w-5" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 p-6 sm:grid-cols-2">
-                  <GlassMetric
-                    label="Plans"
-                    value={getPlanCountLabel(sortedPlans.length)}
-                    description="Maintenance, fat loss, and muscle gain plans."
-                  />
-                  <GlassMetric
-                    label="Access"
-                    value="Instant"
-                    description="Download a PDF immediately and start training."
-                  />
-                </div>
-              </CardContent>
-            </GlassCardSoft>
-          </div>
-        </div>
-      </section>
+          </SummaryPanel>
+        }
+      />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
         {isLoading ? (
@@ -348,15 +311,9 @@ export default function CommunityTrainingPlansPage() {
       </section>
 
       <section className="relative container mx-auto px-6 pb-16">
-        <GlassCardSoft>
+        <SummaryPanel eyebrow="Community downloads" title="Start with a ready-made plan, then move to a custom one when you need more." icon={Orbit}>
           <CardContent className="grid gap-8 p-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.34em] text-slate-500">
-                Community downloads
-              </p>
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-950">
-                Start with a ready-made plan, then move to a custom one when you need more.
-              </h2>
               <p className="max-w-2xl text-base leading-8 text-slate-600">
                 These community PDFs are a quick entry point for users who want structure
                 right away. They work well as a starting layer before choosing a coach and
@@ -376,7 +333,7 @@ export default function CommunityTrainingPlansPage() {
               </div>
             </div>
           </CardContent>
-        </GlassCardSoft>
+        </SummaryPanel>
       </section>
     </CaloriexPage>
   );

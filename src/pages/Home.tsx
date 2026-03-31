@@ -12,10 +12,11 @@ import {
   type AccentTone,
   CaloriexPage,
   FeatureCard,
-  GlassCardSoft,
-  GlassChip,
   GlassMetric,
-} from "@/components/caloriex/design-system";
+  PageHero,
+  SummaryPanel,
+  HeroBadge,
+} from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 
 type HomeFeature = {
@@ -77,64 +78,28 @@ export default function Home() {
 
   return (
     <CaloriexPage>
-      <section className="relative border-b border-white/40">
-        <div className="container mx-auto px-6 py-16 md:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.25fr_0.95fr] lg:items-end">
-            <div className="space-y-6">
-              <div className="inline-flex rounded-full border cx-hero-badge">CalorieX platform</div>
-
-              <div className="space-y-4">
-                <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-slate-950 md:text-7xl">
-                  Training, nutrition, and coaching in one clean flow.
-                </h1>
-                <p className="max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
-                  Build better routines with coach requests, calorie tracking, and instant-access
-                  community plans designed around real fitness goals.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <GlassChip>Personalized coaching</GlassChip>
-                <GlassChip>Goal-based nutrition</GlassChip>
-                <GlassChip>Community downloads</GlassChip>
-              </div>
+      <PageHero
+        badge={<HeroBadge>CalorieX platform</HeroBadge>}
+        title="Training, nutrition, and coaching in one clean flow."
+        description="Build better routines with coach requests, calorie tracking, and instant-access community plans designed around real fitness goals."
+        chips={["Personalized coaching", "Goal-based nutrition", "Community downloads"]}
+        aside={
+          <SummaryPanel eyebrow="System overview" title="Core experience" icon={Orbit}>
+            <div className="grid gap-4 p-6 sm:grid-cols-2">
+              <GlassMetric
+                label="Modules"
+                value="04"
+                description="Coaching, nutrition, requests, and public training plans."
+              />
+              <GlassMetric
+                label="Focus"
+                value="Progress"
+                description="Everything on the home page leads directly into action."
+              />
             </div>
-
-            <GlassCardSoft className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="border-b border-white/50 px-6 py-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
-                        System overview
-                      </p>
-                      <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                        Core experience
-                      </h2>
-                    </div>
-                    <div className="rounded-full border border-cyan-300/40 bg-cyan-100/60 p-3 text-slate-700">
-                      <Orbit className="h-5 w-5" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 p-6 sm:grid-cols-2">
-                  <GlassMetric
-                    label="Modules"
-                    value="04"
-                    description="Coaching, nutrition, requests, and public training plans."
-                  />
-                  <GlassMetric
-                    label="Focus"
-                    value="Progress"
-                    description="Everything on the home page leads directly into action."
-                  />
-                </div>
-              </CardContent>
-            </GlassCardSoft>
-          </div>
-        </div>
-      </section>
+          </SummaryPanel>
+        }
+      />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -160,13 +125,9 @@ export default function Home() {
       </section>
 
       <section className="relative container mx-auto px-6 pb-16">
-        <GlassCardSoft>
+        <SummaryPanel eyebrow="Home overview" title="Move from overview to action without losing context." icon={Orbit}>
           <CardContent className="grid gap-8 p-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.34em] text-slate-500">Home overview</p>
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-950">
-                Move from overview to action without losing context.
-              </h2>
               <p className="max-w-2xl text-base leading-8 text-slate-600">
                 The home page now acts like a launch surface for the whole platform: users can
                 jump into coach requests, nutrition, request management, or the community plan
@@ -186,7 +147,7 @@ export default function Home() {
               </div>
             </div>
           </CardContent>
-        </GlassCardSoft>
+        </SummaryPanel>
       </section>
 
       <footer className="relative mt-auto border-t border-white/40 py-6 text-center text-sm text-slate-500 backdrop-blur">
