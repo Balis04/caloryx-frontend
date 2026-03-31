@@ -4,11 +4,16 @@ export interface CoachCardData {
   email: string;
   bio: string;
   contactNote?: string;
-  specialties: string[];
+  specialties: CoachSpecialtyData[];
   weeklyAvailability: string;
   availabilitySlots: string[];
   experienceLabel: string;
   certificates?: CoachCertificateData[];
+}
+
+export interface CoachSpecialtyData {
+  label: string;
+  value: string;
 }
 
 export interface CoachCertificateData {

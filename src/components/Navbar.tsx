@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
 
 export default function Navbar() {
-  const { authState, isAuthenticated, login, logout, hasAnyRole } = useAuth();
+  const { isAuthenticated, login, logout, hasAnyRole } = useAuth();
   const navigate = useNavigate();
   const isCoach = hasAnyRole("COACH");
 

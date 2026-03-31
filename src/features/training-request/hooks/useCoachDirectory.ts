@@ -100,13 +100,23 @@ const normalizeCoach = (
       "This coach has not added an introduction yet.",
     contactNote: coach.contactNote?.trim() || "-",
     specialties: [
-      coach.trainingFormat
-        ? `${coach.trainingFormat}`
-        : "Format not provided",
-      coach.maxCapacity ? `Capacity: ${coach.maxCapacity} people` : "Capacity not provided",
+      {
+        label: "Format",
+        value: coach.trainingFormat?.trim() || "Format not provided",
+      },
+      {
+        label: "Capacity",
+        value: coach.maxCapacity ? `${coach.maxCapacity} people` : "Capacity not provided",
+      },
       coach.priceFrom != null || coach.priceTo != null
-        ? `Price: ${coach.priceFrom ?? 0}-${coach.priceTo ?? 0} ${coach.currency ?? ""}`.trim()
-        : "Price not provided",
+        ? {
+            label: "Price",
+            value: `${coach.priceFrom ?? 0}-${coach.priceTo ?? 0} ${coach.currency ?? ""}`.trim(),
+          }
+        : {
+            label: "Price",
+            value: "Price not provided",
+          },
     ],
     weeklyAvailability: availability.summary,
     availabilitySlots: availability.slots,

@@ -69,7 +69,13 @@ export default function CoachRequestPage() {
 
           <CoachRequestNextStepPanel
             selectedCoach={selectedCoach}
-            onOpenForm={() => navigate(`/training-request/${selectedCoachId}`)}
+            onOpenForm={() => {
+              if (!selectedCoach) {
+                return;
+              }
+
+              navigate(`/training-request/${selectedCoach.id}`);
+            }}
           />
         </div>
       </section>
