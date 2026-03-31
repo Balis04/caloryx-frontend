@@ -44,12 +44,15 @@ const toMealTitle = (mealTime: MealTime): string => {
   }
 };
 
-const formatDisplayDate = (date: string): string =>
-  new Intl.DateTimeFormat("en-US", {
+const formatDisplayDate = (date: string): string => {
+  const parsed = new Date(`${date}T00:00:00`);
+  const safeDate = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+  return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date(`${date}T00:00:00`));
+  }).format(safeDate);
+};
 
 export default function MealTimeDetailsPage() {
   const { mealTime } = useParams<{ mealTime: string }>();
