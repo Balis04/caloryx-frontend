@@ -95,7 +95,7 @@ export default function CoachSelectionCard({
               <Users className="h-4 w-4" />
               Format
             </div>
-            <p>{coach.specialties[0]?.value ?? "Format not provided"}</p>
+            <p>{coach.specialties.find((s) => s.label === "Format")?.value ?? "Format not provided"}</p>
           </div>
         </div>
 
@@ -122,7 +122,9 @@ export default function CoachSelectionCard({
               <Info className="h-4 w-4 text-slate-500" />
               About coach
             </div>
-            <p className="leading-7 text-slate-600">{coach.contactNote || coach.bio || "-"}</p>
+            <p className="leading-7 text-slate-600">
+              {(coach.contactNote && coach.contactNote !== "-" ? coach.contactNote : coach.bio) || "-"}
+            </p>
           </div>
         </div>
 
