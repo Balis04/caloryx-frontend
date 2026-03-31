@@ -1,20 +1,17 @@
 import { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { Food } from "../model/food.model";
+
+import { GlassCard, GlassChip } from "@/components/caloriex";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
 import { useFoodCalculator } from "../hooks/useFoodCalculator";
 import { useFoodService } from "../hooks/useFoodService";
 import { createFoodLogPayload } from "../lib/food.mapper";
+import type { Food } from "../model/food.model";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
@@ -55,65 +52,53 @@ export default function FoodCard({
   };
 
   return (
-    <Card className="relative flex flex-col h-full hover:shadow-xl transition-all duration-300 border-t-4 border-t-primary">
-      <div className="absolute top-2 right-2 z-10">
-        <Button
-          size="icon"
-          variant="secondary"
-          onClick={handleSave}
-          disabled={isSaving || calculator.value <= 0}
-          className="h-8 w-8 rounded-full shadow-sm hover:bg-primary hover:text-white"
-        >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Plus className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
+    <GlassCard className="flex h-full flex-col overflow-hidden">
+      <CardHeader className="space-y-4 p-5 pb-3">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-3">
+            <CardTitle className="line-clamp-2 text-base font-semibold tracking-tight text-slate-950">
+              {food.description}
+            </CardTitle>
+            <div className="flex flex-wrap gap-2">
+              <GlassChip className="px-3 py-1 text-xs">{food.brandOwner || "General"}</GlassChip>
+              <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs">
+                {Math.round(calculator.totalGrams)} g total
+              </Badge>
+            </div>
+          </div>
 
-      <CardHeader className="p-4 pb-2 pr-12">
-        <CardTitle className="text-sm font-bold line-clamp-2 min-h-[2.5rem]">
-          {food.description}
-        </CardTitle>
-        <div className="flex gap-2 mt-2 flex-wrap">
-          <Badge variant="outline" className="text-[10px]">
-            {food.brandOwner || "General"}
-          </Badge>
-          <Badge variant="secondary" className="text-[10px]">
-            {Math.round(calculator.totalGrams)}g total
-          </Badge>
+          <Button
+            size="icon"
+            onClick={handleSave}
+            disabled={isSaving || calculator.value <= 0}
+            className="h-10 w-10 rounded-full"
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
+          </Button>
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 pt-2 flex-grow">
-        <NutrientList
-          nutrients={food.foodNutrients}
-          calculate={calculator.calculateNutrient}
-        />
+      <CardContent className="flex-grow p-5 pt-0">
+        <NutrientList nutrients={food.foodNutrients} calculate={calculator.calculateNutrient} />
       </CardContent>
 
-      <CardFooter className="p-3 pt-0 flex flex-col gap-2 border-t bg-slate-50/50 rounded-b-xl">
-        <div className="flex items-center gap-2 w-full mt-2">
+      <CardFooter className="flex flex-col gap-3 border-t border-white/50 bg-white/35 p-5 pt-4">
+        <div className="flex w-full items-center gap-2">
           <Input
             type="number"
-            className="h-9 text-center font-bold bg-white"
+            className="h-10 border-white/70 bg-white/80 text-center font-semibold"
             value={calculator.value === 0 ? "" : calculator.value}
-            onChange={(e) =>
-              calculator.setValue(parseFloat(e.target.value) || 0)
-            }
+            onChange={(e) => calculator.setValue(parseFloat(e.target.value) || 0)}
           />
-          <UnitSelect
-            unit={calculator.unit}
-            food={food}
-            onUnitChange={calculator.handleUnitChange}
-          />
+          <UnitSelect unit={calculator.unit} food={food} onUnitChange={calculator.handleUnitChange} />
         </div>
 
-        {saveError && (
-          <p className="text-xs text-destructive w-full">{saveError}</p>
-        )}
+        {saveError ? <p className="w-full text-xs text-red-700">{saveError}</p> : null}
       </CardFooter>
-    </Card>
+    </GlassCard>
   );
 }

@@ -1,20 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Target,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import {
+  CaloriexPage,
+  GlassCard,
+  GlassMetric,
+  HeroBadge,
+  PageHero,
+  SummaryPanel,
+} from "@/components/caloriex";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+
 import { useCaloriesSummaryService } from "../hooks/useCaloriesSummaryService";
 import type { CaloriesSummaryResponse, MealTime } from "../model/food.model";
 
-const MEALS: { title: string; type: MealTime }[] = [
-  { title: "Breakfast", type: "BREAKFAST" },
-  { title: "Lunch", type: "LUNCH" },
-  { title: "Dinner", type: "DINNER" },
-  { title: "Snacks", type: "SNACK" },
+const MEALS: { title: string; type: MealTime; accent: string }[] = [
+  { title: "Breakfast", type: "BREAKFAST", accent: "from-amber-200/60 to-orange-100/50" },
+  { title: "Lunch", type: "LUNCH", accent: "from-emerald-200/60 to-teal-100/50" },
+  { title: "Dinner", type: "DINNER", accent: "from-sky-200/60 to-cyan-100/50" },
+  { title: "Snacks", type: "SNACK", accent: "from-rose-200/60 to-pink-100/50" },
 ];
 
 const formatDateInput = (date: Date): string => {
@@ -30,13 +45,12 @@ const shiftDate = (date: string, days: number): string => {
   return formatDateInput(base);
 };
 
-const formatDisplayDate = (date: string): string => {
-  return new Intl.DateTimeFormat("en-US", {
+const formatDisplayDate = (date: string): string =>
+  new Intl.DateTimeFormat("en-US", {
     year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+    month: "long",
+    day: "numeric",
   }).format(new Date(`${date}T00:00:00`));
-};
 
 const mapApiToFallback = (date: string): CaloriesSummaryResponse => ({
   date,
@@ -64,25 +78,13 @@ const getMealCalories = (
 ): { consumed: number; target: number } => {
   switch (mealType) {
     case "BREAKFAST":
-      return {
-        consumed: summary.consumedBreakfastKcal,
-        target: summary.targetBreakfastKcal,
-      };
+      return { consumed: summary.consumedBreakfastKcal, target: summary.targetBreakfastKcal };
     case "LUNCH":
-      return {
-        consumed: summary.consumedLunchKcal,
-        target: summary.targetLunchKcal,
-      };
+      return { consumed: summary.consumedLunchKcal, target: summary.targetLunchKcal };
     case "DINNER":
-      return {
-        consumed: summary.consumedDinnerKcal,
-        target: summary.targetDinnerKcal,
-      };
+      return { consumed: summary.consumedDinnerKcal, target: summary.targetDinnerKcal };
     case "SNACK":
-      return {
-        consumed: summary.consumedSnackKcal,
-        target: summary.targetSnackKcal,
-      };
+      return { consumed: summary.consumedSnackKcal, target: summary.targetSnackKcal };
     default:
       return { consumed: 0, target: 0 };
   }
@@ -92,12 +94,9 @@ export default function DiaryPage() {
   const navigate = useNavigate();
   const { getSummaryByDate } = useCaloriesSummaryService();
 
-  const [selectedDate, setSelectedDate] = useState<string>(
-    formatDateInput(new Date())
-  );
-  const [summary, setSummary] = useState<CaloriesSummaryResponse>(
-    mapApiToFallback(formatDateInput(new Date()))
-  );
+  const today = formatDateInput(new Date());
+  const [selectedDate, setSelectedDate] = useState<string>(today);
+  const [summary, setSummary] = useState<CaloriesSummaryResponse>(mapApiToFallback(today));
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [summaryError, setSummaryError] = useState<string | null>(null);
 
@@ -114,8 +113,7 @@ export default function DiaryPage() {
         setSummary(data);
       } catch (error) {
         if (!isMounted) return;
-        const message =
-          error instanceof Error ? error.message : "Failed to fetch summary.";
+        const message = error instanceof Error ? error.message : "Failed to fetch summary.";
         setSummaryError(message);
         setSummary(mapApiToFallback(selectedDate));
       } finally {
@@ -125,24 +123,18 @@ export default function DiaryPage() {
       }
     };
 
-    loadSummary();
+    void loadSummary();
 
     return () => {
       isMounted = false;
     };
   }, [getSummaryByDate, selectedDate]);
 
-  const caloriesRemaining = Math.max(
-    summary.targetCalories - summary.consumedCalories,
-    0
-  );
+  const caloriesRemaining = Math.max(summary.targetCalories - summary.consumedCalories, 0);
 
   const progress = useMemo(() => {
     if (summary.targetCalories <= 0) return 0;
-    return Math.min(
-      (summary.consumedCalories / summary.targetCalories) * 100,
-      100
-    );
+    return Math.min((summary.consumedCalories / summary.targetCalories) * 100, 100);
   }, [summary.consumedCalories, summary.targetCalories]);
 
   const openMealForAdd = (mealType: MealTime) => {
@@ -154,146 +146,222 @@ export default function DiaryPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background p-4 overflow-y-auto">
-      <div className="flex items-center justify-between mb-4 gap-3">
-        <h1 className="text-3xl font-bold">Diary</h1>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSelectedDate(formatDateInput(new Date()))}
-        >
-          Today
-        </Button>
-      </div>
+    <CaloriexPage>
+      <PageHero
+        badge={<HeroBadge>Diary overview</HeroBadge>}
+        title="Track the whole day in one place, then jump into any meal to log details."
+        description="The foods package now uses the same refreshed CalorieX page system, so summary panels, meal cards, and action areas stay visually consistent."
+        chips={[
+          formatDisplayDate(selectedDate),
+          isLoadingSummary ? "Refreshing summary" : "Daily snapshot",
+          "Meal-first logging",
+        ]}
+        aside={
+          <GlassCard className="hidden overflow-hidden xl:block">
+            <CardContent className="space-y-5 p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Selected date</p>
+                  <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
+                    {formatDisplayDate(selectedDate)}
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    Review totals, then open a meal to add or edit foods for this day.
+                  </p>
+                </div>
+                <Badge className="rounded-full bg-slate-950 px-3 py-1 text-white hover:bg-slate-950">
+                  {Math.round(caloriesRemaining)} kcal left
+                </Badge>
+              </div>
 
-      <Card className="mb-6">
-        <CardHeader className="pb-2 space-y-3">
-          <CardTitle className="text-xl">Daily summary</CardTitle>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <GlassMetric
+                  label="Consumed"
+                  value={`${Math.round(summary.consumedCalories)} kcal`}
+                  description={
+                    isLoadingSummary ? "Loading current daily intake." : "Current total for the selected day."
+                  }
+                />
+                <GlassMetric
+                  label="Target"
+                  value={`${Math.round(summary.targetCalories)} kcal`}
+                  description="Daily calorie goal used for progress tracking."
+                />
+              </div>
+            </CardContent>
+          </GlassCard>
+        }
+      />
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setSelectedDate((prev) => shiftDate(prev, -1))}
-              aria-label="Previous day"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+      <section className="relative container mx-auto px-6 py-12 md:py-16">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
+          <SummaryPanel eyebrow="Daily summary" title="Macros and progress" icon={Target}>
+            <div className="space-y-6 p-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSelectedDate((prev) => shiftDate(prev, -1))}
+                  aria-label="Previous day"
+                  className="rounded-full border-white/70 bg-white/70"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
 
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => {
-                if (e.target.value) setSelectedDate(e.target.value);
-              }}
-              className="max-w-[190px]"
-            />
+                <Input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => {
+                    if (e.target.value) setSelectedDate(e.target.value);
+                  }}
+                  className="max-w-[210px] border-white/70 bg-white/75"
+                />
 
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setSelectedDate((prev) => shiftDate(prev, 1))}
-              aria-label="Next day"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSelectedDate((prev) => shiftDate(prev, 1))}
+                  aria-label="Next day"
+                  className="rounded-full border-white/70 bg-white/70"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
 
-          <p className="text-sm text-muted-foreground">
-            Selected date: {formatDisplayDate(selectedDate)}
-          </p>
-        </CardHeader>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedDate(today)}
+                  className="rounded-full border border-white/60 bg-white/55 px-4 text-slate-700 hover:bg-white/75"
+                >
+                  Today
+                </Button>
+              </div>
 
-        <CardContent className="space-y-4">
-          {summaryError && (
-            <p className="text-sm text-destructive">{summaryError}</p>
-          )}
+              {summaryError ? <p className="text-sm text-red-700">{summaryError}</p> : null}
 
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-3xl font-bold">
-                {Math.round(summary.consumedCalories)} kcal
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {isLoadingSummary ? "Loading..." : "Daily intake"}
-              </p>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <GlassMetric
+                  label="Calories"
+                  value={`${Math.round(summary.consumedCalories)} kcal`}
+                  description={`Goal ${Math.round(summary.targetCalories)} kcal`}
+                />
+                <GlassMetric
+                  label="Protein"
+                  value={`${Math.round(summary.consumedProteinGrams)} g`}
+                  description={`Goal ${Math.round(summary.targetProteinGrams)} g`}
+                />
+                <GlassMetric
+                  label="Carbs"
+                  value={`${Math.round(summary.consumedCarbohydratesGrams)} g`}
+                  description={`Goal ${Math.round(summary.targetCarbohydratesGrams)} g`}
+                />
+                <GlassMetric
+                  label="Fat"
+                  value={`${Math.round(summary.consumedFatGrams)} g`}
+                  description={`Goal ${Math.round(summary.targetFatGrams)} g`}
+                />
+              </div>
+
+              <div className="space-y-3 rounded-[28px] border border-white/60 bg-white/65 p-5 backdrop-blur">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-slate-950">Calorie progress</p>
+                    <p className="text-sm text-slate-600">
+                      {Math.round(summary.consumedCalories)} consumed of {Math.round(summary.targetCalories)} kcal
+                    </p>
+                  </div>
+                  <Badge variant="secondary" className="rounded-full px-3 py-1">
+                    {Math.round(progress)}%
+                  </Badge>
+                </div>
+                <Progress value={progress} className="h-3 bg-slate-200/80" />
+              </div>
             </div>
-            <Badge variant="secondary" className="text-sm py-1 px-3">
-              {Math.round(caloriesRemaining)} kcal remaining
-            </Badge>
-          </div>
+          </SummaryPanel>
 
-          <Progress value={progress} />
-
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Fat</p>
-              <p className="font-semibold">
-                {Math.round(summary.consumedFatGrams)} g
-              </p>
-            </div>
-            <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Protein</p>
-              <p className="font-semibold">
-                {Math.round(summary.consumedProteinGrams)} g
-              </p>
-            </div>
-            <div className="rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs text-muted-foreground">Carbohydrates</p>
-              <p className="font-semibold">
-                {Math.round(summary.consumedCarbohydratesGrams)} g
-              </p>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>
-              {Math.round(summary.consumedCalories)} kcal consumed
-            </span>
-            <span>{Math.round(summary.targetCalories)} kcal target</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {MEALS.map((meal) => {
-        const mealCalories = getMealCalories(summary, meal.type);
-
-        return (
-          <div
-            key={meal.type}
-            role="button"
-            tabIndex={0}
-            onClick={() => openMealDetails(meal.type)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                openMealDetails(meal.type);
-              }
-            }}
-            className="flex justify-between items-center p-4 mb-3 bg-white rounded-2xl shadow-sm border border-border cursor-pointer"
+          <SummaryPanel
+            eyebrow="Controls"
+            title="Diary focus"
+            icon={CalendarDays}
+            className="hidden xl:block"
           >
-            <div>
-              <p className="text-lg font-semibold">{meal.title}</p>
-              <p className="text-muted-foreground text-sm">
-                {Math.round(mealCalories.consumed)} / {Math.round(mealCalories.target)} kcal
-              </p>
+            <div className="space-y-4 p-6 text-sm text-slate-600">
+              <p>Pick a date, review the totals, then open a meal card to inspect foods or add new ones.</p>
+              <div className="grid gap-3">
+                <GlassMetric
+                  label="Meals"
+                  value="4"
+                  description="Breakfast, lunch, dinner, and snacks all open from this screen."
+                />
+                <GlassMetric
+                  label="Status"
+                  value={isLoadingSummary ? "Syncing" : "Ready"}
+                  description="The summary refreshes each time the selected date changes."
+                />
+              </div>
             </div>
+          </SummaryPanel>
+        </div>
 
-            <Button
-              size="icon"
-              className="rounded-full bg-blue-500 hover:bg-blue-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                openMealForAdd(meal.type);
-              }}
-            >
-              <Plus className="w-5 h-5 text-white" />
-            </Button>
-          </div>
-        );
-      })}
-    </div>
+        <div className="mt-6 grid gap-4">
+          {MEALS.map((meal) => {
+            const mealCalories = getMealCalories(summary, meal.type);
+            const mealProgress =
+              mealCalories.target > 0
+                ? Math.min((mealCalories.consumed / mealCalories.target) * 100, 100)
+                : 0;
+
+            return (
+              <GlassCard
+                key={meal.type}
+                role="button"
+                tabIndex={0}
+                onClick={() => openMealDetails(meal.type)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openMealDetails(meal.type);
+                  }
+                }}
+                className="cursor-pointer overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                <CardContent className="grid gap-5 p-6 md:grid-cols-[minmax(0,1fr)_220px_auto] md:items-center">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-12 w-12 rounded-2xl border border-white/70 bg-gradient-to-br ${meal.accent}`} />
+                      <div>
+                        <p className="text-xl font-semibold tracking-tight text-slate-950">{meal.title}</p>
+                        <p className="text-sm text-slate-600">Open meal details or add a new food item.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm text-slate-600">
+                      <span>{Math.round(mealCalories.consumed)} kcal</span>
+                      <span>{Math.round(mealCalories.target)} kcal target</span>
+                    </div>
+                    <Progress value={mealProgress} className="h-2.5 bg-slate-200/80" />
+                  </div>
+
+                  <div className="flex items-center justify-end">
+                    <Button
+                      size="icon"
+                      className="h-11 w-11 rounded-full bg-slate-950 text-white hover:bg-slate-800"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openMealForAdd(meal.type);
+                      }}
+                    >
+                      <Plus className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </GlassCard>
+            );
+          })}
+        </div>
+      </section>
+    </CaloriexPage>
   );
 }
