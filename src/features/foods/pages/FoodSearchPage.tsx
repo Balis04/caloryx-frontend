@@ -275,7 +275,7 @@ export default function FoodSearchPage() {
         description="Search the USDA dataset, save reusable foods, or create your own nutrition entries without leaving the meal flow."
         chips={[mealLabel, formatDateLabel(consumedDate), activeTabMeta.label]}
         aside={
-          <GlassCard className="overflow-hidden">
+          <GlassCard className="hidden overflow-hidden xl:block">
             <CardContent className="space-y-6 p-6">
               <div>
                 <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Current focus</p>
@@ -311,7 +311,7 @@ export default function FoodSearchPage() {
           </TabsList>
 
           <TabsContent value="usda" className="mt-8">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_320px]">
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_320px]">
               <div className="space-y-6">
                 <FoodSearchForm
                   onSearch={(product, brand) => performSearch({ product, brand })}
@@ -342,7 +342,12 @@ export default function FoodSearchPage() {
                 </div>
               </div>
 
-              <SummaryPanel eyebrow="Search flow" title="How this works" icon={Database}>
+              <SummaryPanel
+                eyebrow="Search flow"
+                title="How this works"
+                icon={Database}
+                className="hidden xl:block"
+              >
                 <div className="space-y-4 p-6 text-sm text-slate-600">
                   <p>
                     USDA results are shown with estimated nutrients, then you can adjust the amount
@@ -359,7 +364,7 @@ export default function FoodSearchPage() {
           </TabsContent>
 
           <TabsContent value="create" className="mt-8">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_320px]">
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_320px]">
               <GlassCard>
                 <CardHeader className="border-b border-white/50 pb-5">
                   <CardTitle className="text-2xl font-semibold tracking-tight text-slate-950">
@@ -419,7 +424,12 @@ export default function FoodSearchPage() {
                 </CardContent>
               </GlassCard>
 
-              <SummaryPanel eyebrow="Custom entry" title="Entry rules" icon={NotebookPen}>
+              <SummaryPanel
+                eyebrow="Custom entry"
+                title="Entry rules"
+                icon={NotebookPen}
+                className="hidden xl:block"
+              >
                 <div className="space-y-4 p-6 text-sm text-slate-600">
                   <p>Name your item clearly and keep the macros aligned to 100 grams for easier reuse.</p>
                   <div className="grid gap-3">
@@ -440,7 +450,7 @@ export default function FoodSearchPage() {
           </TabsContent>
 
           <TabsContent value="saved" className="mt-8">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_320px]">
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_320px]">
               <div className="space-y-6">
                 <GlassCard>
                   <CardHeader className="border-b border-white/50 pb-5">
@@ -514,7 +524,12 @@ export default function FoodSearchPage() {
                 </div>
               </div>
 
-              <SummaryPanel eyebrow="Saved library" title="Filters" icon={Database}>
+              <SummaryPanel
+                eyebrow="Saved library"
+                title="Filters"
+                icon={Database}
+                className="hidden xl:block"
+              >
                 <div className="space-y-4 p-6 text-sm text-slate-600">
                   <p>
                     Narrow the list to your own foods, foods from other users, or everything stored

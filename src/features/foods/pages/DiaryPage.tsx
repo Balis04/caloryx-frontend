@@ -157,7 +157,7 @@ export default function DiaryPage() {
           "Meal-first logging",
         ]}
         aside={
-          <GlassCard className="overflow-hidden">
+          <GlassCard className="hidden overflow-hidden xl:block">
             <CardContent className="space-y-5 p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -194,7 +194,7 @@ export default function DiaryPage() {
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.65fr)_340px]">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
           <SummaryPanel eyebrow="Daily summary" title="Macros and progress" icon={Target}>
             <div className="space-y-6 p-6">
               <div className="flex flex-wrap items-center gap-3">
@@ -279,7 +279,12 @@ export default function DiaryPage() {
             </div>
           </SummaryPanel>
 
-          <SummaryPanel eyebrow="Controls" title="Diary focus" icon={CalendarDays}>
+          <SummaryPanel
+            eyebrow="Controls"
+            title="Diary focus"
+            icon={CalendarDays}
+            className="hidden xl:block"
+          >
             <div className="space-y-4 p-6 text-sm text-slate-600">
               <p>Pick a date, review the totals, then open a meal card to inspect foods or add new ones.</p>
               <div className="grid gap-3">

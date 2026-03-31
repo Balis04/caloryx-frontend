@@ -199,7 +199,7 @@ export default function MealTimeDetailsPage() {
         description="This meal detail view now shares the same glass-card layout, metrics, and action structure as the other refreshed CalorieX pages."
         chips={[mealTitle, formatDisplayDate(date), `${foods.length} logged item${foods.length === 1 ? "" : "s"}`]}
         aside={
-          <GlassCard className="overflow-hidden">
+          <GlassCard className="hidden overflow-hidden xl:block">
             <CardContent className="space-y-5 p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -235,7 +235,7 @@ export default function MealTimeDetailsPage() {
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.65fr)_340px]">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
           <SummaryPanel eyebrow="Meal summary" title="Nutrition totals" icon={Utensils}>
             <div className="space-y-6 p-6">
               {isLoading ? <p className="text-sm text-slate-600">Loading meal details...</p> : null}
@@ -285,7 +285,12 @@ export default function MealTimeDetailsPage() {
             </div>
           </SummaryPanel>
 
-          <SummaryPanel eyebrow="Actions" title="Quick tools" icon={Plus}>
+          <SummaryPanel
+            eyebrow="Actions"
+            title="Quick tools"
+            icon={Plus}
+            className="hidden xl:block"
+          >
             <div className="space-y-4 p-6 text-sm text-slate-600">
               <p>Add another food, edit an amount inline, or delete an entry if the meal needs cleanup.</p>
               <div className="grid gap-3">
