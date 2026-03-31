@@ -14,6 +14,7 @@ import {
   statusVariantMap,
 } from "../lib/coach-training-requests.utils";
 import type { CoachTrainingRequest } from "../model/coach-training-request.model";
+import RequestTextPanel from "./RequestTextPanel";
 
 interface Props {
   downloadingRequestId: string | null;
@@ -78,12 +79,12 @@ export default function UserRequestCard({
           />
         </div>
 
-        <RequestPanel title="Your request description" value={request.requestDescription} />
+        <RequestTextPanel label="Your request description" value={request.requestDescription} />
 
-        {decisionDescription ? <RequestPanel title="Status comment" value={decisionDescription} /> : null}
+        {decisionDescription ? <RequestTextPanel label="Status comment" value={decisionDescription} /> : null}
 
         {(request.status === "APPROVED" || request.status === "CLOSED") && trainingPlanDescription ? (
-          <RequestPanel title="Training plan description" value={trainingPlanDescription} />
+          <RequestTextPanel label="Training plan description" value={trainingPlanDescription} />
         ) : null}
 
         {(request.status === "APPROVED" || request.status === "CLOSED") && trainingPlanFileName ? (
@@ -111,16 +112,5 @@ export default function UserRequestCard({
         ) : null}
       </CardContent>
     </GlassCard>
-  );
-}
-
-function RequestPanel({ title, value }: { title: string; value: string }) {
-  return (
-    <GlassCardSoft>
-      <CardContent className="p-5 text-sm">
-        <p className="text-xs uppercase tracking-[0.32em] text-slate-500">{title}</p>
-        <p className="mt-3 leading-7 text-slate-700">{value}</p>
-      </CardContent>
-    </GlassCardSoft>
   );
 }

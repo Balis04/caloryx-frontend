@@ -27,8 +27,12 @@ export default function TrainingPlanEditor({
   onDraftChange,
   onSave,
   onToggle,
+  request,
 }: Props) {
   const hasExistingFile = Boolean(draft.existingFileName);
+  const planNameId = `training-plan-name-${request.id}`;
+  const planDescriptionId = `training-plan-description-${request.id}`;
+  const planFileId = `training-plan-file-${request.id}`;
 
   return (
     <GlassCardSoft>
@@ -72,11 +76,11 @@ export default function TrainingPlanEditor({
         {isExpanded ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="training-plan-name" className="text-sm font-medium text-slate-900">
+              <label htmlFor={planNameId} className="text-sm font-medium text-slate-900">
                 Training plan name
               </label>
               <Input
-                id="training-plan-name"
+                id={planNameId}
                 type="text"
                 value={draft.planName}
                 onChange={(event) => onDraftChange({ ...draft, planName: event.target.value })}
@@ -87,14 +91,11 @@ export default function TrainingPlanEditor({
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="training-plan-description"
-                className="text-sm font-medium text-slate-900"
-              >
+              <label htmlFor={planDescriptionId} className="text-sm font-medium text-slate-900">
                 Training plan description
               </label>
               <textarea
-                id="training-plan-description"
+                id={planDescriptionId}
                 className="min-h-32 w-full rounded-3xl border border-white/70 bg-white/80 px-4 py-3 text-sm outline-none ring-offset-background placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 placeholder="Briefly describe what the training plan contains."
                 value={draft.planDescription}
@@ -106,11 +107,11 @@ export default function TrainingPlanEditor({
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="training-plan-file" className="text-sm font-medium text-slate-900">
+              <label htmlFor={planFileId} className="text-sm font-medium text-slate-900">
                 PDF or DOCX file
               </label>
               <Input
-                id="training-plan-file"
+                id={planFileId}
                 type="file"
                 accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 onChange={(event) =>
