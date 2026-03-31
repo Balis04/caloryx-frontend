@@ -66,14 +66,15 @@ export default function TrainingRequestsContent({
   updatingRequestId,
   visibleRequests,
 }: Props) {
+  const coachIncomingEmptyMessages: Record<CoachRequestFilter, string> = {
+    pending: "There are currently no pending requests.",
+    approved: "There are currently no approved requests.",
+    rejected: "There are currently no rejected requests.",
+    closed: "There are currently no completed requests.",
+  };
+
   const emptyMessage = showCoachIncomingRequests
-    ? coachRequestFilter === "pending"
-      ? "There are currently no pending requests."
-      : coachRequestFilter === "approved"
-        ? "There are currently no approved requests."
-        : coachRequestFilter === "rejected"
-          ? "There are currently no rejected requests."
-          : "There are currently no completed requests."
+    ? coachIncomingEmptyMessages[coachRequestFilter]
     : "You have not sent any training plan requests yet.";
 
   return (

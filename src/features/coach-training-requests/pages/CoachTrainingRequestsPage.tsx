@@ -45,7 +45,7 @@ export default function CoachTrainingRequestsPage() {
         chips={[
           showCoachIncomingRequests ? "Coach inbox" : "User history",
           `${visibleRequests.length} visible request${visibleRequests.length === 1 ? "" : "s"}`,
-          coachRequestFilter,
+          ...(showCoachIncomingRequests ? [coachRequestFilter] : []),
         ]}
         aside={
           <TrainingRequestsHeroAside
