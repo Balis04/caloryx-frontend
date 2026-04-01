@@ -14,6 +14,7 @@ import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
 import CoachRequestPage from "./features/training-request/pages/CoachRequestPage";
 import CoachProfilePage from "./features/coach-profile/pages/CoachProfilePage";
+import EditCoachProfilePage from "./features/coach-profile/pages/EditCoachProfilePage";
 import RequireCoach from "./guards/RequireCoach";
 import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
 import CoachTrainingRequestsPage from "./features/coach-training-requests/pages/CoachTrainingRequestsPage";
@@ -71,6 +72,14 @@ function App() {
               element={
                 <RequireCoach>
                   <CoachProfilePage />
+                </RequireCoach>
+              }
+            />
+            <Route
+              path="/coach-profile/edit"
+              element={
+                <RequireCoach>
+                  <EditCoachProfilePage />
                 </RequireCoach>
               }
             />
