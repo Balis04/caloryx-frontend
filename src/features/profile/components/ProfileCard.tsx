@@ -1,18 +1,38 @@
 import { useNavigate } from "react-router-dom";
+import {
+  AccentButton,
+  GlassCard,
+  GlassMetric,
+  ReadonlyField,
+  SummaryPanel,
+} from "@/components/caloriex";
+import { Badge } from "@/components/ui/badge";
+import { CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+  ACTIVITY_OPTIONS,
+  GENDER_OPTIONS,
+  GOAL_OPTIONS,
+  USER_ROLE_OPTIONS,
+} from "@/shared/constants/user-options";
+import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import type { Profile } from "../model/profile.model";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Edit3, Briefcase } from "lucide-react";
+  ArrowRight,
+  Briefcase,
+  Edit3,
+  Flame,
+  Target,
+  TrendingUp,
+  UserCircle2,
+} from "lucide-react";
 import { canManageCoachProfile } from "../lib/profile.permissions";
-import ProfileBodySection from "./ProfileBodySection";
-import ProfileGoalSection from "./ProfileGoalSection";
-import ProfileSummarySection from "./ProfileSummarySection";
+import {
+  calculateProgress,
+  formatBirthDate,
+  formatWeeklyGoal,
+  getProgressMessage,
+} from "../lib/profile.formatters";
 
 interface Props {
   profile: Profile;
@@ -20,43 +40,200 @@ interface Props {
 
 export default function ProfileCard({ profile }: Props) {
   const navigate = useNavigate();
+  const progressValue = calculateProgress(profile);
+  const progressMessage = getProgressMessage(profile);
+  const roleLabel = getLabelFromOptions(USER_ROLE_OPTIONS, profile.role);
+  const genderLabel = getLabelFromOptions(GENDER_OPTIONS, profile.gender);
+  const activityLabel = getLabelFromOptions(
+    ACTIVITY_OPTIONS,
+    profile.activityLevel
+  );
+  const goalLabel = getLabelFromOptions(GOAL_OPTIONS, profile.goal);
+  const weeklyTarget = formatWeeklyGoal(profile.goal, profile.weeklyGoalKg);
+  const weightDelta = profile.actualWeightKg - profile.startWeightKg;
+  const deltaText =
+    Math.abs(weightDelta) < 0.05
+      ? "0.0 kg"
+      : `${weightDelta > 0 ? "+" : ""}${weightDelta.toFixed(1)} kg`;
 
   return (
-    <Card className="w-full max-w-4xl shadow-xl border-t-4 border-t-primary">
-      <CardHeader className="py-4 border-b">
-        <CardTitle>
-          <ProfileSummarySection profile={profile} />
-        </CardTitle>
-      </CardHeader>
+    <div className="space-y-6">
+      <GlassCard className="overflow-hidden border-white/70">
+        <div className="border-b border-white/60 bg-gradient-to-r from-emerald-100/80 via-white/40 to-sky-100/80 p-6 md:p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge
+                  variant="outline"
+                  className="border-emerald-300/60 bg-white/70 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-slate-700"
+                >
+                  User profile
+                </Badge>
+                <Badge variant="secondary" className="rounded-full px-3 py-1 capitalize">
+                  {roleLabel}
+                </Badge>
+              </div>
 
-      <CardContent className="pt-6 space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
-          <ProfileBodySection profile={profile} />
-          <ProfileGoalSection profile={profile} />
-        </div>
-      </CardContent>
+              <div className="space-y-2">
+                <h2 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
+                  {profile.fullName}
+                </h2>
+                <p className="max-w-2xl text-sm leading-7 text-slate-600 md:text-base">
+                  Your baseline, current momentum, and target direction now live in one
+                  shared CalorieX workspace.
+                </p>
+              </div>
+            </div>
 
-      <CardFooter className="border-t bg-slate-50/50 py-4">
-        <div className="flex w-full flex-col gap-3 lg:ml-auto lg:w-auto lg:flex-row">
-          {canManageCoachProfile(profile.role) && (
-            <Button
-              variant="outline"
-              onClick={() => navigate("/coach-profile")}
-              className="w-full lg:w-auto font-bold"
-            >
-              <Briefcase className="mr-2 w-4 h-4" />
-              Coach Profile
-            </Button>
-          )}
-          <Button
-            onClick={() => navigate("/profile/edit")}
-            className="w-full lg:w-auto font-bold group"
-          >
-            <Edit3 className="mr-2 w-4 h-4" />
-            Edit Profile
-          </Button>
+            <div className="cx-glass-block rounded-[28px] p-5 lg:max-w-xs">
+              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
+                Progress signal
+              </p>
+              <div className="mt-3 flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-4xl font-semibold text-slate-950">
+                    {progressValue.toFixed(0)}%
+                  </p>
+                  <p className="mt-2 text-sm text-slate-600">{goalLabel}</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-slate-500" />
+              </div>
+              <Progress value={progressValue} className="mt-4 h-2.5 bg-white/70" />
+              <p className="mt-3 text-sm leading-6 text-slate-600">{progressMessage}</p>
+            </div>
+          </div>
         </div>
-      </CardFooter>
-    </Card>
+
+        <CardContent className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
+          <GlassMetric
+            label="Current weight"
+            value={`${profile.actualWeightKg} kg`}
+            description="Latest tracked bodyweight in your profile."
+          />
+          <GlassMetric
+            label="Weekly pace"
+            value={weeklyTarget}
+            description="Targeted weekly change based on your goal."
+          />
+          <GlassMetric
+            label="Since start"
+            value={deltaText}
+            description="Difference between your starting and current weight."
+          />
+        </CardContent>
+      </GlassCard>
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_360px]">
+        <div className="space-y-6">
+          <SummaryPanel eyebrow="Identity" title="Personal baseline" icon={UserCircle2}>
+            <div className="grid gap-4 p-6 md:grid-cols-2">
+              <ReadonlyField label="Full name" value={profile.fullName} fallback="Not set" />
+              <ReadonlyField
+                label="Birth date"
+                value={formatBirthDate(profile.birthDate)}
+                fallback="Not set"
+              />
+              <ReadonlyField label="Gender" value={genderLabel} fallback="Not set" />
+              <ReadonlyField label="Role" value={roleLabel} fallback="Not set" />
+              <ReadonlyField label="Height" value={`${profile.heightCm} cm`} fallback="Not set" />
+              <ReadonlyField
+                label="Activity level"
+                value={activityLabel}
+                fallback="Not set"
+              />
+            </div>
+          </SummaryPanel>
+
+          <SummaryPanel eyebrow="Body data" title="Weight trajectory" icon={Flame}>
+            <div className="grid gap-4 p-6 md:grid-cols-3">
+              <ReadonlyField
+                label="Starting weight"
+                value={`${profile.startWeightKg} kg`}
+                fallback="Not set"
+              />
+              <ReadonlyField
+                label="Current weight"
+                value={`${profile.actualWeightKg} kg`}
+                fallback="Not set"
+              />
+              <ReadonlyField
+                label="Target weight"
+                value={`${profile.targetWeightKg} kg`}
+                fallback="Not set"
+              />
+            </div>
+          </SummaryPanel>
+        </div>
+
+        <div className="space-y-6">
+          <SummaryPanel eyebrow="Goal focus" title="Current direction" icon={Target}>
+            <div className="space-y-4 p-6">
+              <ReadonlyField label="Primary goal" value={goalLabel} fallback="Not set" />
+              <ReadonlyField label="Weekly target" value={weeklyTarget} fallback="Not set" />
+              <div className="cx-glass-block rounded-[24px] p-5">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
+                      Completion
+                    </p>
+                    <p className="mt-2 text-3xl font-semibold text-slate-950">
+                      {progressValue.toFixed(0)}%
+                    </p>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-slate-400" />
+                </div>
+                <Progress value={progressValue} className="mt-4 h-2.5 bg-white/70" />
+                <p className="mt-3 text-sm leading-6 text-slate-600">{progressMessage}</p>
+              </div>
+            </div>
+          </SummaryPanel>
+
+          <GlassCard className="overflow-hidden">
+            <CardContent className="space-y-4 p-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
+                  Actions
+                </p>
+                <h3 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+                  Keep your profile in sync
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Update your profile whenever your body metrics, activity level, or role
+                  changes so the rest of the app can stay aligned.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {canManageCoachProfile(profile.role) ? (
+                  <AccentButton
+                    tone="sky"
+                    onClick={() => navigate("/coach-profile")}
+                    className="justify-between"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Briefcase className="h-4 w-4" />
+                      Coach profile
+                    </span>
+                    <ArrowRight className="h-4 w-4" />
+                  </AccentButton>
+                ) : null}
+
+                <AccentButton
+                  tone="emerald"
+                  onClick={() => navigate("/profile/edit")}
+                  className="justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <Edit3 className="h-4 w-4" />
+                    Edit profile
+                  </span>
+                  <ArrowRight className="h-4 w-4" />
+                </AccentButton>
+              </div>
+            </CardContent>
+          </GlassCard>
+        </div>
+      </div>
+    </div>
   );
 }
