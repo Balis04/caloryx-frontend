@@ -1,3 +1,5 @@
+import { CaloriexPage, GlassCard } from "@/components/caloriex";
+import { CardContent } from "@/components/ui/card";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfileForm from "../components/ProfileForm";
@@ -17,7 +19,17 @@ export default function EditProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-10 italic">Loading...</div>;
+    return (
+      <CaloriexPage>
+        <section className="container mx-auto px-6 py-16">
+          <GlassCard>
+            <CardContent className="p-6 text-sm italic text-slate-600">
+              Loading profile editor...
+            </CardContent>
+          </GlassCard>
+        </section>
+      </CaloriexPage>
+    );
   }
 
   return (

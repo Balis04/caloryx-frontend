@@ -1,3 +1,4 @@
+import { SummaryPanel } from "@/components/caloriex";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,29 +27,30 @@ interface Props {
 export const BasicInfoSection = ({ userProfile, setField }: Props) => {
   const today = new Date().toISOString().split("T")[0];
   const minDate = "1900-01-01";
+  const inputClassName =
+    "h-12 rounded-2xl border-white/60 bg-white/70 shadow-sm backdrop-blur focus-visible:ring-slate-900/20";
+  const selectClassName =
+    "h-12 rounded-2xl border-white/60 bg-white/70 shadow-sm backdrop-blur";
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 border-b pb-2">
-        <User className="w-4 h-4 text-muted-foreground" />
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-          Basic Information
-        </h3>
-      </div>
-
-      <div className="grid gap-4 pt-2">
+    <SummaryPanel eyebrow="Basics" title="Identity details" icon={User}>
+      <div className="grid gap-5 p-6">
         <div className="grid gap-2">
-          <Label htmlFor="fullName">Full name</Label>
+          <Label htmlFor="fullName" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+            Full name
+          </Label>
           <Input
             id="fullName"
             value={userProfile.fullName}
             onChange={(e) => setField("fullName", e.target.value)}
-            className="focus-visible:ring-primary"
+            className={inputClassName}
           />
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="birthDate">Birth date</Label>
+          <Label htmlFor="birthDate" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+            Birth date
+          </Label>
           <Input
             id="birthDate"
             type="date"
@@ -56,17 +58,20 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
             max={today}
             value={userProfile.birthDate}
             onChange={(e) => setField("birthDate", e.target.value)}
+            className={inputClassName}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-5 md:grid-cols-2">
           <div className="grid gap-2">
-            <Label>Gender</Label>
+            <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
+              Gender
+            </Label>
             <Select
               value={userProfile.gender ?? ""}
               onValueChange={(v) => setField("gender", v as Gender)}
             >
-              <SelectTrigger>
+              <SelectTrigger className={selectClassName}>
                 <SelectValue placeholder="Choose..." />
               </SelectTrigger>
               <SelectContent>
@@ -80,12 +85,14 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
           </div>
 
           <div className="grid gap-2">
-            <Label>Role</Label>
+            <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
+              Role
+            </Label>
             <Select
               value={userProfile.userRole ?? ""}
               onValueChange={(v) => setField("userRole", v as UserRole)}
             >
-              <SelectTrigger>
+              <SelectTrigger className={selectClassName}>
                 <SelectValue placeholder="Choose..." />
               </SelectTrigger>
               <SelectContent>
@@ -99,6 +106,6 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </SummaryPanel>
   );
 };
