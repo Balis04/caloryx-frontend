@@ -1,6 +1,5 @@
 import type { RegisterFormData } from "../types/register.types";
-
-export const REGISTER_STEP_COUNT = 3;
+export { REGISTER_STEP_COUNT } from "./register.steps";
 
 export const canAdvanceRegisterStep = (
   step: number,

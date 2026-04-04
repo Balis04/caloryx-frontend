@@ -1,14 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { USER_ROLE_OPTIONS } from "@/shared/constants/user-options";
-import { ArrowLeft, ArrowRight, ClipboardList, UserPlus } from "lucide-react";
+import { ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
 import { RegisterBasicSection } from "./RegisterBasicSection";
 import { RegisterBodySection } from "./RegisterBodySection";
 import { RegisterGoalSection } from "./RegisterGoalSection";
-import { REGISTER_STEP_COUNT } from "../lib/register.validation";
+import { RegisterProgressPanel } from "./RegisterProgressPanel";
+import { RegisterSummaryPanel } from "./RegisterSummaryPanel";
+import { REGISTER_STEP_COUNT, REGISTER_STEP_META } from "../lib/register.steps";
 import type { RegisterFormData, SetFieldFn } from "../types/register.types";
 
 interface Props {
@@ -23,21 +23,6 @@ interface Props {
   onFinish: () => void;
 }
 
-const STEP_META = [
-  {
-    title: "Basic information",
-    description: "Tell us who you are and how your account should be set up.",
-  },
-  {
-    title: "Body profile",
-    description: "Add your starting metrics so we can personalize the experience.",
-  },
-  {
-    title: "Goals",
-    description: "Define your target and expected weekly pace.",
-  },
-] as const;
-
 export default function RegisterForm({
   step,
   values,
@@ -49,8 +34,7 @@ export default function RegisterForm({
   onNext,
   onFinish,
 }: Props) {
-  const progressValue = (step / REGISTER_STEP_COUNT) * 100;
-  const activeStep = STEP_META[step - 1];
+  const activeStep = REGISTER_STEP_META[step - 1];
   const roleLabel =
     USER_ROLE_OPTIONS.find((option) => option.value === values.userRole)?.label ??
     "New user";
@@ -130,85 +114,13 @@ export default function RegisterForm({
               </div>
 
               <div className="space-y-6">
-                <Card className="shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <ClipboardList className="h-5 w-5" />
-                      Progress
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Progress value={progressValue} className="h-2.5" />
-                    <div className="space-y-3 text-sm">
-                      {STEP_META.map((item, index) => {
-                        const stepNumber = index + 1;
-                        const isActive = stepNumber === step;
-                        const isDone = stepNumber < step;
-
-                        return (
-                          <div
-                            key={item.title}
-                            className="rounded-xl border bg-muted/20 p-3"
-                          >
-                            <p className="font-medium">
-                              {stepNumber}. {item.title}
-                            </p>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              {item.description}
-                            </p>
-                            <Badge
-                              variant={isActive || isDone ? "default" : "outline"}
-                              className="mt-3"
-                            >
-                              {isDone ? "Completed" : isActive ? "Current" : "Upcoming"}
-                            </Badge>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Summary</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3 text-sm">
-                    <SummaryRow label="Full name" value={values.fullName || "-"} />
-                    <SummaryRow label="Birth date" value={values.birthDate || "-"} />
-                    <SummaryRow label="Role" value={roleLabel} />
-                    <Separator />
-                    <SummaryRow label="Height" value={values.heightCm ? `${values.heightCm} cm` : "-"} />
-                    <SummaryRow
-                      label="Starting weight"
-                      value={
-                        values.startWeightKg ? `${values.startWeightKg} kg` : "-"
-                      }
-                    />
-                    <Separator />
-                    <SummaryRow label="Goal" value={values.goal ?? "-"} />
-                    <SummaryRow
-                      label="Target weight"
-                      value={
-                        values.targetWeightKg ? `${values.targetWeightKg} kg` : "-"
-                      }
-                    />
-                  </CardContent>
-                </Card>
+                <RegisterProgressPanel step={step} />
+                <RegisterSummaryPanel values={values} roleLabel={roleLabel} />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-}
-
-function SummaryRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-4">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="text-right font-medium">{value}</span>
     </div>
   );
 }
