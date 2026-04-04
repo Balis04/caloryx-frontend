@@ -10,7 +10,9 @@ import type { MealFoodListProps } from "../shared/foods.types";
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-center backdrop-blur">
-      <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500">{label}</p>
+      <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500">
+        {label}
+      </p>
       <p className="mt-2 text-sm font-semibold text-slate-950">{value}</p>
     </div>
   );
@@ -35,7 +37,9 @@ export default function MealFoodsList({
 }: MealFoodListProps) {
   return (
     <>
-      {actionError ? <p className="mt-6 text-sm text-red-700">{actionError}</p> : null}
+      {actionError ? (
+        <p className="mt-6 text-sm text-red-700">{actionError}</p>
+      ) : null}
 
       <div className="mt-6 space-y-4">
         {foods.map((food) => {
@@ -56,13 +60,17 @@ export default function MealFoodsList({
                         <div className="flex items-center gap-2">
                           <Input
                             type="number"
-                            min="0"
+                            min="0.1"
                             step="0.1"
                             value={editingAmount}
-                            onChange={(event) => setEditingAmount(event.target.value)}
+                            onChange={(event) =>
+                              setEditingAmount(event.target.value)
+                            }
                             className="h-10 max-w-[140px] border-white/70 bg-white/80"
                           />
-                          <span className="text-sm text-slate-600">{food.unit}</span>
+                          <span className="text-sm text-slate-600">
+                            {food.unit}
+                          </span>
                         </div>
                       ) : (
                         <p className="text-sm text-slate-600">
@@ -72,10 +80,22 @@ export default function MealFoodsList({
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      <MiniMetric label="Calories" value={`${Math.round(food.calories)} kcal`} />
-                      <MiniMetric label="Protein" value={`${Math.round(food.protein)} g`} />
-                      <MiniMetric label="Carbs" value={`${Math.round(food.carbohydrates)} g`} />
-                      <MiniMetric label="Fat" value={`${Math.round(food.fat)} g`} />
+                      <MiniMetric
+                        label="Calories"
+                        value={`${Math.round(food.calories)} kcal`}
+                      />
+                      <MiniMetric
+                        label="Protein"
+                        value={`${Math.round(food.protein)} g`}
+                      />
+                      <MiniMetric
+                        label="Carbs"
+                        value={`${Math.round(food.carbohydrates)} g`}
+                      />
+                      <MiniMetric
+                        label="Fat"
+                        value={`${Math.round(food.fat)} g`}
+                      />
                     </div>
                   </div>
                 </div>
@@ -140,7 +160,8 @@ export default function MealFoodsList({
                 No foods have been logged for this meal yet.
               </p>
               <p className="mt-2 text-sm text-slate-600">
-                Add the first item to start tracking {mealTitle.toLowerCase()} on this date.
+                Add the first item to start tracking {mealTitle.toLowerCase()}{" "}
+                on this date.
               </p>
               <div className="mt-6">
                 <Button onClick={openAddFood} className="rounded-full px-6">
