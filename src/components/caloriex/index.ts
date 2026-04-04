@@ -7,5 +7,6 @@ export { GlassCard, GlassCardSoft } from "./primitives/GlassCard";
 export { GlassChip } from "./primitives/GlassChip";
 export { GlassMetric } from "./primitives/GlassMetric";
 export { HeroBadge } from "./primitives/HeroBadge";
+export { NoticeCard } from "./primitives/NoticeCard";
 export { ReadonlyField } from "./primitives/ReadonlyField";
 export type { AccentTone } from "./theme/accent-tones";

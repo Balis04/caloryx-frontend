@@ -31,7 +31,6 @@ export const useCoachProfileForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isForbidden, setIsForbidden] = useState(false);
   const [hasCoachProfile, setHasCoachProfile] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
 
   const loadCoachProfile = useCallback(async () => {
     setLoading(true);
@@ -44,18 +43,15 @@ export const useCoachProfileForm = () => {
       setFormData(mapCoachProfileResponseToFormData(response));
       setCoachProfileId(response.id);
       setHasCoachProfile(true);
-      setIsEditing(false);
     } catch (error) {
       if (error instanceof ApiError && error.status === 400) {
         setFormData(initialCoachProfileFormData);
         setCoachProfileId(null);
         setHasCoachProfile(false);
-        setIsEditing(false);
       } else if (error instanceof ApiError && error.status === 403) {
         setFormData(initialCoachProfileFormData);
         setCoachProfileId(null);
         setHasCoachProfile(false);
-        setIsEditing(false);
         setIsForbidden(true);
         setErrorMessage(error.message);
       } else {
@@ -123,7 +119,6 @@ export const useCoachProfileForm = () => {
         }
 
         setHasCoachProfile(true);
-        setIsEditing(false);
         setStatusMessage(
           coachProfileId
             ? "Coach profile updated successfully."
@@ -182,41 +177,22 @@ export const useCoachProfileForm = () => {
     [coachProfileId, deleteCoachCertificate]
   );
 
-  const startEditing = useCallback(() => {
-    setStatusMessage(null);
-    setIsEditing(true);
-  }, []);
-
-  const cancelEditing = useCallback(() => {
-    setStatusMessage(null);
-    if (hasCoachProfile) {
-      void loadCoachProfile();
-    } else {
-      setFormData(initialCoachProfileFormData);
-      setCoachProfileId(null);
-      setIsEditing(false);
-    }
-  }, [hasCoachProfile, loadCoachProfile]);
-
   const canSave = useMemo(() => canSaveCoachProfileForm(formData), [formData]);
 
   return {
     canSave,
-    cancelEditing,
     coachProfileId,
     deleteCertificate: removeCertificate,
     deletingCertificateId,
     errorMessage,
     formData,
     hasCoachProfile,
-    isEditing,
     isForbidden,
     loading,
     saveCoachProfile,
     saving,
     setAvailabilityField,
     setField,
-    startEditing,
     statusMessage,
   };
 };
