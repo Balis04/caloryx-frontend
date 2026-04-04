@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { Loader2, Search } from "lucide-react";
 
 import { GlassCard } from "@/components/caloriex";
@@ -22,7 +23,7 @@ export function FoodSearchForm({
   const [product, setProduct] = useState(initialProduct);
   const [brand, setBrand] = useState(initialBrand);
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: FormEvent) => {
     e?.preventDefault();
     onSearch(product.trim(), brand.trim());
   };

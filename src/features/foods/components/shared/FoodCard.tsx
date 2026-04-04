@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { useFoodCalculator } from "../hooks/useFoodCalculator";
-import { useFoodService } from "../hooks/useFoodService";
-import { createFoodLogPayload } from "../lib/food.mapper";
-import type { Food } from "../model/food.model";
+import { useFoodCalculator } from "../../hooks/useFoodCalculator";
+import { useFoodService } from "../../hooks/useFoodService";
+import { createFoodLogPayload } from "../../lib/food.mapper";
+import type { Food } from "../../model/food.model";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 

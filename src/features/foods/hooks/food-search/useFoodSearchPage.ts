@@ -1,0 +1,190 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+
+import { useFoodSearch } from "../useFoodSearch";
+import { useFoodService } from "../useFoodService";
+import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custom-foods";
+import {
+  FOODS_TAB_META,
+  formatFoodDateLabel,
+  getOptionalValidDate,
+  MEAL_LABELS,
+  type FoodsMainTab,
+  type SavedFoodsScope,
+  VALID_MEALS,
+} from "../../lib/shared/foods.presentation";
+import type { NewFoodDraft } from "../../components/shared/foods.types";
+import type { CustomFoodResponse, Food, MealTime } from "../../model/food.model";
+
+const EMPTY_NEW_FOOD: NewFoodDraft = {
+  name: "",
+  calories: "",
+  protein: "",
+  carbohydrates: "",
+  fat: "",
+};
+
+export const useFoodSearchPage = () => {
+  const navigate = useNavigate();
+  const { mealTime } = useParams<{ mealTime: string }>();
+  const [searchParams] = useSearchParams();
+  const consumedDate = getOptionalValidDate(searchParams.get("date") ?? null);
+
+  const normalizedMealParam = mealTime?.toUpperCase();
+  const isValidMeal =
+    !!normalizedMealParam && VALID_MEALS.includes(normalizedMealParam as MealTime);
+  const normalizedMeal = (normalizedMealParam as MealTime) ?? "BREAKFAST";
+
+  const { foods, isLoading, performSearch } = useFoodSearch("cheddar cheese", "LIDL");
+  const {
+    getAllCustomFoods,
+    getMyCustomFoods,
+    getOtherCustomFoods,
+    createCustomFood,
+    deleteCustomFood,
+  } = useFoodService();
+
+  const [newFood, setNewFood] = useState<NewFoodDraft>(EMPTY_NEW_FOOD);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<FoodsMainTab>("usda");
+  const [savedScope, setSavedScope] = useState<SavedFoodsScope>("own");
+  const [savedFoods, setSavedFoods] = useState<Food[]>([]);
+  const [savedLoading, setSavedLoading] = useState(false);
+  const [savedError, setSavedError] = useState<string | null>(null);
+  const [savedSearchTerm, setSavedSearchTerm] = useState("");
+  const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
+
+  const loadSavedFoods = useCallback(async () => {
+    setSavedLoading(true);
+    setSavedError(null);
+
+    try {
+      const response =
+        savedScope === "own"
+          ? await getMyCustomFoods()
+          : savedScope === "other"
+            ? await getOtherCustomFoods()
+            : await getAllCustomFoods();
+
+      const items = Array.isArray(response)
+        ? response
+        : ((response as { content?: CustomFoodResponse[] }).content ?? []);
+
+      setSavedFoods(items.map(mapCustomFoodToFood));
+    } catch (e) {
+      setSavedError(e instanceof Error ? e.message : "Failed to load saved foods.");
+      setSavedFoods([]);
+    } finally {
+      setSavedLoading(false);
+    }
+  }, [getAllCustomFoods, getMyCustomFoods, getOtherCustomFoods, savedScope]);
+
+  useEffect(() => {
+    if (activeTab === "saved") {
+      void loadSavedFoods();
+    }
+  }, [activeTab, loadSavedFoods]);
+
+  const filteredSavedFoods = useMemo(() => {
+    const query = savedSearchTerm.trim().toLowerCase();
+
+    if (!query) {
+      return savedFoods;
+    }
+
+    return savedFoods.filter((food) => food.description.toLowerCase().includes(query));
+  }, [savedFoods, savedSearchTerm]);
+
+  const handleCreateFood = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+      setCreateError(null);
+
+      const name = newFood.name.trim();
+
+      if (!name) {
+        setCreateError("Name is required.");
+        return;
+      }
+
+      const calories = toNumber(newFood.calories);
+      const protein = toNumber(newFood.protein);
+      const carbohydrates = toNumber(newFood.carbohydrates);
+      const fat = toNumber(newFood.fat);
+
+      if ([calories, protein, carbohydrates, fat].some((value) => value < 0)) {
+        setCreateError("Nutrition values cannot be negative.");
+        return;
+      }
+
+      setCreateLoading(true);
+
+      try {
+        await createCustomFood({ name, calories, protein, carbohydrates, fat });
+        setNewFood(EMPTY_NEW_FOOD);
+        setSavedScope("own");
+        setSavedSearchTerm("");
+        setActiveTab("saved");
+      } catch (e) {
+        setCreateError(e instanceof Error ? e.message : "Creation failed.");
+      } finally {
+        setCreateLoading(false);
+      }
+    },
+    [createCustomFood, newFood]
+  );
+
+  const handleDeleteSavedFood = useCallback(
+    async (foodId?: string) => {
+      if (!foodId) {
+        return;
+      }
+
+      setActiveDeleteId(foodId);
+      setSavedError(null);
+
+      try {
+        await deleteCustomFood(foodId);
+        await loadSavedFoods();
+      } catch (e) {
+        setSavedError(e instanceof Error ? e.message : "Delete failed.");
+      } finally {
+        setActiveDeleteId(null);
+      }
+    },
+    [deleteCustomFood, loadSavedFoods]
+  );
+
+  return {
+    activeDeleteId,
+    activeTab,
+    activeTabMeta: FOODS_TAB_META[activeTab],
+    consumedDate,
+    createError,
+    createLoading,
+    filteredSavedFoods,
+    foods,
+    isLoading,
+    isValidMeal,
+    mealLabel: MEAL_LABELS[normalizedMeal],
+    navigateBack: () => navigate("/calorie-counter"),
+    newFood,
+    normalizedMeal,
+    performSearch,
+    savedError,
+    savedLoading,
+    savedScope,
+    savedSearchTerm,
+    setActiveTab,
+    setNewFood,
+    setSavedScope,
+    setSavedSearchTerm,
+    handleCreateFood,
+    handleDeleteSavedFood,
+    formattedConsumedDate: formatFoodDateLabel(consumedDate),
+  };
+};
+
+export type UseFoodSearchPageResult = ReturnType<typeof useFoodSearchPage>;
