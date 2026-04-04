@@ -9,6 +9,14 @@ export interface FoodSearchWorkspaceProps {
   foodSearch: UseFoodSearchPageResult;
 }
 
+export interface NewFoodDraft {
+  name: string;
+  calories: string;
+  protein: string;
+  carbohydrates: string;
+  fat: string;
+}
+
 export interface DiaryWorkspaceProps {
   diary: UseDiaryPageResult;
 }

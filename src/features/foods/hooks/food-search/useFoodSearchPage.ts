@@ -13,15 +13,8 @@ import {
   type SavedFoodsScope,
   VALID_MEALS,
 } from "../../lib/shared/foods.presentation";
+import type { NewFoodDraft } from "../../components/shared/foods.types";
 import type { CustomFoodResponse, Food, MealTime } from "../../model/food.model";
-
-type NewFoodDraft = {
-  name: string;
-  calories: string;
-  protein: string;
-  carbohydrates: string;
-  fat: string;
-};
 
 const EMPTY_NEW_FOOD: NewFoodDraft = {
   name: "",

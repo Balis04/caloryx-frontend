@@ -35,6 +35,10 @@ export default function DiaryMealsList({
           tabIndex={0}
           onClick={() => onOpenMealDetails(meal.type)}
           onKeyDown={(event) => {
+            if (event.currentTarget !== event.target) {
+              return;
+            }
+
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
               onOpenMealDetails(meal.type);
