@@ -383,3 +383,5 @@ export const useCoachTrainingRequests = () => {
     updateRequestStatus,
   };
 };
+
+export type UseCoachTrainingRequestsResult = ReturnType<typeof useCoachTrainingRequests>;
