@@ -133,7 +133,14 @@ const normalizeCoach = (
   };
 };
 
-export const useCoachDirectory = () => {
+export interface UseCoachDirectoryResult {
+  coaches: CoachCardData[];
+  loading: boolean;
+  error: string | null;
+  reload: () => Promise<void>;
+}
+
+export const useCoachDirectory = (): UseCoachDirectoryResult => {
   const { request } = useApi();
   const [coaches, setCoaches] = useState<CoachCardData[]>([]);
   const [loading, setLoading] = useState(true);
