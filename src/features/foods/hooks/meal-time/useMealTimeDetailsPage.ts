@@ -6,6 +6,7 @@ import { useFoodService } from "../useFoodService";
 import {
   formatDateInput,
   formatDiaryDisplayDate,
+  getValidDateOrFallback,
   toMealTitle,
   VALID_MEALS,
 } from "../../lib/shared/foods.presentation";
@@ -20,7 +21,8 @@ export const useMealTimeDetailsPage = () => {
   const { updateFoodAmount, deleteFood } = useFoodService();
 
   const normalizedMeal = mealTime?.toUpperCase() as MealTime;
-  const date = searchParams.get("date") ?? formatDateInput(new Date());
+  const fallbackDate = formatDateInput(new Date());
+  const date = getValidDateOrFallback(searchParams.get("date"), fallbackDate);
 
   const [summary, setSummary] = useState<MealTimeSummaryResponse | null>(null);
   const [foods, setFoods] = useState<FoodLogResponse[]>([]);

@@ -8,6 +8,7 @@ import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custo
 import {
   FOODS_TAB_META,
   formatFoodDateLabel,
+  getOptionalValidDate,
   MEAL_LABELS,
   type FoodsMainTab,
   type SavedFoodsScope,
@@ -28,7 +29,7 @@ export const useFoodSearchPage = () => {
   const navigate = useNavigate();
   const { mealTime } = useParams<{ mealTime: string }>();
   const [searchParams] = useSearchParams();
-  const consumedDate = searchParams.get("date") ?? undefined;
+  const consumedDate = getOptionalValidDate(searchParams.get("date") ?? null);
 
   const normalizedMealParam = mealTime?.toUpperCase();
   const isValidMeal =
