@@ -19,7 +19,24 @@ const createInitialFormData = (
   customerDescription: "",
 });
 
-export const useTrainingRequestForm = (coachProfileId: string | null) => {
+export interface UseTrainingRequestFormResult {
+  profile: Profile | null;
+  formData: TrainingRequestFormData;
+  loading: boolean;
+  submitting: boolean;
+  error: string | null;
+  submitMessage: string | null;
+  setField: <K extends keyof TrainingRequestFormData>(
+    key: K,
+    value: TrainingRequestFormData[K]
+  ) => void;
+  submit: () => Promise<boolean>;
+  canSubmit: boolean;
+}
+
+export const useTrainingRequestForm = (
+  coachProfileId: string | null
+): UseTrainingRequestFormResult => {
   const { getProfile } = useProfileApi();
   const { createTrainingRequest } = useTrainingRequestApi();
   const [profile, setProfile] = useState<Profile | null>(null);
