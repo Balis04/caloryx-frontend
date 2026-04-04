@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -26,7 +26,10 @@ export default function CoachRequestWorkspace({
   const { coaches, error } = coachDirectory;
   const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
 
-  const selectedCoach = coaches.find((coach) => coach.id === selectedCoachId) ?? null;
+  const selectedCoach = useMemo(
+    () => coaches.find((coach) => coach.id === selectedCoachId) ?? null,
+    [coaches, selectedCoachId]
+  );
 
   return (
     <CaloriexPage>
@@ -34,7 +37,7 @@ export default function CoachRequestWorkspace({
         badge={<HeroBadge>{COACH_REQUEST_PAGE_COPY.badge}</HeroBadge>}
         title={COACH_REQUEST_PAGE_COPY.title}
         description={COACH_REQUEST_PAGE_COPY.description}
-        chips={[...COACH_REQUEST_PAGE_COPY.chips]}
+        chips={COACH_REQUEST_PAGE_COPY.chips}
         aside={
           <CoachRequestHeroAside
             coachCount={coaches.length}

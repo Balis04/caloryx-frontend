@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -35,7 +36,10 @@ export default function TrainingRequestFormWorkspace({
   const { coaches, error: coachesError } = coachDirectory;
   const { formData, submitting, error, setField, submit, canSubmit } = trainingRequestForm;
 
-  const selectedCoach = coaches.find((coach) => coach.id === coachId) ?? null;
+  const selectedCoach = useMemo(
+    () => coaches.find((coach) => coach.id === coachId) ?? null,
+    [coachId, coaches]
+  );
   const goalLabel = formData.goal ? getLabelFromOptions(GOAL_OPTIONS, formData.goal) : undefined;
   const activityLevelLabel = formData.activityLevel
     ? getLabelFromOptions(ACTIVITY_OPTIONS, formData.activityLevel)
@@ -66,7 +70,7 @@ export default function TrainingRequestFormWorkspace({
         badge={<HeroBadge>{TRAINING_REQUEST_FORM_PAGE_COPY.badge}</HeroBadge>}
         title={TRAINING_REQUEST_FORM_PAGE_COPY.title}
         description={TRAINING_REQUEST_FORM_PAGE_COPY.description}
-        chips={[...TRAINING_REQUEST_FORM_PAGE_COPY.chips]}
+        chips={TRAINING_REQUEST_FORM_PAGE_COPY.chips}
         aside={
           <TrainingRequestHeroAside coachName={selectedCoach?.fullName} canSubmit={canSubmit} />
         }

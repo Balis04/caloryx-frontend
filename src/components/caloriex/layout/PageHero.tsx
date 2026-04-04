@@ -13,7 +13,7 @@ export function PageHero({
   badge: ReactNode;
   title: string;
   description: string;
-  chips?: string[];
+  chips?: readonly string[];
   aside?: ReactNode;
   leading?: ReactNode;
 }) {
