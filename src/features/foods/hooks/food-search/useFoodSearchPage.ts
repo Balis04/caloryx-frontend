@@ -133,14 +133,13 @@ export const useFoodSearchPage = () => {
         setSavedScope("own");
         setSavedSearchTerm("");
         setActiveTab("saved");
-        await loadSavedFoods();
       } catch (e) {
         setCreateError(e instanceof Error ? e.message : "Creation failed.");
       } finally {
         setCreateLoading(false);
       }
     },
-    [createCustomFood, loadSavedFoods, newFood]
+    [createCustomFood, newFood]
   );
 
   const handleDeleteSavedFood = useCallback(

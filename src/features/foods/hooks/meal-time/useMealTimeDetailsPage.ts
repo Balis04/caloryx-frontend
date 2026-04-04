@@ -86,11 +86,11 @@ export const useMealTimeDetailsPage = () => {
     setActionError(null);
   };
 
-  const cancelEdit = () => {
+  const cancelEdit = useCallback(() => {
     setEditingFoodId(null);
     setEditingAmount("");
     setActionError(null);
-  };
+  }, []);
 
   const saveEdit = useCallback(
     async (foodId: string) => {
@@ -116,7 +116,7 @@ export const useMealTimeDetailsPage = () => {
         setActionType(null);
       }
     },
-    [editingAmount, loadData, updateFoodAmount]
+    [cancelEdit, editingAmount, loadData, updateFoodAmount]
   );
 
   const handleDelete = useCallback(
@@ -139,7 +139,7 @@ export const useMealTimeDetailsPage = () => {
         setActionType(null);
       }
     },
-    [deleteFood, editingFoodId, loadData]
+    [cancelEdit, deleteFood, editingFoodId, loadData]
   );
 
   return {
