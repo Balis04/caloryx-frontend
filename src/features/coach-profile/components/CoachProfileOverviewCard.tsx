@@ -53,12 +53,12 @@ export default function CoachProfileOverviewCard({
       <CardContent className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
         <GlassMetric
           label="Format"
-          value={trainingFormatLabel}
+          value={trainingFormatLabel || "-"}
           description="Main delivery style shown to users."
         />
         <GlassMetric
           label="Price range"
-          value={priceRange}
+          value={priceRange || "-"}
           description="Displayed pricing envelope for your service."
         />
         <GlassMetric

@@ -22,18 +22,8 @@ import {
   getCurrencyLabel,
   getTrainingFormatLabel,
 } from "../lib/coach-profile.presentation";
-import type { CoachCertificate, PendingCoachCertificateUpload } from "../types/coach-profile.types";
-import { API_BASE_URL } from "@/lib/api-client";
-
-function openCertificate(certificate: CoachCertificate) {
-  if (!certificate.fileUrl) return;
-
-  const fileUrl = /^https?:\/\//i.test(certificate.fileUrl)
-    ? certificate.fileUrl
-    : `${API_BASE_URL}${certificate.fileUrl.startsWith("/") ? "" : "/"}${certificate.fileUrl}`;
-
-  window.open(fileUrl, "_blank", "noopener,noreferrer");
-}
+import { openCoachCertificate } from "../lib/coach-profile.certificates";
+import type { PendingCoachCertificateUpload } from "../types/coach-profile.types";
 
 export default function EditCoachProfilePage() {
   const navigate = useNavigate();
@@ -193,7 +183,7 @@ export default function EditCoachProfilePage() {
               deletingCertificateId={deletingCertificateId}
               onFileChange={handlePdfSelection}
               onPendingCertificateChange={updatePendingCertificate}
-              onDownload={openCertificate}
+              onDownload={openCoachCertificate}
               onDelete={(certificateId) => void deleteCertificate(certificateId)}
             />
           </div>

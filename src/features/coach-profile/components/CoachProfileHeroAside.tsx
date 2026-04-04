@@ -20,7 +20,7 @@ export default function CoachProfileHeroAside({
         />
         <GlassMetric
           label="Format"
-          value={trainingFormatLabel}
+          value={trainingFormatLabel || "-"}
           description="How your sessions are typically delivered."
         />
         <GlassMetric

@@ -22,13 +22,13 @@ export const coachProfileTextareaClassName =
   "min-h-32 w-full rounded-[24px] border border-white/60 bg-white/70 px-4 py-3 text-sm leading-6 text-slate-900 shadow-sm outline-none backdrop-blur placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-slate-900/15";
 
 export const getTrainingFormatLabel = (value: TrainingFormat | "") =>
-  TRAINING_FORMAT_OPTIONS.find((option) => option.value === value)?.label ?? "Not set";
+  TRAINING_FORMAT_OPTIONS.find((option) => option.value === value)?.label ?? "";
 
 export const getCurrencyLabel = (value: Currency | "") =>
-  CURRENCY_OPTIONS.find((option) => option.value === value)?.label ?? "Not set";
+  CURRENCY_OPTIONS.find((option) => option.value === value)?.label ?? "";
 
 export const formatPriceRange = (
   priceFrom: string,
   priceTo: string,
   currency: Currency | ""
-) => (priceFrom || priceTo ? `${priceFrom || "0"} - ${priceTo || "0"} ${currency || ""}` : "Not set");
+) => (priceFrom || priceTo ? `${priceFrom || "0"} - ${priceTo || "0"} ${currency || ""}` : "");

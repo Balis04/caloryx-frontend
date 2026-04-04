@@ -19,20 +19,9 @@ import {
   CoachProfilePublicInfoPanel,
 } from "../components/CoachProfileReadonlyPanels";
 import { useCoachProfileForm } from "../hooks/useCoachProfileForm";
+import { openCoachCertificate } from "../lib/coach-profile.certificates";
 import { formatPriceRange, getTrainingFormatLabel } from "../lib/coach-profile.presentation";
-import type { CoachCertificate } from "../types/coach-profile.types";
-import { API_BASE_URL } from "@/lib/api-client";
 import { GlassCard } from "@/components/caloriex";
-
-function openCertificate(certificate: CoachCertificate) {
-  if (!certificate.fileUrl) return;
-
-  const fileUrl = /^https?:\/\//i.test(certificate.fileUrl)
-    ? certificate.fileUrl
-    : `${API_BASE_URL}${certificate.fileUrl.startsWith("/") ? "" : "/"}${certificate.fileUrl}`;
-
-  window.open(fileUrl, "_blank", "noopener,noreferrer");
-}
 
 export default function CoachProfilePage() {
   const navigate = useNavigate();
@@ -214,7 +203,7 @@ export default function CoachProfilePage() {
           <div className="space-y-6">
             <CoachProfileCertificatesPanel
               certificates={downloadableCertificates}
-              onDownload={openCertificate}
+              onDownload={openCoachCertificate}
             />
 
             <GlassCard className="overflow-hidden">
