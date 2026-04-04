@@ -1,10 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { initialRegisterFormValues } from "../model/register.form";
+import { REGISTER_STEP_COUNT } from "../lib/register.steps";
 import type { RegisterFormData } from "../types/register.types";
-import {
-  REGISTER_STEP_COUNT,
-  canAdvanceRegisterStep,
-} from "../lib/register.validation";
+import { canAdvanceRegisterStep } from "../lib/register.validation";
 
 export function useRegisterForm() {
   const [step, setStep] = useState(1);

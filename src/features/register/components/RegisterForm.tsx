@@ -8,8 +8,7 @@ import { RegisterBodySection } from "./RegisterBodySection";
 import { RegisterGoalSection } from "./RegisterGoalSection";
 import { RegisterProgressPanel } from "./RegisterProgressPanel";
 import { RegisterSummaryPanel } from "./RegisterSummaryPanel";
-import { REGISTER_STEP_COUNT } from "../lib/register.validation";
-import { REGISTER_STEP_META } from "../lib/register.steps";
+import { REGISTER_STEP_COUNT, REGISTER_STEP_META } from "../lib/register.steps";
 import type { RegisterFormData, SetFieldFn } from "../types/register.types";
 
 interface Props {

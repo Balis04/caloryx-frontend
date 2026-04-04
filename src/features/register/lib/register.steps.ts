@@ -12,3 +12,5 @@ export const REGISTER_STEP_META = [
     description: "Define your target and expected weekly pace.",
   },
 ] as const;
+
+export const REGISTER_STEP_COUNT = REGISTER_STEP_META.length;

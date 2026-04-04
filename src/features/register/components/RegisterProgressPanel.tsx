@@ -2,8 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ClipboardList } from "lucide-react";
-import { REGISTER_STEP_COUNT } from "../lib/register.validation";
-import { REGISTER_STEP_META } from "../lib/register.steps";
+import { REGISTER_STEP_COUNT, REGISTER_STEP_META } from "../lib/register.steps";
 
 interface Props {
   step: number;
