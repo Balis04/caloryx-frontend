@@ -1,7 +1,7 @@
 import { GlassCard } from "@/components/caloriex";
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
-import type { ProfileEditorHeroAsideProps } from "./profile-editor.types";
+import type { ProfileEditorHeroAsideProps } from "../types/profile-editor.types";
 
 export default function ProfileEditorHeroAside({
   roleLabel,

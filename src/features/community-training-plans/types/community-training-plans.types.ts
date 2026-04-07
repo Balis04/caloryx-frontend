@@ -1,5 +1,5 @@
 import type { UseCommunityTrainingPlansResult } from "../hooks/useCommunityTrainingPlans";
-import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
+import type { CommunityTrainingPlan } from "./community-training-plan.types";
 
 export interface CommunityPlansHeroAsideProps {
   planCount: number;

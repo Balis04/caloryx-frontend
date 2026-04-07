@@ -1,7 +1,7 @@
 import { GlassCard, ReadonlyField } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
-import type { ProfileEditorSnapshotPanelProps } from "./profile-editor.types";
+import type { ProfileEditorSnapshotPanelProps } from "../types/profile-editor.types";
 
 export default function ProfileEditorSnapshotPanel({
   values,

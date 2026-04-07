@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { getCommunityTrainingPlans } from "../api/community-training-plans.api";
+import { useCommunityTrainingPlansApi } from "../api/community-training-plans.api";
 import {
   COMMUNITY_PLAN_SORT_ORDER,
   detectCommunityPlanVariant,
@@ -8,6 +8,7 @@ import {
 import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
 
 export const useCommunityTrainingPlans = () => {
+  const { getCommunityTrainingPlans } = useCommunityTrainingPlansApi();
   const [plans, setPlans] = useState<CommunityTrainingPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +44,7 @@ export const useCommunityTrainingPlans = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [getCommunityTrainingPlans]);
 
   const sortedPlans = useMemo(
     () =>
