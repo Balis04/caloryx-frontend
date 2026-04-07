@@ -71,7 +71,7 @@ export const useTrainingRequestApi = () => {
     const blob = await response.blob();
     const contentDisposition = response.headers.get("content-disposition") ?? "";
     const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
-    const basicMatch = contentDisposition.match(/filename=\"?([^\";]+)\"?/i);
+    const basicMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
     const fileName = decodeURIComponent(
       utf8Match?.[1] ?? basicMatch?.[1] ?? `training-plan-${trainingRequestId}`
     );

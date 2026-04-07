@@ -16,8 +16,8 @@ import {
   coachProfileTextareaClassName,
   CURRENCY_OPTIONS,
   TRAINING_FORMAT_OPTIONS,
-} from "../lib/coach-profile.presentation";
-import type { CoachProfileFormData, Currency, TrainingFormat } from "../types/coach-profile.types";
+} from "../../lib/coach-profile.presentation";
+import type { CoachProfileFormData, Currency, TrainingFormat } from "../../types/coach-profile.types";
 
 export default function CoachProfileIntroSection({
   formData,

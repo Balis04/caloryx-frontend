@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
 
-import { coachProfileInputClassName } from "../lib/coach-profile.presentation";
-import type { AvailabilitySlot } from "../types/coach-profile.types";
+import { coachProfileInputClassName } from "../../lib/coach-profile.presentation";
+import type { AvailabilitySlot } from "../../types/coach-profile.types";
 
 export default function CoachProfileAvailabilitySection({
   availability,

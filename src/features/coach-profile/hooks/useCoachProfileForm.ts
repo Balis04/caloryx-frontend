@@ -12,7 +12,7 @@ import type {
   CoachProfileFormData,
   PendingCoachCertificateUpload,
 } from "../types/coach-profile.types";
-import { useCoachProfileService } from "./useCoachProfileService";
+import { useCoachProfileApi } from "../api/coach-profile.api";
 
 export const useCoachProfileForm = () => {
   const {
@@ -21,7 +21,7 @@ export const useCoachProfileForm = () => {
     getMyCoachProfile,
     updateCoachProfile,
     uploadCoachCertificate,
-  } = useCoachProfileService();
+  } = useCoachProfileApi();
   const [formData, setFormData] = useState<CoachProfileFormData>(initialCoachProfileFormData);
   const [coachProfileId, setCoachProfileId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
