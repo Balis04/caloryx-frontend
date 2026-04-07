@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
 
-export default function AuthRedirect() {
+export default function AuthRedirectPage() {
   const { isLoading, refreshAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -29,10 +29,10 @@ export default function AuthRedirect() {
   }, [isLoading, navigate, refreshAuth]);
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex h-screen items-center justify-center">
       <div className="text-center">
         <p className="text-lg font-medium">Authenticating...</p>
-        <div className="mt-4 animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+        <div className="mx-auto mt-4 h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
       </div>
     </div>
   );

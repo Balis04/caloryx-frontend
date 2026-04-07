@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import RegisterPage from "./features/register/pages/RegisterPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
-import AuthRedirect from "./pages/AuthRedirect";
+import AuthRedirectPage from "./features/auth/pages/AuthRedirectPage";
 import FoodSearchPage from "./features/foods/pages/FoodSearchPage";
 import { Outlet } from "react-router-dom";
 import RequireAuth from "./guards/RequireAuth";
@@ -39,7 +39,7 @@ function App() {
           }
         />
 
-        <Route path="/auth-redirect" element={<AuthRedirect />} />
+        <Route path="/auth-redirect" element={<AuthRedirectPage />} />
 
         {/* CSAK AUTH KELL */}
         <Route
