@@ -1,9 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
 
-import type { UseDiaryPageResult } from "../../hooks/diary/useDiaryPage";
-import type { UseFoodSearchPageResult } from "../../hooks/food-search/useFoodSearchPage";
-import type { UseMealTimeDetailsPageResult } from "../../hooks/meal-time/useMealTimeDetailsPage";
-import type { FoodLogResponse } from "../../model/food.model";
+import type { UseDiaryPageResult } from "../hooks/diary/useDiaryPage";
+import type { UseFoodSearchPageResult } from "../hooks/food-search/useFoodSearchPage";
+import type { UseMealTimeDetailsPageResult } from "../hooks/meal-time/useMealTimeDetailsPage";
+import type { FoodLogResponse } from "../model/food.model";
 
 export interface FoodSearchWorkspaceProps {
   foodSearch: UseFoodSearchPageResult;

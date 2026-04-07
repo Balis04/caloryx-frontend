@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import type { MealFoodListProps } from "../shared/foods.types";
+import type { MealFoodListProps } from "../../types/foods.types";
 
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (

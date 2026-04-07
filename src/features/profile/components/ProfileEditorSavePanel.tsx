@@ -4,7 +4,7 @@ import {
   SummaryPanel,
 } from "@/components/caloriex";
 import { ArrowRight, Save, Sparkles } from "lucide-react";
-import type { ProfileEditorSavePanelProps } from "./profile-editor.types";
+import type { ProfileEditorSavePanelProps } from "../types/profile-editor.types";
 
 export default function ProfileEditorSavePanel({
   values,

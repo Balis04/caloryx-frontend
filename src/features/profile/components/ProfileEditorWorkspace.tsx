@@ -8,7 +8,7 @@ import { PhysicalStatsSection } from "./PhysicalStatsSection";
 import ProfileEditorHeroAside from "./ProfileEditorHeroAside";
 import ProfileEditorSavePanel from "./ProfileEditorSavePanel";
 import ProfileEditorSnapshotPanel from "./ProfileEditorSnapshotPanel";
-import type { ProfileEditorWorkspaceProps } from "./profile-editor.types";
+import type { ProfileEditorWorkspaceProps } from "../types/profile-editor.types";
 
 export default function ProfileEditorWorkspace({
   values,

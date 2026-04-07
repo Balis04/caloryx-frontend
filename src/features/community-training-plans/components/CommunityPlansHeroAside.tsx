@@ -3,7 +3,7 @@ import { Orbit } from "lucide-react";
 import { GlassMetric, SummaryPanel } from "@/components/caloriex";
 
 import { getCommunityPlanCountLabel } from "../lib/community-training-plans.presentation";
-import type { CommunityPlansHeroAsideProps } from "./community-training-plans.types";
+import type { CommunityPlansHeroAsideProps } from "../types/community-training-plans.types";
 
 export default function CommunityPlansHeroAside({
   planCount,

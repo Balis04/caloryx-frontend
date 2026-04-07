@@ -1,6 +1,6 @@
 import { CaloriexPage, HeroBadge, PageHero } from "@/components/caloriex";
 
-import type { CommunityTrainingPlansWorkspaceProps } from "./community-training-plans.types";
+import type { CommunityTrainingPlansWorkspaceProps } from "../types/community-training-plans.types";
 import CommunityPlansGrid from "./CommunityPlansGrid";
 import CommunityPlansHeroAside from "./CommunityPlansHeroAside";
 import CommunityPlansNextSteps from "./CommunityPlansNextSteps";
