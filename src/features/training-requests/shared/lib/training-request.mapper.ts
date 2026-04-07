@@ -1,11 +1,9 @@
 import type {
   ClosedTrainingRequestResponseDto,
-  CreateTrainingRequestDto,
   TrainingRequestResponseDto,
   UpdateTrainingRequestStatusDto,
 } from "../api/training-request.dto";
 import type { TrainingRequest } from "../model/training-request.model";
-import type { TrainingRequestFormData } from "@/features/training-request/types/training-request-form.types";
 
 export const mapTrainingRequestDtoToModel = (
   dto: TrainingRequestResponseDto
@@ -33,15 +31,6 @@ export const mapClosedTrainingRequestDtoToModel = (
   planDescription: dto.planDescription ?? null,
   fileName: dto.fileName ?? null,
   uploadedAt: dto.uploadedAt ?? null,
-});
-
-export const mapTrainingRequestFormToCreateDto = (
-  formData: TrainingRequestFormData
-): CreateTrainingRequestDto => ({
-  weeklyTrainingCount: Number(formData.weeklyWorkouts),
-  sessionDurationMinutes: Number(formData.preferredSessionLength),
-  preferredLocation: formData.trainingLocation.trim(),
-  requestDescription: formData.customerDescription.trim(),
 });
 
 export const mapTrainingRequestStatusToUpdateDto = (

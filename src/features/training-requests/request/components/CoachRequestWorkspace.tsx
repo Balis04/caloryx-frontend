@@ -23,7 +23,7 @@ export default function CoachRequestWorkspace({
   coachDirectory,
 }: CoachRequestWorkspaceProps) {
   const navigate = useNavigate();
-  const { coaches, error } = coachDirectory;
+  const { coaches, error, loading } = coachDirectory;
   const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
 
   const selectedCoach = useMemo(
@@ -47,6 +47,14 @@ export default function CoachRequestWorkspace({
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
+        {loading ? (
+          <GlassCard className="mb-6">
+            <CardContent className="p-6 text-sm italic text-slate-600">
+              Loading coaches...
+            </CardContent>
+          </GlassCard>
+        ) : null}
+
         {error ? (
           <GlassCard className="border-amber-300/70 bg-amber-50/70">
             <CardContent className="p-6 text-sm text-amber-900">{error}</CardContent>
@@ -64,7 +72,7 @@ export default function CoachRequestWorkspace({
               />
             ))}
 
-            {!error && coaches.length === 0 ? (
+            {!loading && !error && coaches.length === 0 ? (
               <GlassCard className="sm:col-span-2 2xl:col-span-3">
                 <CardContent className="p-6 text-sm text-slate-600">
                   No coach profiles are currently available.

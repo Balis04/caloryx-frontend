@@ -1,7 +1,7 @@
 import type {
   TrainingRequest,
   TrainingRequestStatus,
-} from "@/features/training-request/model/training-request.model";
+} from "@/features/training-requests/shared/model/training-request.model";
 
 export type { TrainingRequestStatus };
 

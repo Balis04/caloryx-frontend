@@ -21,17 +21,13 @@ interface Props {
   error: string | null;
   expandedApprovedRequestId: string | null;
   isCoach: boolean;
-  onDecisionDescriptionsChange: React.Dispatch<
-    React.SetStateAction<Record<string, string>>
-  >;
-  onExpandedApprovedRequestIdChange: React.Dispatch<React.SetStateAction<string | null>>;
   onFilterChange: (value: CoachRequestFilter) => void;
-  onTrainingPlanDraftsChange: React.Dispatch<
-    React.SetStateAction<Record<string, TrainingPlanDraft>>
-  >;
   onViewModeChange: (value: CoachRequestViewMode) => void;
   onDownloadTrainingPlan: (request: CoachTrainingRequest) => Promise<void>;
   onSaveTrainingPlan: (request: CoachTrainingRequest) => Promise<void>;
+  onDecisionDescriptionChange: (requestId: string, value: string) => void;
+  onToggleTrainingPlanEditor: (requestId: string) => void;
+  onTrainingPlanDraftChange: (requestId: string, draft: TrainingPlanDraft) => void;
   onUpdateRequestStatus: (
     trainingRequestId: string,
     status: TrainingRequestStatus,
@@ -52,13 +48,13 @@ export default function TrainingRequestsContent({
   error,
   expandedApprovedRequestId,
   isCoach,
-  onDecisionDescriptionsChange,
-  onExpandedApprovedRequestIdChange,
   onFilterChange,
-  onTrainingPlanDraftsChange,
   onViewModeChange,
+  onDecisionDescriptionChange,
   onDownloadTrainingPlan,
   onSaveTrainingPlan,
+  onToggleTrainingPlanEditor,
+  onTrainingPlanDraftChange,
   onUpdateRequestStatus,
   savingApprovedRequestId,
   showCoachIncomingRequests,
@@ -113,12 +109,10 @@ export default function TrainingRequestsContent({
               downloadingRequestId={downloadingRequestId}
               expandedApprovedRequestId={expandedApprovedRequestId}
               filter={coachRequestFilter}
-              onApprovedDraftChange={(draft) =>
-                onTrainingPlanDraftsChange((prev) => ({ ...prev, [request.id]: draft }))
-              }
+              onApprovedDraftChange={(draft) => onTrainingPlanDraftChange(request.id, draft)}
               onDownloadTrainingPlan={() => void onDownloadTrainingPlan(request)}
               onDecisionDescriptionChange={(value) =>
-                onDecisionDescriptionsChange((prev) => ({ ...prev, [request.id]: value }))
+                onDecisionDescriptionChange(request.id, value)
               }
               onSaveTrainingPlan={() => void onSaveTrainingPlan(request)}
               onStatusChange={(status) =>
@@ -128,9 +122,7 @@ export default function TrainingRequestsContent({
                   decisionDescriptions[request.id] ?? ""
                 )
               }
-              onToggleTrainingPlanEditor={() =>
-                onExpandedApprovedRequestIdChange((prev) => (prev === request.id ? null : request.id))
-              }
+              onToggleTrainingPlanEditor={() => onToggleTrainingPlanEditor(request.id)}
               request={request}
               savingApprovedRequestId={savingApprovedRequestId}
               updatingRequestId={updatingRequestId}

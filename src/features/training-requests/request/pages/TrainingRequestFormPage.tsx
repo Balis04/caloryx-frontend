@@ -9,10 +9,6 @@ export default function TrainingRequestFormPage() {
   const coachDirectory = useCoachDirectory();
   const trainingRequestForm = useTrainingRequestForm(coachId ?? null);
 
-  if (trainingRequestForm.loading || coachDirectory.loading) {
-    return <div className="p-10 italic text-muted-foreground">Loading...</div>;
-  }
-
   return (
     <TrainingRequestFormWorkspace
       coachId={coachId ?? null}

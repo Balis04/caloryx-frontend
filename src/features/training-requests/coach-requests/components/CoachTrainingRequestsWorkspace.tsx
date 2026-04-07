@@ -18,17 +18,19 @@ export default function CoachTrainingRequestsWorkspace({ trainingRequests }: Pro
     error,
     expandedApprovedRequestId,
     isCoach,
+    loading,
+    profileLoading,
     savingApprovedRequestId,
     trainingPlanDrafts,
     updatingRequestId,
     visibleRequests,
     downloadTrainingPlan,
+    setDecisionDescription,
+    toggleApprovedRequestEditor,
     saveTrainingPlan,
-    setDecisionDescriptions,
-    setExpandedApprovedRequestId,
     setCoachRequestFilter,
     setCoachViewMode,
-    setTrainingPlanDrafts,
+    updateTrainingPlanDraft,
     updateRequestStatus,
   } = trainingRequests;
 
@@ -55,6 +57,12 @@ export default function CoachTrainingRequestsWorkspace({ trainingRequests }: Pro
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
+        {profileLoading || loading ? (
+          <div className="mb-6 rounded-[28px] border border-white/60 bg-white/65 p-6 text-sm italic text-slate-600 backdrop-blur">
+            Loading requests...
+          </div>
+        ) : null}
+
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
           <TrainingRequestsContent
             coachRequestFilter={coachRequestFilter}
@@ -64,12 +72,12 @@ export default function CoachTrainingRequestsWorkspace({ trainingRequests }: Pro
             error={error}
             expandedApprovedRequestId={expandedApprovedRequestId}
             isCoach={isCoach}
-            onDecisionDescriptionsChange={setDecisionDescriptions}
+            onDecisionDescriptionChange={setDecisionDescription}
             onDownloadTrainingPlan={downloadTrainingPlan}
-            onExpandedApprovedRequestIdChange={setExpandedApprovedRequestId}
             onFilterChange={setCoachRequestFilter}
             onSaveTrainingPlan={saveTrainingPlan}
-            onTrainingPlanDraftsChange={setTrainingPlanDrafts}
+            onToggleTrainingPlanEditor={toggleApprovedRequestEditor}
+            onTrainingPlanDraftChange={updateTrainingPlanDraft}
             onUpdateRequestStatus={updateRequestStatus}
             onViewModeChange={setCoachViewMode}
             savingApprovedRequestId={savingApprovedRequestId}
