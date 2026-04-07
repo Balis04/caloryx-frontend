@@ -12,12 +12,12 @@ import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
-import CoachRequestPage from "./features/training-request/pages/CoachRequestPage";
+import CoachRequestPage from "./features/training-requests/request/pages/CoachRequestPage";
 import CoachProfilePage from "./features/coach-profile/pages/CoachProfilePage";
 import EditCoachProfilePage from "./features/coach-profile/pages/EditCoachProfilePage";
 import RequireCoach from "./guards/RequireCoach";
-import TrainingRequestFormPage from "./features/training-request/pages/TrainingRequestFormPage";
-import CoachTrainingRequestsPage from "./features/coach-training-requests/pages/CoachTrainingRequestsPage";
+import TrainingRequestFormPage from "./features/training-requests/request/pages/TrainingRequestFormPage";
+import CoachTrainingRequestsPage from "./features/training-requests/coach-requests/pages/CoachTrainingRequestsPage";
 
 const CommunityTrainingPlansPage = lazy(
   () => import("./features/community-training-plans/pages/CommunityTrainingPlansPage")

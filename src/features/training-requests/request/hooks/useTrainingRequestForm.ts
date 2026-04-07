@@ -2,9 +2,9 @@ import { useProfileApi } from "@/features/profile/api/profile.api";
 import { mapProfileDtoToModel } from "@/features/profile/lib/profile.mapper";
 import type { Profile } from "@/features/profile/model/profile.model";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useTrainingRequestApi } from "../api/training-request.api";
 import { mapTrainingRequestFormToCreateDto } from "../lib/training-request.mapper";
 import type { TrainingRequestFormData } from "../types/training-request-form.types";
+import { useTrainingRequestApi } from "../../shared/api/training-request.api";
 
 const createInitialFormData = (
   profile?: Profile | null
