@@ -3,27 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { USER_ROLE_OPTIONS } from "@/shared/constants/user-options";
 import { ArrowLeft, ArrowRight, UserPlus } from "lucide-react";
-import { RegisterBasicSection } from "./RegisterBasicSection";
-import { RegisterBodySection } from "./RegisterBodySection";
-import { RegisterGoalSection } from "./RegisterGoalSection";
 import { RegisterProgressPanel } from "./RegisterProgressPanel";
+import { RegisterStepContent } from "./RegisterStepContent";
 import { RegisterSummaryPanel } from "./RegisterSummaryPanel";
 import { REGISTER_STEP_COUNT, REGISTER_STEP_META } from "../lib/register.steps";
-import type { RegisterFormData, SetFieldFn } from "../types/register.types";
+import type { RegisterWorkspaceProps } from "../types/register-workspace.types";
 
-interface Props {
-  step: number;
-  values: RegisterFormData;
-  setField: SetFieldFn;
-  canGoNext: boolean;
-  loading: boolean;
-  error: string | null;
-  onBack: () => void;
-  onNext: () => void;
-  onFinish: () => void;
-}
-
-export default function RegisterForm({
+export default function RegisterWorkspace({
   step,
   values,
   setField,
@@ -33,7 +19,7 @@ export default function RegisterForm({
   onBack,
   onNext,
   onFinish,
-}: Props) {
+}: RegisterWorkspaceProps) {
   const activeStep = REGISTER_STEP_META[step - 1];
   const roleLabel =
     USER_ROLE_OPTIONS.find((option) => option.value === values.userRole)?.label ??
@@ -80,15 +66,11 @@ export default function RegisterForm({
                     </p>
                   </CardHeader>
                   <CardContent>
-                    {step === 1 ? (
-                      <RegisterBasicSection values={values} setField={setField} />
-                    ) : null}
-                    {step === 2 ? (
-                      <RegisterBodySection values={values} setField={setField} />
-                    ) : null}
-                    {step === 3 ? (
-                      <RegisterGoalSection values={values} setField={setField} />
-                    ) : null}
+                    <RegisterStepContent
+                      step={step}
+                      values={values}
+                      setField={setField}
+                    />
                   </CardContent>
                 </Card>
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import RegisterForm from "../components/RegisterForm";
+import RegisterWorkspace from "../components/RegisterWorkspace";
 import { useRegisterForm } from "../hooks/useRegisterForm";
 import { useRegisterService } from "../hooks/useRegisterService";
 
@@ -26,7 +26,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <RegisterForm
+    <RegisterWorkspace
       step={step}
       values={formData}
       setField={setField}
