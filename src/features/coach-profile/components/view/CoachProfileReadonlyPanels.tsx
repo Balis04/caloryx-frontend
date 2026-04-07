@@ -1,7 +1,7 @@
 import { ReadonlyField, SummaryPanel } from "@/components/caloriex";
 import { FileText, Shield, Users } from "lucide-react";
 
-import type { CoachCertificate } from "../types/coach-profile.types";
+import type { CoachCertificate } from "../../types/coach-profile.types";
 
 export function CoachProfileOfferPanel({
   startedCoachingAt,
