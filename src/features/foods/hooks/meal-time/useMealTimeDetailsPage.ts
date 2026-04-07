@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { useCaloriesSummaryService } from "../useCaloriesSummaryService";
-import { useFoodService } from "../useFoodService";
+import { useCaloriesSummaryApi } from "../../api/calories-summary.api";
+import { useFoodApi } from "../../api/food.api";
 import {
   formatDateInput,
   formatDiaryDisplayDate,
@@ -17,8 +17,8 @@ export const useMealTimeDetailsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { getMealTimeSummary } = useCaloriesSummaryService();
-  const { updateFoodAmount, deleteFood } = useFoodService();
+  const { getMealTimeSummary } = useCaloriesSummaryApi();
+  const { updateFoodAmount, deleteFood } = useFoodApi();
 
   const normalizedMeal = mealTime?.toUpperCase() as MealTime;
   const fallbackDate = formatDateInput(new Date());

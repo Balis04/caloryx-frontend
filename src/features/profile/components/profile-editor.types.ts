@@ -1,6 +1,6 @@
 import type { ProfileFormValues } from "../model/profile.form";
 
-export interface ProfileFormProps {
+export interface ProfileEditorWorkspaceProps {
   values: ProfileFormValues;
   setField: <K extends keyof ProfileFormValues>(
     key: K,

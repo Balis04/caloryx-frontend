@@ -8,14 +8,14 @@ import { PhysicalStatsSection } from "./PhysicalStatsSection";
 import ProfileEditorHeroAside from "./ProfileEditorHeroAside";
 import ProfileEditorSavePanel from "./ProfileEditorSavePanel";
 import ProfileEditorSnapshotPanel from "./ProfileEditorSnapshotPanel";
-import type { ProfileFormProps } from "./profile-editor.types";
+import type { ProfileEditorWorkspaceProps } from "./profile-editor.types";
 
 export default function ProfileEditorWorkspace({
   values,
   setField,
   onSave,
   canSave,
-}: ProfileFormProps) {
+}: ProfileEditorWorkspaceProps) {
   const navigate = useNavigate();
   const roleLabel =
     USER_ROLE_OPTIONS.find((option) => option.value === values.userRole)?.label ?? "User";
