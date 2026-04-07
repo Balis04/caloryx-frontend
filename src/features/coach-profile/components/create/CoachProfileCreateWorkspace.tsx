@@ -1,4 +1,4 @@
-import { CaloriexPage, HeroBadge, NoticeCard, PageHero } from "@/components/caloriex";
+import { CaloriexPage, HeroBadge, PageHero } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import CoachProfileHeroAside from "../shared/CoachProfileHeroAside";

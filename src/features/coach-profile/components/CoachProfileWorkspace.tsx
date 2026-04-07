@@ -1,7 +1,6 @@
 import { CaloriexPage, NoticeCard } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useMemo } from "react";
 import { openCoachCertificate } from "../lib/coach-profile.certificates";
 import {
   formatPriceRange,
@@ -21,18 +20,12 @@ export default function CoachProfileWorkspace({
   onBackToProfile,
   onOpenEditor,
 }: CoachProfileWorkspaceProps) {
-  const downloadableCertificates = useMemo(
-    () => formData.certificates.filter((certificate) => certificate.fileUrl),
-    [formData.certificates]
+  const downloadableCertificates = formData.certificates.filter(
+    (certificate) => certificate.fileUrl
   );
-
-  const activeAvailability = useMemo(
-    () =>
-      formData.availability
-        .filter((slot) => slot.enabled)
-        .map((slot) => `${slot.label} ${slot.from}-${slot.until}`),
-    [formData.availability]
-  );
+  const activeAvailability = formData.availability
+    .filter((slot) => slot.enabled)
+    .map((slot) => `${slot.label} ${slot.from}-${slot.until}`);
 
   const trainingFormatLabel = getTrainingFormatLabel(formData.sessionFormat);
   const priceRange = formatPriceRange(
