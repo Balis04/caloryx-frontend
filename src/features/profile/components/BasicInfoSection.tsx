@@ -36,7 +36,10 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
     <SummaryPanel eyebrow="Basics" title="Identity details" icon={User}>
       <div className="grid gap-5 p-6">
         <div className="grid gap-2">
-          <Label htmlFor="fullName" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="fullName"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Full name
           </Label>
           <Input
@@ -48,7 +51,10 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="birthDate" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="birthDate"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Birth date
           </Label>
           <Input
