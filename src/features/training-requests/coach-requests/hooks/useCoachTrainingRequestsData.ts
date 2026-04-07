@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-import type { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
-import type { useTrainingRequestApi } from "../../shared/api/training-request.api";
+import type {
+  ClosedTrainingRequestResponseDto,
+  TrainingRequestResponseDto,
+} from "../../shared/api/training-request.dto";
 import {
   mapClosedTrainingRequestDtoToModel,
   mapTrainingRequestDtoToModel,
@@ -9,20 +11,21 @@ import {
 import { dedupeRequests } from "../lib/coach-training-requests.utils";
 import type { CoachTrainingRequest } from "../model/coach-training-request.model";
 
-type CoachTrainingRequestsApi = ReturnType<typeof useCoachTrainingRequestsApi>;
-type TrainingRequestApi = ReturnType<typeof useTrainingRequestApi>;
-
 interface Params {
-  coachApi: CoachTrainingRequestsApi;
-  trainingRequestApi: TrainingRequestApi;
+  getMyTrainingRequests: () => Promise<TrainingRequestResponseDto[]>;
+  getCoachTrainingRequests: (
+    status?: "PENDING" | "APPROVED" | "REJECTED"
+  ) => Promise<TrainingRequestResponseDto[]>;
+  getClosedCoachTrainingRequests: () => Promise<ClosedTrainingRequestResponseDto[]>;
   isCoach: boolean;
   profileLoading: boolean;
   hydratePresentationState: (requests: CoachTrainingRequest[]) => void;
 }
 
 export const useCoachTrainingRequestsData = ({
-  coachApi,
-  trainingRequestApi,
+  getMyTrainingRequests,
+  getCoachTrainingRequests,
+  getClosedCoachTrainingRequests,
   isCoach,
   profileLoading,
   hydratePresentationState,
@@ -47,11 +50,11 @@ export const useCoachTrainingRequestsData = ({
         closedResponse,
         rejectedResponse,
       ] = await Promise.all([
-        trainingRequestApi.getMyTrainingRequests(),
-        isCoach ? coachApi.getCoachTrainingRequests("PENDING") : Promise.resolve([]),
-        isCoach ? coachApi.getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
-        isCoach ? coachApi.getClosedCoachTrainingRequests() : Promise.resolve([]),
-        isCoach ? coachApi.getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
+        getMyTrainingRequests(),
+        isCoach ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
+        isCoach ? getClosedCoachTrainingRequests() : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
       ]);
 
       const nextOutgoingRequests = outgoingResponse.map(mapTrainingRequestDtoToModel);
@@ -88,7 +91,13 @@ export const useCoachTrainingRequestsData = ({
     } finally {
       setLoading(false);
     }
-  }, [coachApi, hydratePresentationState, isCoach, trainingRequestApi]);
+  }, [
+    getClosedCoachTrainingRequests,
+    getCoachTrainingRequests,
+    getMyTrainingRequests,
+    hydratePresentationState,
+    isCoach,
+  ]);
 
   useEffect(() => {
     if (profileLoading) {

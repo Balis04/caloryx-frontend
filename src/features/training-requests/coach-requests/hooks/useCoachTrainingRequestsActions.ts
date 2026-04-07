@@ -1,8 +1,11 @@
 import { useCallback, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
-import type { useTrainingRequestApi } from "../../shared/api/training-request.api";
+import type {
+  ClosedTrainingRequestResponseDto,
+  TrainingRequestResponseDto,
+  UpdateTrainingRequestStatusDto,
+} from "../../shared/api/training-request.dto";
 import {
   mapClosedTrainingRequestDtoToModel,
   mapTrainingRequestDtoToModel,
@@ -19,9 +22,6 @@ import type {
   TrainingPlanDraft,
   TrainingRequestStatus,
 } from "../model/coach-training-request.model";
-
-type CoachTrainingRequestsApi = ReturnType<typeof useCoachTrainingRequestsApi>;
-type TrainingRequestApi = ReturnType<typeof useTrainingRequestApi>;
 
 interface DataState {
   loadRequests: () => Promise<void>;
@@ -42,17 +42,28 @@ interface PresentationState {
 }
 
 interface Params {
-  coachApi: CoachTrainingRequestsApi;
+  downloadTrainingPlanFile: (trainingRequestId: string) => Promise<{
+    blob: Blob;
+    fileName: string;
+  }>;
+  updateCoachTrainingRequestStatus: (
+    trainingRequestId: string,
+    data: UpdateTrainingRequestStatusDto
+  ) => Promise<TrainingRequestResponseDto>;
+  uploadCoachTrainingPlan: (
+    trainingRequestId: string,
+    body: FormData
+  ) => Promise<ClosedTrainingRequestResponseDto>;
   dataState: DataState;
   presentationState: PresentationState;
-  trainingRequestApi: TrainingRequestApi;
 }
 
 export const useCoachTrainingRequestsActions = ({
-  coachApi,
+  downloadTrainingPlanFile,
+  updateCoachTrainingRequestStatus,
+  uploadCoachTrainingPlan,
   dataState,
   presentationState,
-  trainingRequestApi,
 }: Params) => {
   const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
   const [savingApprovedRequestId, setSavingApprovedRequestId] = useState<string | null>(
@@ -82,7 +93,7 @@ export const useCoachTrainingRequestsActions = ({
       dataState.setError(null);
 
       try {
-        const response = await coachApi.updateCoachTrainingRequestStatus(
+        const response = await updateCoachTrainingRequestStatus(
           trainingRequestId,
           mapTrainingRequestStatusToUpdateDto(status, trimmedCoachResponse)
         );
@@ -140,7 +151,7 @@ export const useCoachTrainingRequestsActions = ({
         setUpdatingRequestId(null);
       }
     },
-    [coachApi, dataState, presentationState]
+    [dataState, presentationState, updateCoachTrainingRequestStatus]
   );
 
   const saveTrainingPlan = useCallback(
@@ -177,7 +188,7 @@ export const useCoachTrainingRequestsActions = ({
           formData.append("planDescription", trimmedPlanDescription);
         }
 
-        const response = await coachApi.uploadCoachTrainingPlan(requestItem.id, formData);
+        const response = await uploadCoachTrainingPlan(requestItem.id, formData);
         const normalizedResponse = mapClosedTrainingRequestDtoToModel({
           ...response,
           planName: response.planName ?? (trimmedPlanName || requestItem.planName || null),
@@ -221,7 +232,7 @@ export const useCoachTrainingRequestsActions = ({
         setSavingApprovedRequestId(null);
       }
     },
-    [coachApi, dataState, presentationState]
+    [dataState, presentationState, uploadCoachTrainingPlan]
   );
 
   const downloadTrainingPlan = useCallback(
@@ -230,9 +241,7 @@ export const useCoachTrainingRequestsActions = ({
       dataState.setError(null);
 
       try {
-        const { blob, fileName } = await trainingRequestApi.downloadTrainingPlanFile(
-          requestItem.id
-        );
+        const { blob, fileName } = await downloadTrainingPlanFile(requestItem.id);
         const downloadUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
 
@@ -250,7 +259,7 @@ export const useCoachTrainingRequestsActions = ({
         setDownloadingRequestId(null);
       }
     },
-    [dataState, trainingRequestApi]
+    [dataState, downloadTrainingPlanFile]
   );
 
   return {

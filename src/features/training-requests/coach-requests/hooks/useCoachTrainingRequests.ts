@@ -10,8 +10,13 @@ import { useCoachTrainingRequestsData } from "./useCoachTrainingRequestsData";
 import { useCoachTrainingRequestsPresentation } from "./useCoachTrainingRequestsPresentation";
 
 export const useCoachTrainingRequests = () => {
-  const trainingRequestApi = useTrainingRequestApi();
-  const coachApi = useCoachTrainingRequestsApi();
+  const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
+  const {
+    getCoachTrainingRequests,
+    getClosedCoachTrainingRequests,
+    updateCoachTrainingRequestStatus,
+    uploadCoachTrainingPlan,
+  } = useCoachTrainingRequestsApi();
   const { profile, loading: profileLoading } = useProfileQuery();
   const isCoach = isCoachRole(profile?.role);
 
@@ -32,8 +37,9 @@ export const useCoachTrainingRequests = () => {
     hydratePresentationState,
   } = presentation;
   const data = useCoachTrainingRequestsData({
-    coachApi,
-    trainingRequestApi,
+    getMyTrainingRequests,
+    getCoachTrainingRequests,
+    getClosedCoachTrainingRequests,
     isCoach,
     profileLoading,
     hydratePresentationState,
@@ -75,10 +81,11 @@ export const useCoachTrainingRequests = () => {
     ]
   );
   const actions = useCoachTrainingRequestsActions({
-    coachApi,
+    downloadTrainingPlanFile,
+    updateCoachTrainingRequestStatus,
+    uploadCoachTrainingPlan,
     dataState,
     presentationState,
-    trainingRequestApi,
   });
 
   useEffect(() => {
