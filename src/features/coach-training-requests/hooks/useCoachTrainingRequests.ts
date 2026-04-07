@@ -4,7 +4,7 @@ import {
   mapTrainingRequestDtoToModel,
   mapTrainingRequestStatusToUpdateDto,
 } from "@/features/training-request/lib/training-request.mapper";
-import { useViewerProfile } from "@/features/profile/hooks/useViewerProfile";
+import { useProfileQuery } from "@/features/profile/hooks/useProfileQuery";
 import { isCoachRole } from "@/shared/utils/profileRole";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCoachTrainingRequestsApi } from "../api/coach-training-requests.api";
@@ -33,7 +33,7 @@ export const useCoachTrainingRequests = () => {
     updateCoachTrainingRequestStatus,
     uploadCoachTrainingPlan,
   } = useCoachTrainingRequestsApi();
-  const { profile, loading: profileLoading } = useViewerProfile();
+  const { profile, loading: profileLoading } = useProfileQuery();
   const isCoach = isCoachRole(profile?.role);
 
   const [coachViewMode, setCoachViewMode] = useState<CoachRequestViewMode>("coach");

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
+import { useFoodApi } from "../../api/food.api";
 import { useFoodSearch } from "../useFoodSearch";
-import { useFoodService } from "../useFoodService";
 import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custom-foods";
 import {
   FOODS_TAB_META,
@@ -43,7 +43,7 @@ export const useFoodSearchPage = () => {
     getOtherCustomFoods,
     createCustomFood,
     deleteCustomFood,
-  } = useFoodService();
+  } = useFoodApi();
 
   const [newFood, setNewFood] = useState<NewFoodDraft>(EMPTY_NEW_FOOD);
   const [createError, setCreateError] = useState<string | null>(null);

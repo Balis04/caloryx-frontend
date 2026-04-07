@@ -16,9 +16,9 @@ import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import type { UseCoachDirectoryResult } from "../hooks/useCoachDirectory";
 import type { UseTrainingRequestFormResult } from "../hooks/useTrainingRequestForm";
 import { TRAINING_REQUEST_FORM_PAGE_COPY } from "../lib/training-request-page.constants";
-import TrainingRequestFormCard from "./TrainingRequestFormCard";
+import TrainingRequestFormSection from "./TrainingRequestFormSection";
 import TrainingRequestHeroAside from "./TrainingRequestHeroAside";
-import TrainingRequestNextStepsCard from "./TrainingRequestNextStepsCard";
+import TrainingRequestNextStepsPanel from "./TrainingRequestNextStepsPanel";
 import TrainingRequestSelectedCoachCard from "./TrainingRequestSelectedCoachCard";
 
 interface TrainingRequestFormWorkspaceProps {
@@ -84,7 +84,7 @@ export default function TrainingRequestFormWorkspace({
         )}
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_360px]">
-          <TrainingRequestFormCard
+          <TrainingRequestFormSection
             formData={formData}
             goalLabel={goalLabel}
             activityLevelLabel={activityLevelLabel}
@@ -97,7 +97,7 @@ export default function TrainingRequestFormWorkspace({
 
           <div className="space-y-6">
             <TrainingRequestSelectedCoachCard selectedCoach={selectedCoach} />
-            <TrainingRequestNextStepsCard />
+            <TrainingRequestNextStepsPanel />
           </div>
         </div>
       </section>

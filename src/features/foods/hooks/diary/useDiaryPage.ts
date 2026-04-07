@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useCaloriesSummaryService } from "../useCaloriesSummaryService";
+import { useCaloriesSummaryApi } from "../../api/calories-summary.api";
 import {
   DIARY_MEALS,
   formatDateInput,
@@ -14,7 +14,7 @@ import type { CaloriesSummaryResponse, MealTime } from "../../model/food.model";
 
 export const useDiaryPage = () => {
   const navigate = useNavigate();
-  const { getSummaryByDate } = useCaloriesSummaryService();
+  const { getSummaryByDate } = useCaloriesSummaryApi();
 
   const today = formatDateInput(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(today);

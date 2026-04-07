@@ -2,7 +2,7 @@ import { CaloriexPage, GlassCard } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ProfileForm from "../components/ProfileForm";
+import ProfileEditorWorkspace from "../components/ProfileEditorWorkspace";
 import { useProfileEditForm } from "../hooks/useProfileEditForm";
 
 export default function EditProfilePage() {
@@ -33,7 +33,7 @@ export default function EditProfilePage() {
   }
 
   return (
-    <ProfileForm
+    <ProfileEditorWorkspace
       values={values}
       setField={setField}
       onSave={handleSave}

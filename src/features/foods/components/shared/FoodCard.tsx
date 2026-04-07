@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+import { useFoodApi } from "../../api/food.api";
 import { useFoodCalculator } from "../../hooks/useFoodCalculator";
-import { useFoodService } from "../../hooks/useFoodService";
 import { createFoodLogPayload } from "../../lib/food.mapper";
 import type { Food } from "../../model/food.model";
 import { NutrientList } from "./NutrientList";
@@ -25,7 +25,7 @@ export default function FoodCard({
   consumedDate?: string;
 }) {
   const navigate = useNavigate();
-  const { saveFood } = useFoodService();
+  const { saveFood } = useFoodApi();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const calculator = useFoodCalculator(food);

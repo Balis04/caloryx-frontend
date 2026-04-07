@@ -1,7 +1,7 @@
 import { GlassCard } from "@/components/caloriex";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function TrainingRequestNextStepsCard() {
+export default function TrainingRequestNextStepsPanel() {
   return (
     <GlassCard className="overflow-hidden">
       <CardHeader>
