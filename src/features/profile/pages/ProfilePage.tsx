@@ -6,7 +6,7 @@ import {
 } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 import { Activity, ShieldCheck, Target } from "lucide-react";
-import ProfileCard from "../components/ProfileCard";
+import ProfileOverviewWorkspace from "../components/ProfileOverviewWorkspace";
 import { useProfilePage } from "../hooks/useProfilePage";
 
 export default function ProfilePage() {
@@ -98,7 +98,7 @@ export default function ProfilePage() {
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
-        <ProfileCard
+        <ProfileOverviewWorkspace
           profile={profile.profile}
           roleLabel={profile.roleLabel}
           genderLabel={profile.genderLabel}

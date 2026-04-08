@@ -14,7 +14,7 @@ import {
   type SavedFoodsScope,
   VALID_MEALS,
 } from "../../lib/shared/foods.presentation";
-import type { NewFoodDraft } from "../../types/foods.types";
+import type { NewFoodDraft } from "../../types/food-search.types";
 import type { CustomFoodResponse, Food, MealTime } from "../../model/food.model";
 
 const EMPTY_NEW_FOOD: NewFoodDraft = {

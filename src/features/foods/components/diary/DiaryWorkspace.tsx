@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 
-import type { DiaryWorkspaceProps } from "../../types/foods.types";
+import type { DiaryWorkspaceProps } from "../../types/diary-workspace.types";
 import DiaryHeroAside from "./DiaryHeroAside";
 import DiaryMealsList from "./DiaryMealsList";
 

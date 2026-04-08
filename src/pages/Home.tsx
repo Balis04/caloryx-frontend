@@ -13,9 +13,9 @@ import {
   CaloriexPage,
   FeatureCard,
   GlassMetric,
+  HeroBadge,
   PageHero,
   SummaryPanel,
-  HeroBadge,
 } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 
@@ -125,7 +125,11 @@ export default function Home() {
       </section>
 
       <section className="relative container mx-auto px-6 pb-16">
-        <SummaryPanel eyebrow="Home overview" title="Move from overview to action without losing context." icon={Orbit}>
+        <SummaryPanel
+          eyebrow="Home overview"
+          title="Move from overview to action without losing context."
+          icon={Orbit}
+        >
           <CardContent className="grid gap-8 p-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div className="space-y-4">
               <p className="max-w-2xl text-base leading-8 text-slate-600">
@@ -151,7 +155,7 @@ export default function Home() {
       </section>
 
       <footer className="relative mt-auto border-t border-white/40 py-6 text-center text-sm text-slate-500 backdrop-blur">
-        © {new Date().getFullYear()} CalorieX
+        {"\u00A9"} {new Date().getFullYear()} CalorieX
       </footer>
     </CaloriexPage>
   );
