@@ -33,6 +33,7 @@ export interface CoachProfileEditorPageProps {
     value: string
   ) => void;
   onPendingCertificatesReset: () => void;
+  onBackToProfile: () => void;
   onCancel: () => void;
   onDeleteCertificate: (certificateId: string) => Promise<boolean>;
   onSave: () => Promise<boolean>;

@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   AccentButton,
   GlassCard,
@@ -9,13 +8,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import {
-  ACTIVITY_OPTIONS,
-  GENDER_OPTIONS,
-  GOAL_OPTIONS,
-  USER_ROLE_OPTIONS,
-} from "@/shared/constants/user-options";
-import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import type { Profile } from "../model/profile.model";
 import {
   ArrowRight,
@@ -26,30 +18,35 @@ import {
   TrendingUp,
   UserCircle2,
 } from "lucide-react";
-import { canManageCoachProfile } from "../lib/profile.permissions";
-import {
-  calculateProgress,
-  formatBirthDate,
-  formatWeeklyGoal,
-  getProgressMessage,
-} from "../lib/profile.formatters";
+import { formatBirthDate } from "../lib/profile.formatters";
 
-interface Props {
+interface ProfileCardProps {
   profile: Profile;
+  roleLabel: string;
+  genderLabel: string;
+  activityLabel: string;
+  goalLabel: string;
+  weeklyTarget: string;
+  progressValue: number;
+  progressMessage: string;
+  canManageCoachProfile: boolean;
+  onOpenCoachProfile: () => void;
+  onEditProfile: () => void;
 }
 
-export default function ProfileCard({ profile }: Props) {
-  const navigate = useNavigate();
-  const progressValue = calculateProgress(profile);
-  const progressMessage = getProgressMessage(profile);
-  const roleLabel = getLabelFromOptions(USER_ROLE_OPTIONS, profile.role);
-  const genderLabel = getLabelFromOptions(GENDER_OPTIONS, profile.gender);
-  const activityLabel = getLabelFromOptions(
-    ACTIVITY_OPTIONS,
-    profile.activityLevel
-  );
-  const goalLabel = getLabelFromOptions(GOAL_OPTIONS, profile.goal);
-  const weeklyTarget = formatWeeklyGoal(profile.goal, profile.weeklyGoalKg);
+export default function ProfileCard({
+  profile,
+  roleLabel,
+  genderLabel,
+  activityLabel,
+  goalLabel,
+  weeklyTarget,
+  progressValue,
+  progressMessage,
+  canManageCoachProfile,
+  onOpenCoachProfile,
+  onEditProfile,
+}: ProfileCardProps) {
   const weightDelta = profile.actualWeightKg - profile.startWeightKg;
   const deltaText =
     Math.abs(weightDelta) < 0.05
@@ -204,10 +201,10 @@ export default function ProfileCard({ profile }: Props) {
               </div>
 
               <div className="space-y-3">
-                {canManageCoachProfile(profile.role) ? (
+                {canManageCoachProfile ? (
                   <AccentButton
                     tone="sky"
-                    onClick={() => navigate("/coach-profile")}
+                    onClick={onOpenCoachProfile}
                     className="justify-between"
                   >
                     <span className="flex items-center gap-2">
@@ -220,7 +217,7 @@ export default function ProfileCard({ profile }: Props) {
 
                 <AccentButton
                   tone="emerald"
-                  onClick={() => navigate("/profile/edit")}
+                  onClick={onEditProfile}
                   className="justify-between"
                 >
                   <span className="flex items-center gap-2">

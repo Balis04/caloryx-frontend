@@ -6,7 +6,6 @@ import {
 } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { openCoachCertificate } from "../../lib/coach-profile.certificates";
 import {
   formatPriceRange,
@@ -39,12 +38,11 @@ export default function CoachProfileEditorWorkspace({
   onFileChange,
   onPendingCertificateChange,
   onPendingCertificatesReset,
+  onBackToProfile,
   onCancel,
   onDeleteCertificate,
   onSave,
 }: CoachProfileEditorPageProps) {
-  const navigate = useNavigate();
-
   const downloadableCertificates = formData.certificates.filter(
     (certificate) => certificate.fileUrl
   );
@@ -87,7 +85,7 @@ export default function CoachProfileEditorWorkspace({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/profile")}
+            onClick={onBackToProfile}
             className="mb-4 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
           >
             <ArrowLeft className="mr-2 h-3 w-3" />

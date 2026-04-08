@@ -15,9 +15,9 @@ export const useRegisterService = () => {
     setError(null);
 
     try {
-      const response = await register(mapRegisterFormToRequestDto(data));
+      await register(mapRegisterFormToRequestDto(data));
       await refreshAuth();
-      return Boolean(response);
+      return true;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Network error.");
       return false;

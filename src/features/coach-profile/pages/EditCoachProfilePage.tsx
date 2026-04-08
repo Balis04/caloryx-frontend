@@ -41,6 +41,7 @@ export default function EditCoachProfilePage() {
       onFileChange={onCertificateFilesSelected}
       onPendingCertificateChange={updatePendingCertificate}
       onPendingCertificatesReset={resetPendingCertificates}
+      onBackToProfile={() => navigate("/profile")}
       onCancel={() => navigate(hasCoachProfile ? "/coach-profile" : "/profile")}
       onDeleteCertificate={deleteCertificate}
       onSave={async () => {
