@@ -1,5 +1,5 @@
-import { useApi } from "@/hooks/useApi";
 import { useCallback, useEffect, useState } from "react";
+import { useApi } from "@/hooks/useApi";
 import type { CoachCardData } from "../types/coach.types";
 
 interface CoachProfileListResponse {
@@ -56,9 +56,7 @@ const formatAvailability = (
   const slots = activeAvailabilities.map((slot) => {
     const day = slot.dayOfWeek ? dayLabels[slot.dayOfWeek] ?? slot.dayOfWeek : "Unknown day";
     const timeRange =
-      slot.startTime && slot.endTime
-        ? `${slot.startTime}-${slot.endTime}`
-        : "flexible time";
+      slot.startTime && slot.endTime ? `${slot.startTime}-${slot.endTime}` : "flexible time";
     return `${day} ${timeRange}`;
   });
 
@@ -162,7 +160,7 @@ export const useCoachDirectory = (): UseCoachDirectoryResult => {
   }, [request]);
 
   useEffect(() => {
-    loadCoaches();
+    void loadCoaches();
   }, [loadCoaches]);
 
   return {

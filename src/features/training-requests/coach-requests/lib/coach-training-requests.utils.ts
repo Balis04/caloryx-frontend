@@ -24,11 +24,9 @@ export const statusVariantMap: Record<
 
 export const formatDate = (value: string) => {
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-
   return date.toLocaleString("hu-HU", {
     year: "numeric",
     month: "long",
@@ -40,13 +38,10 @@ export const formatDate = (value: string) => {
 
 export const getDecisionDescription = (request: CoachTrainingRequest) =>
   request.coachResponse.trim() || "";
-
 export const getTrainingPlanDescription = (request: CoachTrainingRequest) =>
   request.planDescription?.trim() || "";
-
 export const getTrainingPlanFileName = (request: CoachTrainingRequest) =>
   request.fileName?.trim() || "";
-
 export const getTrainingPlanName = (request: CoachTrainingRequest) =>
   request.planName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
 
@@ -64,21 +59,17 @@ export const upsertRequest = (
   nextRequest: CoachTrainingRequest
 ) => {
   const hasMatch = list.some((request) => request.id === nextRequest.id);
-
   if (!hasMatch) {
     return [nextRequest, ...list];
   }
-
   return list.map((request) => (request.id === nextRequest.id ? nextRequest : request));
 };
 
 export const dedupeRequests = (requests: CoachTrainingRequest[]) => {
   const byId = new Map<string, CoachTrainingRequest>();
-
   requests.forEach((request) => {
     byId.set(request.id, request);
   });
-
   return Array.from(byId.values());
 };
 
@@ -86,10 +77,8 @@ export const openFile = (fileUrl: string) => {
   if (!fileUrl) {
     return;
   }
-
   const normalizedUrl = /^https?:\/\//i.test(fileUrl)
     ? fileUrl
     : `${API_BASE_URL}${fileUrl.startsWith("/") ? "" : "/"}${fileUrl}`;
-
   window.open(normalizedUrl, "_blank", "noopener,noreferrer");
 };
