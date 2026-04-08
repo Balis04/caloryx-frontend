@@ -69,7 +69,7 @@ export default function TrainingRequestFormWorkspace({
         aside={<TrainingRequestHeroAside coachName={selectedCoach?.fullName} canSubmit={canSubmit} />}
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         {formLoading || coachesLoading ? (
           <GlassCard className="mb-6">
             <CardContent className="p-4 text-sm italic text-slate-600">Loading...</CardContent>

@@ -68,7 +68,7 @@ export default function FoodSearchWorkspace({ foodSearch }: FoodSearchWorkspaceP
         }
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as FoodsMainTab)}>
           <TabsList className="grid h-auto w-full grid-cols-3 gap-2 rounded-[28px] border border-white/60 bg-white/55 p-2 backdrop-blur">
             <TabsTrigger value="usda" className="rounded-[20px] py-3 text-sm">

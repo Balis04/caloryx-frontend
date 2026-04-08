@@ -41,7 +41,7 @@ export default function ProfileEditorWorkspace({
         aside={<ProfileEditorHeroAside roleLabel={roleLabel} canSave={canSave} />}
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_360px]">
           <div className="grid gap-6 lg:grid-cols-2">
             <BasicInfoSection userProfile={values} setField={setField} />

@@ -46,7 +46,7 @@ export default function CoachRequestWorkspace({
         }
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         {loading ? (
           <GlassCard className="mb-6">
             <CardContent className="p-6 text-sm italic text-slate-600">
