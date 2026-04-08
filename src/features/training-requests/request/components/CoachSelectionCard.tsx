@@ -130,20 +130,18 @@ export default function CoachSelectionCard({
 
         {coach.specialties.slice(1).length > 0 ? (
           <div className="grid grid-cols-2 gap-3">
-            {coach.specialties.slice(1).map((specialty) => {
-              return (
-                <div
-                  key={`${specialty.label}-${specialty.value}`}
-                  className="cx-glass-block rounded-[22px] p-4 text-sm text-slate-700"
-                >
-                  <div className="mb-2 flex items-center gap-2 text-slate-500">
-                    <Dumbbell className="h-4 w-4" />
-                    {specialty.label}
-                  </div>
-                  <p>{specialty.value}</p>
+            {coach.specialties.slice(1).map((specialty) => (
+              <div
+                key={`${specialty.label}-${specialty.value}`}
+                className="cx-glass-block rounded-[22px] p-4 text-sm text-slate-700"
+              >
+                <div className="mb-2 flex items-center gap-2 text-slate-500">
+                  <Dumbbell className="h-4 w-4" />
+                  {specialty.label}
                 </div>
-              );
-            })}
+                <p>{specialty.value}</p>
+              </div>
+            ))}
           </div>
         ) : null}
 

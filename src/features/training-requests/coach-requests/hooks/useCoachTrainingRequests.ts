@@ -1,144 +1,152 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 
 import { useProfileQuery } from "@/features/profile/hooks/useProfileQuery";
 import { isCoachRole } from "@/shared/utils/profileRole";
 
 import { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
 import { useTrainingRequestApi } from "../../shared/api/training-request.api";
+import {
+  buildCoachTrainingRequestsLoadPayload,
+  getVisibleCoachTrainingRequests,
+} from "../lib/coach-training-requests.data";
+import type {
+  CoachRequestFilter,
+  CoachRequestViewMode,
+} from "../model/coach-training-request.model";
 import { useCoachTrainingRequestsActions } from "./useCoachTrainingRequestsActions";
-import { useCoachTrainingRequestsData } from "./useCoachTrainingRequestsData";
-import { useCoachTrainingRequestsPresentation } from "./useCoachTrainingRequestsPresentation";
+import {
+  coachTrainingRequestsReducer,
+  initialCoachTrainingRequestsState,
+} from "../state/coach-training-requests.state";
 
 export const useCoachTrainingRequests = () => {
   const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
   const {
-    getCoachTrainingRequests,
     getClosedCoachTrainingRequests,
+    getCoachTrainingRequests,
     updateCoachTrainingRequestStatus,
     uploadCoachTrainingPlan,
   } = useCoachTrainingRequestsApi();
   const { profile, loading: profileLoading } = useProfileQuery();
   const isCoach = isCoachRole(profile?.role);
-
-  const presentation = useCoachTrainingRequestsPresentation();
-  const {
-    coachRequestFilter,
-    coachViewMode,
-    decisionDescriptions,
-    expandedApprovedRequestId,
-    setCoachRequestFilter,
-    setCoachViewMode,
-    setDecisionDescription,
-    setExpandedApprovedRequestId,
-    setTrainingPlanDrafts,
-    toggleApprovedRequestEditor,
-    trainingPlanDrafts,
-    updateTrainingPlanDraft,
-    hydratePresentationState,
-  } = presentation;
-  const data = useCoachTrainingRequestsData({
-    getMyTrainingRequests,
-    getCoachTrainingRequests,
-    getClosedCoachTrainingRequests,
-    isCoach,
-    profileLoading,
-    hydratePresentationState,
-  });
-  const dataState = useMemo(
-    () => ({
-      loadRequests: data.loadRequests,
-      setApprovedRequests: data.setApprovedRequests,
-      setClosedRequests: data.setClosedRequests,
-      setError: data.setError,
-      setOutgoingRequests: data.setOutgoingRequests,
-      setPendingRequests: data.setPendingRequests,
-      setRejectedRequests: data.setRejectedRequests,
-    }),
-    [
-      data.loadRequests,
-      data.setApprovedRequests,
-      data.setClosedRequests,
-      data.setError,
-      data.setOutgoingRequests,
-      data.setPendingRequests,
-      data.setRejectedRequests,
-    ]
+  const [state, dispatch] = useReducer(
+    coachTrainingRequestsReducer,
+    initialCoachTrainingRequestsState
   );
-  const presentationState = useMemo(
-    () => ({
-      hydratePresentationState,
-      setDecisionDescription,
-      setExpandedApprovedRequestId,
-      setTrainingPlanDrafts,
-      trainingPlanDrafts,
-    }),
-    [
-      hydratePresentationState,
-      setDecisionDescription,
-      setExpandedApprovedRequestId,
-      setTrainingPlanDrafts,
-      trainingPlanDrafts,
-    ]
-  );
-  const actions = useCoachTrainingRequestsActions({
-    downloadTrainingPlanFile,
-    updateCoachTrainingRequestStatus,
-    uploadCoachTrainingPlan,
-    dataState,
-    presentationState,
-  });
+  const decisionDescriptionsRef = useRef(state.decisionDescriptions);
+  const trainingPlanDraftsRef = useRef(state.trainingPlanDrafts);
 
   useEffect(() => {
-    setCoachViewMode(isCoach ? "coach" : "user");
-  }, [isCoach, setCoachViewMode]);
+    dispatch({ type: "set-view", payload: isCoach ? "coach" : "user" });
+  }, [isCoach]);
 
-  const visibleRequests = useMemo(() => {
-    if (!isCoach || coachViewMode === "user") {
-      return data.outgoingRequests;
-    }
+  useEffect(() => {
+    decisionDescriptionsRef.current = state.decisionDescriptions;
+    trainingPlanDraftsRef.current = state.trainingPlanDrafts;
+  }, [state.decisionDescriptions, state.trainingPlanDrafts]);
 
-    switch (coachRequestFilter) {
-      case "approved":
-        return data.approvedRequests;
-      case "rejected":
-        return data.rejectedRequests;
-      case "closed":
-        return data.closedRequests;
-      default:
-        return data.pendingRequests;
+  const loadRequests = useCallback(async () => {
+    dispatch({ type: "load/start" });
+
+    try {
+      const [
+        outgoingResponse,
+        pendingResponse,
+        approvedResponse,
+        closedResponse,
+        rejectedResponse,
+      ] = await Promise.all([
+        getMyTrainingRequests(),
+        isCoach ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
+        isCoach ? getClosedCoachTrainingRequests() : Promise.resolve([]),
+        isCoach ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
+      ]);
+
+      dispatch({
+        type: "load/success",
+        payload: buildCoachTrainingRequestsLoadPayload({
+          approvedResponse,
+          closedResponse,
+          outgoingResponse,
+          pendingResponse,
+          previousDecisionDescriptions: decisionDescriptionsRef.current,
+          previousTrainingPlanDrafts: trainingPlanDraftsRef.current,
+          rejectedResponse,
+        }),
+      });
+    } catch (error) {
+      dispatch({
+        type: "load/error",
+        payload: error instanceof Error ? error.message : "Failed to load requests.",
+      });
     }
-  }, [
-    data.approvedRequests,
-    data.closedRequests,
-    data.outgoingRequests,
-    data.pendingRequests,
-    data.rejectedRequests,
-    isCoach,
-    coachRequestFilter,
-    coachViewMode,
-  ]);
+  }, [getClosedCoachTrainingRequests, getCoachTrainingRequests, getMyTrainingRequests, isCoach]);
+
+  useEffect(() => {
+    if (!profileLoading) {
+      void loadRequests();
+    }
+  }, [loadRequests, profileLoading]);
+
+  const visibleRequests = useMemo(
+    () =>
+      getVisibleCoachTrainingRequests(
+        isCoach,
+        state.coachViewMode,
+        state.coachRequestFilter,
+        state
+      ),
+    [isCoach, state]
+  );
+
+  const {
+    downloadTrainingPlan,
+    saveTrainingPlan,
+    setDecisionDescription,
+    toggleApprovedRequestEditor,
+    updateRequestStatus,
+    updateTrainingPlanDraft,
+  } = useCoachTrainingRequestsActions({
+    downloadTrainingPlanFile,
+    dispatch,
+    loadRequests,
+    state,
+    updateCoachTrainingRequestStatus,
+    uploadCoachTrainingPlan,
+  });
+
+  const setCoachRequestFilter = useCallback(
+    (value: CoachRequestFilter) => dispatch({ type: "set-filter", payload: value }),
+    []
+  );
+
+  const setCoachViewMode = useCallback(
+    (value: CoachRequestViewMode) => dispatch({ type: "set-view", payload: value }),
+    []
+  );
 
   return {
-    coachRequestFilter,
-    coachViewMode,
-    decisionDescriptions,
-    downloadingRequestId: actions.downloadingRequestId,
-    downloadTrainingPlan: actions.downloadTrainingPlan,
-    error: data.error,
-    expandedApprovedRequestId,
+    coachRequestFilter: state.coachRequestFilter,
+    coachViewMode: state.coachViewMode,
+    decisionDescriptions: state.decisionDescriptions,
+    downloadingRequestId: state.downloadingRequestId,
+    downloadTrainingPlan,
+    error: state.error,
+    expandedApprovedRequestId: state.expandedApprovedRequestId,
     isCoach,
-    loading: data.loading,
+    loading: state.loading,
     profileLoading,
-    saveTrainingPlan: actions.saveTrainingPlan,
-    savingApprovedRequestId: actions.savingApprovedRequestId,
+    saveTrainingPlan,
+    savingApprovedRequestId: state.savingApprovedRequestId,
     setCoachRequestFilter,
     setCoachViewMode,
     setDecisionDescription,
     toggleApprovedRequestEditor,
-    trainingPlanDrafts,
-    updateRequestStatus: actions.updateRequestStatus,
+    trainingPlanDrafts: state.trainingPlanDrafts,
+    updateRequestStatus,
     updateTrainingPlanDraft,
-    updatingRequestId: actions.updatingRequestId,
+    updatingRequestId: state.updatingRequestId,
     visibleRequests,
   };
 };

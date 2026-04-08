@@ -2,9 +2,9 @@ import { useProfileApi } from "@/features/profile/api/profile.api";
 import { mapProfileDtoToModel } from "@/features/profile/lib/profile.mapper";
 import type { Profile } from "@/features/profile/model/profile.model";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTrainingRequestApi } from "../../shared/api/training-request.api";
 import { mapTrainingRequestFormToCreateDto } from "../lib/training-request.mapper";
 import type { TrainingRequestFormData } from "../types/training-request-form.types";
-import { useTrainingRequestApi } from "../../shared/api/training-request.api";
 
 const createInitialFormData = (
   profile?: Profile | null
@@ -58,9 +58,7 @@ export const useTrainingRequestForm = (
       setProfile(nextProfile);
       setFormData(createInitialFormData(nextProfile));
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load profile data.";
-      setError(message);
+      setError(err instanceof Error ? err.message : "Failed to load profile data.");
     } finally {
       setLoading(false);
     }
@@ -98,9 +96,7 @@ export const useTrainingRequestForm = (
       setSubmitMessage("Your training plan request was sent successfully to the coach.");
       return true;
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to send the request.";
-      setError(message);
+      setError(err instanceof Error ? err.message : "Failed to send the request.");
       return false;
     } finally {
       setSubmitting(false);

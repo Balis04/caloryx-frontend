@@ -1,19 +1,16 @@
 import { GlassCard, GlassMetric } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
-
 import type { CoachRequestFilter } from "../model/coach-training-request.model";
-
-interface Props {
-  coachRequestFilter: CoachRequestFilter;
-  showCoachIncomingRequests: boolean;
-  visibleCount: number;
-}
 
 export default function TrainingRequestsHeroAside({
   coachRequestFilter,
   showCoachIncomingRequests,
   visibleCount,
-}: Props) {
+}: {
+  coachRequestFilter: CoachRequestFilter;
+  showCoachIncomingRequests: boolean;
+  visibleCount: number;
+}) {
   return (
     <GlassCard className="hidden overflow-hidden xl:block">
       <CardContent className="space-y-5 p-6">
@@ -27,18 +24,9 @@ export default function TrainingRequestsHeroAside({
             context.
           </p>
         </div>
-
         <div className="grid gap-3 sm:grid-cols-2">
-          <GlassMetric
-            label="Visible"
-            value={String(visibleCount)}
-            description="Requests currently shown under the selected view."
-          />
-          <GlassMetric
-            label="Filter"
-            value={showCoachIncomingRequests ? coachRequestFilter : "history"}
-            description="Current request list grouping."
-          />
+          <GlassMetric label="Visible" value={String(visibleCount)} description="Requests currently shown under the selected view." />
+          <GlassMetric label="Filter" value={showCoachIncomingRequests ? coachRequestFilter : "history"} description="Current request list grouping." />
         </div>
       </CardContent>
     </GlassCard>

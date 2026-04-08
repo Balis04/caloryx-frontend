@@ -34,15 +34,8 @@ export default function TrainingRequestFormWorkspace({
 }: TrainingRequestFormWorkspaceProps) {
   const navigate = useNavigate();
   const { coaches, error: coachesError, loading: coachesLoading } = coachDirectory;
-  const {
-    formData,
-    submitting,
-    error,
-    setField,
-    submit,
-    canSubmit,
-    loading: formLoading,
-  } = trainingRequestForm;
+  const { formData, submitting, error, setField, submit, canSubmit, loading: formLoading } =
+    trainingRequestForm;
 
   const selectedCoach = useMemo(
     () => coaches.find((coach) => coach.id === coachId) ?? null,
@@ -55,7 +48,6 @@ export default function TrainingRequestFormWorkspace({
 
   const handleSubmit = async () => {
     const success = await submit();
-
     if (success) {
       navigate("/training-requests");
     }
@@ -65,12 +57,7 @@ export default function TrainingRequestFormWorkspace({
     <CaloriexPage>
       <PageHero
         leading={
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/training-request")}
-            className="w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
-          >
+          <Button variant="ghost" size="sm" onClick={() => navigate("/training-request")} className="w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900">
             <ArrowLeft className="mr-2 h-3 w-3" />
             {TRAINING_REQUEST_FORM_PAGE_COPY.backButtonLabel}
           </Button>
@@ -79,9 +66,7 @@ export default function TrainingRequestFormWorkspace({
         title={TRAINING_REQUEST_FORM_PAGE_COPY.title}
         description={TRAINING_REQUEST_FORM_PAGE_COPY.description}
         chips={TRAINING_REQUEST_FORM_PAGE_COPY.chips}
-        aside={
-          <TrainingRequestHeroAside coachName={selectedCoach?.fullName} canSubmit={canSubmit} />
-        }
+        aside={<TrainingRequestHeroAside coachName={selectedCoach?.fullName} canSubmit={canSubmit} />}
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
@@ -90,13 +75,11 @@ export default function TrainingRequestFormWorkspace({
             <CardContent className="p-4 text-sm italic text-slate-600">Loading...</CardContent>
           </GlassCard>
         ) : null}
-
         {(error || coachesError) && (
           <GlassCard className="mb-6 border-red-300/70 bg-red-50/70">
             <CardContent className="p-4 text-sm text-red-700">{error ?? coachesError}</CardContent>
           </GlassCard>
         )}
-
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_360px]">
           <TrainingRequestFormSection
             formData={formData}
@@ -108,7 +91,6 @@ export default function TrainingRequestFormWorkspace({
             onFieldChange={setField}
             onSubmit={() => void handleSubmit()}
           />
-
           <div className="space-y-6">
             <TrainingRequestSelectedCoachCard selectedCoach={selectedCoach} />
             <TrainingRequestNextStepsPanel />

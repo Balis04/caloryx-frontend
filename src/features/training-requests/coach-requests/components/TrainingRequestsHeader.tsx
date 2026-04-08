@@ -20,14 +20,15 @@ interface Props {
   onViewModeChange: (value: CoachRequestViewMode) => void;
 }
 
-export default function TrainingRequestsHeader({
-  isCoach,
-  showCoachIncomingRequests,
-  coachRequestFilter,
-  coachViewMode,
-  onFilterChange,
-  onViewModeChange,
-}: Props) {
+export default function TrainingRequestsHeader(props: Props) {
+  const {
+    isCoach,
+    showCoachIncomingRequests,
+    coachRequestFilter,
+    coachViewMode,
+    onFilterChange,
+    onViewModeChange,
+  } = props;
   const pageDescription = showCoachIncomingRequests
     ? "Incoming requests sent to you by users who need a training plan."
     : "Requests you sent out and the current response state for each one.";
@@ -57,41 +58,18 @@ export default function TrainingRequestsHeader({
 
         {isCoach ? (
           <div className="flex flex-wrap gap-3">
-            <Button
-              variant={coachViewMode === "coach" ? "default" : "outline"}
-              onClick={() => onViewModeChange("coach")}
-              className="rounded-full"
-            >
-              Coach view
-            </Button>
-            <Button
-              variant={coachViewMode === "user" ? "default" : "outline"}
-              onClick={() => onViewModeChange("user")}
-              className="rounded-full"
-            >
-              User view
-            </Button>
+            <Button variant={coachViewMode === "coach" ? "default" : "outline"} onClick={() => onViewModeChange("coach")} className="rounded-full">Coach view</Button>
+            <Button variant={coachViewMode === "user" ? "default" : "outline"} onClick={() => onViewModeChange("user")} className="rounded-full">User view</Button>
           </div>
         ) : null}
 
         {showCoachIncomingRequests ? (
-          <Tabs
-            value={coachRequestFilter}
-            onValueChange={(value) => onFilterChange(value as CoachRequestFilter)}
-          >
+          <Tabs value={coachRequestFilter} onValueChange={(value) => onFilterChange(value as CoachRequestFilter)}>
             <TabsList className="grid h-auto w-full gap-2 rounded-[24px] border border-white/60 bg-slate-100/60 p-2 sm:grid-cols-2 xl:grid-cols-4">
-              <TabsTrigger value="pending" className="rounded-[18px] py-3">
-                Pending
-              </TabsTrigger>
-              <TabsTrigger value="approved" className="rounded-[18px] py-3">
-                Approved
-              </TabsTrigger>
-              <TabsTrigger value="rejected" className="rounded-[18px] py-3">
-                Rejected
-              </TabsTrigger>
-              <TabsTrigger value="closed" className="rounded-[18px] py-3">
-                Completed
-              </TabsTrigger>
+              <TabsTrigger value="pending" className="rounded-[18px] py-3">Pending</TabsTrigger>
+              <TabsTrigger value="approved" className="rounded-[18px] py-3">Approved</TabsTrigger>
+              <TabsTrigger value="rejected" className="rounded-[18px] py-3">Rejected</TabsTrigger>
+              <TabsTrigger value="closed" className="rounded-[18px] py-3">Completed</TabsTrigger>
             </TabsList>
           </Tabs>
         ) : null}
