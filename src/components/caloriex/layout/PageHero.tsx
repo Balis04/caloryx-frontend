@@ -19,7 +19,7 @@ export function PageHero({
 }) {
   return (
     <section className="relative border-b border-white/40">
-      <div className="container mx-auto px-6 py-16 md:py-16">
+      <div className="container mx-auto px-6 py-8 md:py-10">
         <div className="grid gap-10 lg:grid-cols-[1.25fr_0.95fr] lg:items-end">
           <div className="space-y-6">
             {leading}

@@ -74,7 +74,7 @@ export default function CoachProfileViewWorkspace({
         }
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <CoachProfileStatusNotices
           errorMessage={errorMessage}
           statusMessage={statusMessage}

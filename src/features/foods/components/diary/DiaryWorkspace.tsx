@@ -55,7 +55,7 @@ export default function DiaryWorkspace({ diary }: DiaryWorkspaceProps) {
         }
       />
 
-      <section className="relative container mx-auto px-6 py-12 md:py-16">
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_340px]">
           <SummaryPanel eyebrow="Daily summary" title="Macros and progress" icon={Target}>
             <div className="space-y-6 p-6">
