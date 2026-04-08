@@ -7,7 +7,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { NewFoodDraft } from "../../types/foods.types";
+import type { NewFoodDraft } from "../../types/food-search.types";
 
 interface NutrientInputProps {
   id: string;

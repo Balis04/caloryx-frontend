@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { FoodsMainTab } from "../../lib/shared/foods.presentation";
-import type { FoodSearchWorkspaceProps } from "../../types/foods.types";
+import type { FoodSearchWorkspaceProps } from "../../types/food-search.types";
 import FoodCreatePanel from "./FoodCreatePanel";
 import FoodSavedPanel from "./FoodSavedPanel";
 import FoodSearchHeroAside from "./FoodSearchHeroAside";

@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { formatBirthDate } from "../lib/profile.formatters";
 
-interface ProfileCardProps {
+interface ProfileOverviewWorkspaceProps {
   profile: Profile;
   roleLabel: string;
   genderLabel: string;
@@ -34,7 +34,7 @@ interface ProfileCardProps {
   onEditProfile: () => void;
 }
 
-export default function ProfileCard({
+export default function ProfileOverviewWorkspace({
   profile,
   roleLabel,
   genderLabel,
@@ -46,7 +46,7 @@ export default function ProfileCard({
   canManageCoachProfile,
   onOpenCoachProfile,
   onEditProfile,
-}: ProfileCardProps) {
+}: ProfileOverviewWorkspaceProps) {
   const weightDelta = profile.actualWeightKg - profile.startWeightKg;
   const deltaText =
     Math.abs(weightDelta) < 0.05

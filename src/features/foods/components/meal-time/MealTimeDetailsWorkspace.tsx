@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 
 import MealFoodsList from "./MealFoodsList";
 import MealTimeDetailsHeroAside from "./MealTimeDetailsHeroAside";
-import type { MealTimeDetailsWorkspaceProps } from "../../types/foods.types";
+import type { MealTimeDetailsWorkspaceProps } from "../../types/meal-time-workspace.types";
 
 export default function MealTimeDetailsWorkspace({
   mealDetails,
