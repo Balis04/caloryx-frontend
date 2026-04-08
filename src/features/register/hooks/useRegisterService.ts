@@ -1,33 +1,30 @@
-// src/features/auth/hooks/useRegisterService.ts
-import { useApi } from "../../../hooks/useApi";
+import { useCallback, useState } from "react";
 import { useAuth } from "@/features/auth/use-auth";
+import { useRegisterApi } from "../api/register.api";
+import { mapRegisterFormToRequestDto } from "../lib/register.mapper";
 import type { RegisterFormData } from "../types/register.types";
 
 export const useRegisterService = () => {
-  const { request } = useApi();
+  const { register } = useRegisterApi();
   const { refreshAuth } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const registerUser = async (data: RegisterFormData) => {
-    const response = await request("/api/user/profile", {
-      method: "POST",
-      body: {
-        fullName: data.fullName,
-        birthDate: data.birthDate,
-        gender: data.gender,
-        role: data.userRole,
-        heightCm: Number(data.heightCm),
-        startWeightKg: Number(data.startWeightKg),
-        actualWeightKg: Number(data.startWeightKg),
-        activityLevel: data.activityLevel,
-        goal: data.goal,
-        targetWeightKg: Number(data.targetWeightKg),
-        weeklyGoalKg: Number(data.weeklyGoalKg),
-      },
-    });
+  const registerUser = useCallback(async (data: RegisterFormData) => {
+    setLoading(true);
+    setError(null);
 
-    await refreshAuth();
-    return response;
-  };
+    try {
+      await register(mapRegisterFormToRequestDto(data));
+      await refreshAuth();
+      return true;
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Network error.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [refreshAuth, register]);
 
-  return { registerUser };
+  return { loading, error, registerUser };
 };

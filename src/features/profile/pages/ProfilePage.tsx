@@ -5,19 +5,13 @@ import {
   PageHero,
 } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
-import {
-  ACTIVITY_OPTIONS,
-  GOAL_OPTIONS,
-  USER_ROLE_OPTIONS,
-} from "@/shared/constants/user-options";
-import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import { Activity, ShieldCheck, Target } from "lucide-react";
 import ProfileCard from "../components/ProfileCard";
-import { calculateProgress } from "../lib/profile.formatters";
-import { useProfileQuery } from "../hooks/useProfileQuery";
+import { useProfilePage } from "../hooks/useProfilePage";
 
 export default function ProfilePage() {
-  const { profile, loading, error } = useProfileQuery();
+  const { profile, loading, error, onEditProfile, onOpenCoachProfile } =
+    useProfilePage();
 
   if (loading) {
     return (
@@ -47,18 +41,13 @@ export default function ProfilePage() {
     );
   }
 
-  const roleLabel = getLabelFromOptions(USER_ROLE_OPTIONS, profile.role);
-  const goalLabel = getLabelFromOptions(GOAL_OPTIONS, profile.goal);
-  const activityLabel = getLabelFromOptions(ACTIVITY_OPTIONS, profile.activityLevel);
-  const progressValue = calculateProgress(profile);
-
   return (
     <CaloriexPage>
       <PageHero
         badge={<HeroBadge>Profile hub</HeroBadge>}
         title="Track who you are today and where your body goals are moving next."
         description="Your identity, body metrics, and goal progress now share the same CalorieX layout as the rest of the product, so profile changes are easier to scan and update."
-        chips={[roleLabel, goalLabel, activityLabel]}
+        chips={[profile.roleLabel, profile.goalLabel, profile.activityLabel]}
         aside={
           <GlassCard className="overflow-hidden">
             <CardContent className="grid gap-4 p-6">
@@ -69,7 +58,9 @@ export default function ProfilePage() {
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
                       Role
                     </p>
-                    <p className="mt-1 text-lg font-semibold text-slate-950">{roleLabel}</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-950">
+                      {profile.roleLabel}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -81,7 +72,9 @@ export default function ProfilePage() {
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
                       Goal
                     </p>
-                    <p className="mt-1 text-lg font-semibold text-slate-950">{goalLabel}</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-950">
+                      {profile.goalLabel}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -94,7 +87,7 @@ export default function ProfilePage() {
                       Progress
                     </p>
                     <p className="mt-1 text-lg font-semibold text-slate-950">
-                      {progressValue.toFixed(0)}% in motion
+                      {profile.progressValue.toFixed(0)}% in motion
                     </p>
                   </div>
                 </div>
@@ -105,7 +98,19 @@ export default function ProfilePage() {
       />
 
       <section className="relative container mx-auto px-6 py-12 md:py-16">
-        <ProfileCard profile={profile} />
+        <ProfileCard
+          profile={profile.profile}
+          roleLabel={profile.roleLabel}
+          genderLabel={profile.genderLabel}
+          activityLabel={profile.activityLabel}
+          goalLabel={profile.goalLabel}
+          weeklyTarget={profile.weeklyTarget}
+          progressValue={profile.progressValue}
+          progressMessage={profile.progressMessage}
+          canManageCoachProfile={profile.canManageCoachProfile}
+          onOpenCoachProfile={onOpenCoachProfile}
+          onEditProfile={onEditProfile}
+        />
       </section>
     </CaloriexPage>
   );
