@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
 import RegisterPage from "./features/register/pages/RegisterPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirectPage from "./features/auth/pages/AuthRedirectPage";
 import FoodSearchPage from "./features/foods/pages/FoodSearchPage";
 import { Outlet } from "react-router-dom";
+import { AppShell } from "@/app/app-shell";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import DiaryPage from "./features/foods/pages/DiaryPage";
@@ -25,9 +25,8 @@ const CommunityTrainingPlansPage = lazy(
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Routes>
+    <Routes>
+      <Route element={<AppShell />}>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route
@@ -91,8 +90,8 @@ function App() {
             />
           </Route>
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
 
