@@ -10,6 +10,7 @@ import { Outlet } from "react-router-dom";
 import { AppShell } from "@/app/app-shell";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
+import RedirectIfOnboarded from "./guards/RedirectIfOnboarded";
 import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
 import CoachRequestPage from "./features/training-requests/request/pages/CoachRequestPage";
@@ -48,7 +49,14 @@ function App() {
             </RequireAuth>
           }
         >
-          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/register"
+            element={
+              <RedirectIfOnboarded>
+                <RegisterPage />
+              </RedirectIfOnboarded>
+            }
+          />
 
           {/* AUTH + ONBOARDING IS KELL */}
           <Route

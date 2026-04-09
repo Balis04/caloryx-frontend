@@ -34,7 +34,7 @@ export const resolveCoachProfileQueryState = (
 });
 
 export const mapCoachProfileQueryError = (error: unknown): CoachProfileQueryState => {
-  if (error instanceof ApiError && error.status === 400) {
+  if (error instanceof ApiError && (error.status === 400 || error.status === 404)) {
     return createEmptyCoachProfileState();
   }
 
