@@ -17,7 +17,6 @@ import {
   PageHero,
   SummaryPanel,
 } from "@/components/caloriex";
-import { CardContent } from "@/components/ui/card";
 
 type HomeFeature = {
   title: string;
@@ -43,7 +42,7 @@ const HOME_FEATURES: HomeFeature[] = [
   },
   {
     title: "Calorie Tracking",
-    description: "Set a daily target, follow your meals, and keep your nutrition aligned.",
+    description: "Set your daily target, follow your meals, and keep your nutrition aligned.",
     eyebrow: "Nutrition",
     tone: "rose",
     signal: "Daily awareness",
@@ -122,36 +121,6 @@ export default function Home() {
             />
           ))}
         </div>
-      </section>
-
-      <section className="relative container mx-auto px-6 pb-16">
-        <SummaryPanel
-          eyebrow="Home overview"
-          title="Move from overview to action without losing context."
-          icon={Orbit}
-        >
-          <CardContent className="grid gap-8 p-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-            <div className="space-y-4">
-              <p className="max-w-2xl text-base leading-8 text-slate-600">
-                The home page now acts like a launch surface for the whole platform: users can
-                jump into coach requests, nutrition, request management, or the community plan
-                library from one consistent visual system.
-              </p>
-            </div>
-
-            <div className="grid gap-3">
-              <div className="cx-glass-block rounded-[24px] p-4 text-sm text-slate-700">
-                Coaching: request personalized plans directly from the landing surface.
-              </div>
-              <div className="cx-glass-block rounded-[24px] p-4 text-sm text-slate-700">
-                Nutrition: track calories and stay aligned with your goal.
-              </div>
-              <div className="cx-glass-block rounded-[24px] p-4 text-sm text-slate-700">
-                Community: download starter plans for maintenance, fat loss, or bulk.
-              </div>
-            </div>
-          </CardContent>
-        </SummaryPanel>
       </section>
 
       <footer className="relative mt-auto border-t border-white/40 py-6 text-center text-sm text-slate-500 backdrop-blur">

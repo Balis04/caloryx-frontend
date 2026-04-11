@@ -17,6 +17,7 @@ import {
   CURRENCY_OPTIONS,
   TRAINING_FORMAT_OPTIONS,
 } from "../../lib/coach-profile.presentation";
+import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
 import type { CoachProfileFormData, Currency, TrainingFormat } from "../../types/coach-profile.types";
 
 export default function CoachProfileIntroSection({
@@ -29,12 +30,15 @@ export default function CoachProfileIntroSection({
     value: CoachProfileFormData[K]
   ) => void;
 }) {
+  const { descriptionCharacters, remainingDescriptionCharacters } =
+    getCoachProfileValidationState(formData);
+
   return (
     <SummaryPanel eyebrow="Positioning" title="Introduction and coaching setup" icon={Shield}>
       <div className="grid gap-5 p-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="startedCoachingAt" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            When did you start coaching?
+            When did you start coaching? *
           </Label>
           <Input
             id="startedCoachingAt"
@@ -47,7 +51,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2">
           <Label htmlFor="sessionFormat" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Training format
+            Training format *
           </Label>
           <Select
             value={formData.sessionFormat}
@@ -68,7 +72,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="description" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Short description
+            Short description *
           </Label>
           <textarea
             id="description"
@@ -77,11 +81,17 @@ export default function CoachProfileIntroSection({
             placeholder="Describe how you help clients, what kind of people you work with, and your coaching approach."
             className={coachProfileTextareaClassName}
           />
+          <p className="text-xs text-slate-500">
+            Minimum 20 characters. {descriptionCharacters}/20 entered
+            {remainingDescriptionCharacters > 0
+              ? `, ${remainingDescriptionCharacters} more needed.`
+              : "."}
+          </p>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="maxCapacity" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Maximum capacity
+            Maximum capacity *
           </Label>
           <Input
             id="maxCapacity"
@@ -96,7 +106,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2">
           <Label htmlFor="currency" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Currency
+            Currency *
           </Label>
           <Select
             value={formData.currency}
@@ -157,6 +167,11 @@ export default function CoachProfileIntroSection({
             className={coachProfileTextareaClassName}
           />
         </div>
+
+        <p className="text-xs text-slate-500 md:col-span-2">
+          Fields marked with * are required before you can create or update the coach
+          profile.
+        </p>
       </div>
     </SummaryPanel>
   );

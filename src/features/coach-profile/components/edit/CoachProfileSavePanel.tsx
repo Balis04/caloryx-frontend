@@ -8,6 +8,7 @@ export default function CoachProfileSavePanel({
   pendingCertificateCount,
   currencyLabel,
   canSave,
+  missingFields,
   saving,
   deletingCertificateId,
   pendingCertificatesValid,
@@ -18,6 +19,7 @@ export default function CoachProfileSavePanel({
   pendingCertificateCount: number;
   currencyLabel: string;
   canSave: boolean;
+  missingFields: string[];
   saving: boolean;
   deletingCertificateId: string | null;
   pendingCertificatesValid: boolean;
@@ -53,6 +55,24 @@ export default function CoachProfileSavePanel({
         </div>
 
         <div className="space-y-3">
+          {!canSave || !pendingCertificatesValid ? (
+            <div className="rounded-2xl border border-amber-300/70 bg-amber-50/70 p-4 text-sm text-amber-900">
+              <p className="font-medium">
+                Complete the required fields before saving.
+              </p>
+              {missingFields.length > 0 ? (
+                <p className="mt-2">
+                  Missing: {missingFields.join(", ")}.
+                </p>
+              ) : null}
+              {!pendingCertificatesValid ? (
+                <p className={missingFields.length > 0 ? "mt-2" : "mt-2"}>
+                  Every staged certificate needs a certificate name before upload.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           {onCancel ? (
             <Button
               variant="outline"
@@ -73,7 +93,13 @@ export default function CoachProfileSavePanel({
           >
             <span className="flex items-center gap-2">
               <Save className="h-4 w-4" />
-              {saving ? "Saving..." : hasCoachProfile ? "Save changes" : "Create coach profile"}
+              {saving
+                ? "Saving..."
+                : canSave && pendingCertificatesValid
+                  ? hasCoachProfile
+                    ? "Save changes"
+                    : "Create coach profile"
+                  : "Complete required fields"}
             </span>
             <ArrowRight className="h-4 w-4" />
           </AccentButton>

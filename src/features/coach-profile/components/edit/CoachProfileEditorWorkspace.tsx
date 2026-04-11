@@ -12,6 +12,7 @@ import {
   getCurrencyLabel,
   getTrainingFormatLabel,
 } from "../../lib/coach-profile.presentation";
+import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
 import type { CoachProfileEditorPageProps } from "../../types/coach-profile-editor.types";
 import CoachProfileHeroAside from "../shared/CoachProfileHeroAside";
 import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
@@ -59,6 +60,7 @@ export default function CoachProfileEditorWorkspace({
   const pendingCertificatesValid = pendingCertificates.every(
     (certificate) => certificate.certificateName.trim().length > 0
   );
+  const validationState = getCoachProfileValidationState(formData);
 
   const handleSave = async () => {
     const saved = await onSave();
@@ -170,6 +172,7 @@ export default function CoachProfileEditorWorkspace({
               pendingCertificateCount={pendingCertificates.length}
               currencyLabel={getCurrencyLabel(formData.currency)}
               canSave={canSave}
+              missingFields={validationState.missingFields}
               saving={saving}
               deletingCertificateId={deletingCertificateId}
               pendingCertificatesValid={pendingCertificatesValid}

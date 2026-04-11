@@ -21,6 +21,10 @@ export default function CoachProfileAvailabilitySection({
   return (
     <SummaryPanel eyebrow="Schedule" title="Weekly availability" icon={CalendarDays}>
       <div className="grid gap-4 p-6">
+        <p className="text-sm text-slate-600">
+          Required: enable at least one day and set a valid time range where the start
+          is earlier than the end.
+        </p>
         {availability.map((slot) => (
           <div
             key={slot.dayOfWeek}
