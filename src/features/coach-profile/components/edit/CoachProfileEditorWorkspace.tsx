@@ -1,33 +1,66 @@
 import {
   CaloriexPage,
-  HeroBadge,
   NoticeCard,
-  PageHero,
 } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { openCoachCertificate } from "../../lib/coach-profile.certificates";
 import {
-  formatPriceRange,
-  getCurrencyLabel,
-  getTrainingFormatLabel,
+  getCurrencyLabel
 } from "../../lib/coach-profile.presentation";
 import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
-import type { CoachProfileEditorPageProps } from "../../types/coach-profile-editor.types";
-import CoachProfileHeroAside from "../shared/CoachProfileHeroAside";
 import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
 import CoachProfileAvailabilitySection from "./CoachProfileAvailabilitySection";
 import CoachProfileCertificatesSection from "./CoachProfileCertificatesSection";
 import CoachProfileIntroSection from "./CoachProfileIntroSection";
 import CoachProfilePendingCertificatesPanel from "./CoachProfilePendingCertificatesPanel";
-import CoachProfilePublicSummaryPanel from "./CoachProfilePublicSummaryPanel";
 import CoachProfileSavePanel from "./CoachProfileSavePanel";
+import type {
+  AvailabilitySlot,
+  CoachProfileFormData,
+  PendingCoachCertificateUpload,
+} from "../../model/coach-profile.types";
+
+interface CoachProfileEditorPageProps {
+  formData: CoachProfileFormData;
+  loading: boolean;
+  saving: boolean;
+  canSave: boolean;
+  pendingCertificatesValid: boolean;
+  deletingCertificateId: string | null;
+  statusMessage: string | null;
+  errorMessage: string | null;
+  isForbidden: boolean;
+  hasCoachProfile: boolean;
+  pendingCertificates: PendingCoachCertificateUpload[];
+  setField: <K extends keyof CoachProfileFormData>(
+    key: K,
+    value: CoachProfileFormData[K]
+  ) => void;
+  setAvailabilityField: (
+    day: string,
+    key: keyof AvailabilitySlot,
+    value: string | boolean
+  ) => void;
+  onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPendingCertificateChange: (
+    id: string,
+    key: keyof Omit<PendingCoachCertificateUpload, "id" | "file">,
+    value: string
+  ) => void;
+  onPendingCertificatesReset: () => void;
+  onBackToProfile: () => void;
+  onCancel: () => void;
+  onDeleteCertificate: (certificateId: string) => Promise<boolean>;
+  onSave: () => Promise<boolean>;
+}
 
 export default function CoachProfileEditorWorkspace({
   formData,
   loading,
   saving,
   canSave,
+  pendingCertificatesValid,
   deletingCertificateId,
   statusMessage,
   errorMessage,
@@ -46,19 +79,6 @@ export default function CoachProfileEditorWorkspace({
 }: CoachProfileEditorPageProps) {
   const downloadableCertificates = formData.certificates.filter(
     (certificate) => certificate.fileUrl
-  );
-  const activeAvailability = formData.availability
-    .filter((slot) => slot.enabled)
-    .map((slot) => `${slot.label} ${slot.from}-${slot.until}`);
-
-  const trainingFormatLabel = getTrainingFormatLabel(formData.sessionFormat);
-  const priceRange = formatPriceRange(
-    formData.priceFrom,
-    formData.priceTo,
-    formData.currency
-  );
-  const pendingCertificatesValid = pendingCertificates.every(
-    (certificate) => certificate.certificateName.trim().length > 0
   );
   const validationState = getCoachProfileValidationState(formData);
 
@@ -101,36 +121,17 @@ export default function CoachProfileEditorWorkspace({
 
   return (
     <CaloriexPage>
-      <PageHero
-        leading={
-          <Button
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
+        <Button
             variant="ghost"
             size="sm"
             onClick={onCancel}
-            className="w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
+            className="mb-10 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
           >
             <ArrowLeft className="mr-2 h-3 w-3" />
             {hasCoachProfile ? "Back to coach profile" : "Back to profile"}
           </Button>
-        }
-        badge={<HeroBadge>Edit coach profile</HeroBadge>}
-        title="Update the public coaching details users rely on before they reach out."
-        description="This editing workspace now focuses only on the coach profile form, while the preview lives on its own dedicated page."
-        chips={[
-          hasCoachProfile ? "Update existing profile" : "Create new profile",
-          `${activeAvailability.length} active day${activeAvailability.length === 1 ? "" : "s"}`,
-          pendingCertificates.length > 0 ? "Certificates staged" : "No new uploads",
-        ]}
-        aside={
-          <CoachProfileHeroAside
-            maxCapacity={formData.maxCapacity}
-            trainingFormatLabel={trainingFormatLabel}
-            certificateCount={downloadableCertificates.length + pendingCertificates.length}
-          />
-        }
-      />
 
-      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <CoachProfileStatusNotices
           errorMessage={errorMessage}
           statusMessage={statusMessage}
@@ -158,15 +159,6 @@ export default function CoachProfileEditorWorkspace({
           </div>
 
           <div className="space-y-6">
-            <CoachProfilePublicSummaryPanel
-              description={formData.description}
-              startedCoachingAt={formData.startedCoachingAt}
-              trainingFormatLabel={trainingFormatLabel}
-              priceRange={priceRange}
-              maxCapacity={formData.maxCapacity}
-              activeAvailability={activeAvailability}
-            />
-
             <CoachProfileSavePanel
               hasCoachProfile={hasCoachProfile}
               pendingCertificateCount={pendingCertificates.length}

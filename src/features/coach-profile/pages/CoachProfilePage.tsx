@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import CoachProfileWorkspace from "../components/CoachProfileWorkspace";
-import { useCoachProfileQuery } from "../hooks/useCoachProfileQuery";
+import { useCoachProfilePage } from "../hooks/useCoachProfilePage";
 
 export default function CoachProfilePage() {
   const navigate = useNavigate();
   const { formData, loading, errorMessage, isForbidden, hasCoachProfile } =
-    useCoachProfileQuery();
+    useCoachProfilePage();
 
   return (
     <CoachProfileWorkspace

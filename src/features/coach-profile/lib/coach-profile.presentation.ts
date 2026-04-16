@@ -1,4 +1,4 @@
-import type { Currency, TrainingFormat } from "../types/coach-profile.types";
+import type { Currency, TrainingFormat } from "../model/coach-profile.types";
 
 export const TRAINING_FORMAT_OPTIONS = [
   { value: "ONLINE", label: "Online" },

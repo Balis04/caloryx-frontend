@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import RegisterPage from "./features/register/pages/RegisterPage";
+import CreateProfilePage from "./features/profile/pages/CreateProfilePage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirectPage from "./features/auth/pages/AuthRedirectPage";
@@ -53,7 +53,7 @@ function App() {
             path="/register"
             element={
               <RedirectIfOnboarded>
-                <RegisterPage />
+                <CreateProfilePage />
               </RedirectIfOnboarded>
             }
           />

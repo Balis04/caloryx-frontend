@@ -11,7 +11,7 @@ export function CaloriexPage({
     <div className={cn("cx-page", className)} {...props}>
       <div className="cx-orb-left" />
       <div className="cx-orb-right" />
-      <div className="relative">{children}</div>
+      <div className="relative p-2.5">{children}</div>
     </div>
   );
 }

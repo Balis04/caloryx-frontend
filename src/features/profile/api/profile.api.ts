@@ -6,6 +6,12 @@ import type {
 
 const getProfile = () => apiClient<ProfileResponseDto>("/api/user/profile");
 
+const createProfile = (data: UpdateProfileRequestDto) =>
+  apiClient<ProfileResponseDto>("/api/user/profile", {
+    method: "POST",
+    body: data,
+  });
+
 const updateProfile = (data: UpdateProfileRequestDto) =>
   apiClient<ProfileResponseDto>("/api/user/profile", {
     method: "PUT",
@@ -13,5 +19,5 @@ const updateProfile = (data: UpdateProfileRequestDto) =>
   });
 
 export const useProfileApi = () => {
-  return { getProfile, updateProfile };
+  return { getProfile, createProfile, updateProfile };
 };

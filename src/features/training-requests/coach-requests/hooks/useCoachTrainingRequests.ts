@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useProfileQuery } from "@/features/profile/hooks/useProfileQuery";
+import { useProfileApi } from "@/features/profile/api/profile.api";
 import { isCoachRole } from "@/shared/utils/profileRole";
 
 import { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
@@ -138,6 +138,7 @@ const getVisibleRequests = (
 };
 
 export const useCoachTrainingRequests = () => {
+  const { getProfile } = useProfileApi();
   const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
   const {
     getClosedCoachTrainingRequests,
@@ -145,7 +146,8 @@ export const useCoachTrainingRequests = () => {
     updateCoachTrainingRequestStatus,
     uploadCoachTrainingPlan,
   } = useCoachTrainingRequestsApi();
-  const { profile, loading: profileLoading } = useProfileQuery();
+  const [profile, setProfile] = useState<import("@/features/profile/model/profile.types").ProfileResponseDto | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const isCoach = isCoachRole(profile?.role);
 
   const [coachViewMode, setCoachViewMode] = useState<CoachRequestViewMode>("coach");
@@ -165,6 +167,23 @@ export const useCoachTrainingRequests = () => {
   useEffect(() => {
     setCoachViewMode(isCoach ? "coach" : "user");
   }, [isCoach]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      setProfileLoading(true);
+
+      try {
+        const response = await getProfile();
+        setProfile(response);
+      } catch {
+        setProfile(null);
+      } finally {
+        setProfileLoading(false);
+      }
+    };
+
+    void loadProfile();
+  }, [getProfile]);
 
   const loadRequests = useCallback(
     async (

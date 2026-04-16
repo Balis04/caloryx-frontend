@@ -22,11 +22,13 @@ interface PhysicalStatsProps {
     key: K,
     value: ProfileFormValues[K]
   ) => void;
+  showActualWeight?: boolean;
 }
 
 export const PhysicalStatsSection = ({
   userProfile,
   setField,
+  showActualWeight = true,
 }: PhysicalStatsProps) => {
   const inputClassName =
     "h-12 rounded-2xl border-white/60 bg-white/70 shadow-sm backdrop-blur focus-visible:ring-slate-900/20";
@@ -69,23 +71,25 @@ export const PhysicalStatsSection = ({
             />
           </div>
 
-          <div className="grid gap-2">
-            <Label
-              htmlFor="actualWeightKg"
-              className="text-xs uppercase tracking-[0.24em] text-slate-500"
-            >
-              Current weight (kg)
-            </Label>
-            <Input
-              id="actualWeightKg"
-              type="number"
-              step="0.1"
-              min="0.1"
-              value={userProfile.actualWeightKg}
-              onChange={(e) => setField("actualWeightKg", e.target.value)}
-              className={inputClassName}
-            />
-          </div>
+          {showActualWeight ? (
+            <div className="grid gap-2">
+              <Label
+                htmlFor="actualWeightKg"
+                className="text-xs uppercase tracking-[0.24em] text-slate-500"
+              >
+                Current weight (kg)
+              </Label>
+              <Input
+                id="actualWeightKg"
+                type="number"
+                step="0.1"
+                min="0.1"
+                value={userProfile.actualWeightKg}
+                onChange={(e) => setField("actualWeightKg", e.target.value)}
+                className={inputClassName}
+              />
+            </div>
+          ) : null}
 
           <div className="grid gap-2">
             <Label

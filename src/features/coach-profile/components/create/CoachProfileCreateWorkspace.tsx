@@ -1,14 +1,10 @@
-import { CaloriexPage, HeroBadge, PageHero } from "@/components/caloriex";
+import { CaloriexPage} from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import CoachProfileHeroAside from "../shared/CoachProfileHeroAside";
 import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
 import CoachProfileCreatePromptPanel from "./CoachProfileCreatePromptPanel";
 
 export default function CoachProfileCreateWorkspace({
-  maxCapacity,
-  trainingFormatLabel,
-  certificateCount,
   errorMessage,
   statusMessage,
   onBackToProfile,
@@ -24,32 +20,16 @@ export default function CoachProfileCreateWorkspace({
 }) {
   return (
     <CaloriexPage>
-      <PageHero
-        leading={
-          <Button
+      <section className="container mx-auto px-6 pb-12 md:pb-16">
+        <Button
             variant="ghost"
             size="sm"
             onClick={onBackToProfile}
-            className="w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
+            className="mb-2.5 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
           >
             <ArrowLeft className="mr-2 h-3 w-3" />
             Back to profile
           </Button>
-        }
-        badge={<HeroBadge>Coach profile</HeroBadge>}
-        title="Create the public coaching profile users will see before they reach out."
-        description="Set up your positioning, schedule, pricing, and certificate proof in a dedicated editing workspace."
-        chips={["No profile yet", "Coach-only workspace", "Public-facing setup"]}
-        aside={
-          <CoachProfileHeroAside
-            maxCapacity={maxCapacity}
-            trainingFormatLabel={trainingFormatLabel}
-            certificateCount={certificateCount}
-          />
-        }
-      />
-
-      <section className="container mx-auto px-6 pb-12 md:pb-16">
         <CoachProfileStatusNotices
           errorMessage={errorMessage}
           statusMessage={statusMessage}

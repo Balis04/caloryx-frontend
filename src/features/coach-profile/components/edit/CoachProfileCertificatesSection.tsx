@@ -5,7 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Download, FileText, Trash2 } from "lucide-react";
 
 import { coachProfileInputClassName } from "../../lib/coach-profile.presentation";
-import type { CoachProfileCertificatesSectionProps } from "../../types/coach-profile-editor.types";
+import type { ChangeEvent } from "react";
+import type { CoachCertificate } from "../../model/coach-profile.types";
+
+interface CoachProfileCertificatesSectionProps {
+  downloadableCertificates: CoachCertificate[];
+  saving: boolean;
+  deletingCertificateId: string | null;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onDownload: (certificate: CoachCertificate) => void;
+  onDelete: (certificateId: string) => void;
+}
 
 export default function CoachProfileCertificatesSection({
   downloadableCertificates,

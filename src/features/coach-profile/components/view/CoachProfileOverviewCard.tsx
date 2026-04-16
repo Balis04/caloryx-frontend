@@ -37,16 +37,6 @@ export default function CoachProfileOverviewCard({
               </p>
             </div>
           </div>
-
-          <div className="cx-glass-block rounded-[28px] p-5 lg:max-w-xs">
-            <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-              Live profile status
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-950">Ready</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Your coach-facing details are already saved and available to edit.
-            </p>
-          </div>
         </div>
       </div>
 

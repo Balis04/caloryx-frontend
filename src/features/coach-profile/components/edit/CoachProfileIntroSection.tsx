@@ -17,8 +17,11 @@ import {
   CURRENCY_OPTIONS,
   TRAINING_FORMAT_OPTIONS,
 } from "../../lib/coach-profile.presentation";
-import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
-import type { CoachProfileFormData, Currency, TrainingFormat } from "../../types/coach-profile.types";
+import type {
+  CoachProfileFormData,
+  Currency,
+  TrainingFormat,
+} from "../../model/coach-profile.types";
 
 export default function CoachProfileIntroSection({
   formData,
@@ -30,8 +33,8 @@ export default function CoachProfileIntroSection({
     value: CoachProfileFormData[K]
   ) => void;
 }) {
-  const { descriptionCharacters, remainingDescriptionCharacters } =
-    getCoachProfileValidationState(formData);
+  const today = new Date().toISOString().split("T")[0];
+  const minDate = "1900-01-01";
 
   return (
     <SummaryPanel eyebrow="Positioning" title="Introduction and coaching setup" icon={Shield}>
@@ -43,6 +46,8 @@ export default function CoachProfileIntroSection({
           <Input
             id="startedCoachingAt"
             type="date"
+            min={minDate}
+            max={today}
             value={formData.startedCoachingAt}
             onChange={(event) => setField("startedCoachingAt", event.target.value)}
             className={coachProfileInputClassName}
@@ -81,12 +86,6 @@ export default function CoachProfileIntroSection({
             placeholder="Describe how you help clients, what kind of people you work with, and your coaching approach."
             className={coachProfileTextareaClassName}
           />
-          <p className="text-xs text-slate-500">
-            Minimum 20 characters. {descriptionCharacters}/20 entered
-            {remainingDescriptionCharacters > 0
-              ? `, ${remainingDescriptionCharacters} more needed.`
-              : "."}
-          </p>
         </div>
 
         <div className="space-y-2">
@@ -127,7 +126,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2">
           <Label htmlFor="priceFrom" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Price from
+            Price from *
           </Label>
           <Input
             id="priceFrom"
@@ -142,7 +141,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2">
           <Label htmlFor="priceTo" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Price to
+            Price to *
           </Label>
           <Input
             id="priceTo"
@@ -157,7 +156,7 @@ export default function CoachProfileIntroSection({
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="contactNote" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Contact note
+            Contact note *
           </Label>
           <textarea
             id="contactNote"

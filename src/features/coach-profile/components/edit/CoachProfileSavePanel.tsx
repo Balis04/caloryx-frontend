@@ -1,12 +1,10 @@
-import { AccentButton, GlassCard, ReadonlyField } from "@/components/caloriex";
+import { AccentButton, GlassCard } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { ArrowRight, Save } from "lucide-react";
 
 export default function CoachProfileSavePanel({
   hasCoachProfile,
-  pendingCertificateCount,
-  currencyLabel,
   canSave,
   missingFields,
   saving,
@@ -32,26 +30,12 @@ export default function CoachProfileSavePanel({
         <div>
           <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Save flow</p>
           <h3 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-            Publish your coach-facing details
+            Publish your coach profile
           </h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Keep your public summary, availability, and supporting documents in sync
             before users start sending requests.
           </p>
-        </div>
-
-        <div className="grid gap-3">
-          <ReadonlyField
-            label="Mode"
-            value={hasCoachProfile ? "Update existing profile" : "Create new profile"}
-            fallback="Not set"
-          />
-          <ReadonlyField
-            label="Certificates staged"
-            value={pendingCertificateCount}
-            fallback="0"
-          />
-          <ReadonlyField label="Currency" value={currencyLabel} fallback="Not set" />
         </div>
 
         <div className="space-y-3">
@@ -66,8 +50,9 @@ export default function CoachProfileSavePanel({
                 </p>
               ) : null}
               {!pendingCertificatesValid ? (
-                <p className={missingFields.length > 0 ? "mt-2" : "mt-2"}>
-                  Every staged certificate needs a certificate name before upload.
+                <p className="mt-2">
+                  Every staged certificate needs a certificate name, issuer, and issue
+                  date before upload.
                 </p>
               ) : null}
             </div>

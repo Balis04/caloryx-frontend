@@ -16,6 +16,12 @@ interface ProfileEditorWorkspaceProps {
   ) => void;
   onSave: () => Promise<void>;
   canSave: boolean;
+  error?: string | null;
+  backPath?: string;
+  backLabel?: string;
+  saveLabel?: string;
+  disabledSaveLabel?: string;
+  showActualWeight?: boolean;
 }
 
 export default function ProfileEditorWorkspace({
@@ -23,6 +29,12 @@ export default function ProfileEditorWorkspace({
   setField,
   onSave,
   canSave,
+  error,
+  backPath = "/profile",
+  backLabel = "Back to profile",
+  saveLabel,
+  disabledSaveLabel,
+  showActualWeight = true,
 }: ProfileEditorWorkspaceProps) {
   const navigate = useNavigate();
   const roleLabel =
@@ -30,21 +42,24 @@ export default function ProfileEditorWorkspace({
 
   return (
     <CaloriexPage>
-      <Button
+      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
+        <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/profile")}
-            className="w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
-          >
-            <ArrowLeft className="mr-2 h-3 w-3" />
-            Back to profile
-          </Button>
-
-      <section className="relative container mx-auto px-6 pb-12 md:pb-16">
+            onClick={() => navigate(backPath)}
+            className="mb-2.5 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
+        >
+          <ArrowLeft className="mr-2 h-3 w-3" />
+          {backLabel}
+        </Button>
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_360px]">
           <div className="grid gap-6 lg:grid-cols-2">
             <BasicInfoSection userProfile={values} setField={setField} />
-            <PhysicalStatsSection userProfile={values} setField={setField} />
+            <PhysicalStatsSection
+              userProfile={values}
+              setField={setField}
+              showActualWeight={showActualWeight}
+            />
           </div>
 
           <div className="space-y-6">
@@ -53,6 +68,9 @@ export default function ProfileEditorWorkspace({
               roleLabel={roleLabel}
               canSave={canSave}
               onSave={onSave}
+              error={error}
+              saveLabel={saveLabel}
+              disabledLabel={disabledSaveLabel}
             />
           </div>
         </div>

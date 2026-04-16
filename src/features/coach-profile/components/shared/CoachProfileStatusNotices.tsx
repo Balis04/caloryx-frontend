@@ -1,5 +1,9 @@
 import { NoticeCard } from "@/components/caloriex";
-import type { CoachProfileStatusNoticesProps } from "../../types/coach-profile-editor.types";
+
+interface CoachProfileStatusNoticesProps {
+  errorMessage: string | null;
+  statusMessage: string | null;
+}
 
 export default function CoachProfileStatusNotices({
   errorMessage,

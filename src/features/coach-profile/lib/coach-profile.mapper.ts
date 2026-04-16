@@ -2,7 +2,7 @@ import type {
   CoachProfileCertificateDto,
   CoachProfileResponseDto,
   SaveCoachProfileRequestDto,
-} from "../api/coach-profile.dto";
+} from "../model/coach-profile.types";
 import {
   createInitialAvailability,
   initialCoachProfileFormData,
@@ -10,7 +10,7 @@ import {
 import type {
   CoachCertificate,
   CoachProfileFormData,
-} from "../types/coach-profile.types";
+} from "../model/coach-profile.types";
 
 export const mapCoachCertificateDtoToModel = (
   certificate: CoachProfileCertificateDto,

@@ -1,4 +1,4 @@
-import type { AvailabilitySlot, CoachProfileFormData } from "../types/coach-profile.types";
+import type { AvailabilitySlot, CoachProfileFormData } from "./coach-profile.types";
 
 export const createInitialAvailability = (): AvailabilitySlot[] => [
   { dayOfWeek: "MONDAY", label: "Monday", enabled: true, from: "08:00", until: "16:00" },

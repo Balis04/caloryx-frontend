@@ -3,12 +3,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText } from "lucide-react";
 import { coachProfileInputClassName } from "../../lib/coach-profile.presentation";
-import type { CoachProfilePendingCertificatesPanelProps } from "../../types/coach-profile-editor.types";
+import type { PendingCoachCertificateUpload } from "../../model/coach-profile.types";
+
+interface CoachProfilePendingCertificatesPanelProps {
+  pendingCertificates: PendingCoachCertificateUpload[];
+  onPendingCertificateChange: (
+    id: string,
+    key: keyof Omit<PendingCoachCertificateUpload, "id" | "file">,
+    value: string
+  ) => void;
+}
 
 export default function CoachProfilePendingCertificatesPanel({
   pendingCertificates,
   onPendingCertificateChange,
 }: CoachProfilePendingCertificatesPanelProps) {
+  const today = new Date().toISOString().split("T")[0];
+  const minDate = "1900-01-01";
+
   return (
     <SummaryPanel eyebrow="Staging" title="Pending certificate uploads" icon={FileText}>
       <div className="space-y-4 p-6">
@@ -34,7 +46,7 @@ export default function CoachProfilePendingCertificatesPanel({
                       htmlFor={`certificate-name-${certificate.id}`}
                       className="text-xs uppercase tracking-[0.24em] text-slate-500"
                     >
-                      Certificate name
+                      Certificate name *
                     </Label>
                     <Input
                       id={`certificate-name-${certificate.id}`}
@@ -56,7 +68,7 @@ export default function CoachProfilePendingCertificatesPanel({
                       htmlFor={`certificate-issuer-${certificate.id}`}
                       className="text-xs uppercase tracking-[0.24em] text-slate-500"
                     >
-                      Issuer
+                      Issuer *
                     </Label>
                     <Input
                       id={`certificate-issuer-${certificate.id}`}
@@ -78,11 +90,13 @@ export default function CoachProfilePendingCertificatesPanel({
                       htmlFor={`certificate-issued-at-${certificate.id}`}
                       className="text-xs uppercase tracking-[0.24em] text-slate-500"
                     >
-                      Issued at
+                      Issued at *
                     </Label>
                     <Input
                       id={`certificate-issued-at-${certificate.id}`}
                       type="date"
+                      min={minDate}
+                      max={today}
                       value={certificate.issuedAt}
                       onChange={(event) =>
                         onPendingCertificateChange(
@@ -95,6 +109,10 @@ export default function CoachProfilePendingCertificatesPanel({
                     />
                   </div>
                 </div>
+
+                <p className="text-xs text-slate-500">
+                  Every staged certificate must include a name, issuer, and issue date.
+                </p>
               </div>
             ))}
           </div>

@@ -6,9 +6,21 @@ import {
   formatPriceRange,
   getTrainingFormatLabel,
 } from "../lib/coach-profile.presentation";
-import type { CoachProfileWorkspaceProps } from "../types/coach-profile-workspace.types";
 import CoachProfileCreateWorkspace from "./create/CoachProfileCreateWorkspace";
 import CoachProfileViewWorkspace from "./view/CoachProfileViewWorkspace";
+
+import type { CoachProfileFormData } from "../model/coach-profile.types";
+
+interface CoachProfileWorkspaceProps {
+  formData: CoachProfileFormData;
+  loading: boolean;
+  errorMessage: string | null;
+  statusMessage: string | null;
+  isForbidden: boolean;
+  hasCoachProfile: boolean;
+  onBackToProfile: () => void;
+  onOpenEditor: () => void;
+}
 
 export default function CoachProfileWorkspace({
   formData,
