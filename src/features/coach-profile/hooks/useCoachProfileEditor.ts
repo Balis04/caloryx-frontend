@@ -14,6 +14,7 @@ import type {
   PendingCoachCertificateUpload,
 } from "../types/coach-profile.types";
 import { useCoachProfileApi } from "../api/coach-profile.api";
+import type { CoachProfileQueryState } from "../lib/coach-profile.query";
 
 const mapPendingCertificateFiles = (files: File[]) =>
   files.map((file, index) => ({
@@ -32,10 +33,9 @@ export const useCoachProfileEditor = () => {
     updateCoachProfile,
     uploadCoachCertificate,
   } = useCoachProfileApi();
-  const [formData, setFormData] = useState<CoachProfileFormData>(
-    createEmptyCoachProfileState().formData
+  const [profileState, setProfileState] = useState<CoachProfileQueryState>(
+    createEmptyCoachProfileState()
   );
-  const [coachProfileId, setCoachProfileId] = useState<string | null>(null);
   const [pendingCertificates, setPendingCertificates] = useState<
     PendingCoachCertificateUpload[]
   >([]);
@@ -43,33 +43,34 @@ export const useCoachProfileEditor = () => {
   const [saving, setSaving] = useState(false);
   const [deletingCertificateId, setDeletingCertificateId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isForbidden, setIsForbidden] = useState(false);
-  const [hasCoachProfile, setHasCoachProfile] = useState(false);
+  const { coachProfileId, errorMessage, formData, hasCoachProfile, isForbidden } = profileState;
+
+  const applyProfileState = useCallback((nextState: CoachProfileQueryState) => {
+    setProfileState(nextState);
+  }, []);
+
+  const setFormData = useCallback(
+    (updater: CoachProfileFormData | ((current: CoachProfileFormData) => CoachProfileFormData)) => {
+      setProfileState((current) => ({
+        ...current,
+        formData: typeof updater === "function" ? updater(current.formData) : updater,
+      }));
+    },
+    []
+  );
 
   const loadCoachProfile = useCallback(async () => {
     setLoading(true);
     setStatusMessage(null);
 
     try {
-      const response = await getMyCoachProfile();
-      const nextState = resolveCoachProfileQueryState(response);
-      setFormData(nextState.formData);
-      setCoachProfileId(nextState.coachProfileId);
-      setHasCoachProfile(nextState.hasCoachProfile);
-      setIsForbidden(nextState.isForbidden);
-      setErrorMessage(nextState.errorMessage);
+      applyProfileState(resolveCoachProfileQueryState(await getMyCoachProfile()));
     } catch (error) {
-      const nextState = mapCoachProfileQueryError(error);
-      setFormData(nextState.formData);
-      setCoachProfileId(nextState.coachProfileId);
-      setHasCoachProfile(nextState.hasCoachProfile);
-      setIsForbidden(nextState.isForbidden);
-      setErrorMessage(nextState.errorMessage);
+      applyProfileState(mapCoachProfileQueryError(error));
     } finally {
       setLoading(false);
     }
-  }, [getMyCoachProfile]);
+  }, [applyProfileState, getMyCoachProfile]);
 
   useEffect(() => {
     void loadCoachProfile();
@@ -89,16 +90,16 @@ export const useCoachProfileEditor = () => {
 
   const setField = useCallback(
     <K extends keyof CoachProfileFormData>(key: K, value: CoachProfileFormData[K]) => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
+      setFormData((current) => ({ ...current, [key]: value }));
     },
     []
   );
 
   const setAvailabilityField = useCallback(
     (day: string, key: keyof AvailabilitySlot, value: string | boolean) => {
-      setFormData((prev) => ({
-        ...prev,
-        availability: prev.availability.map((slot) =>
+      setFormData((current) => ({
+        ...current,
+        availability: current.availability.map((slot) =>
           slot.dayOfWeek === day ? { ...slot, [key]: value } : slot
         ),
       }));
@@ -139,7 +140,7 @@ export const useCoachProfileEditor = () => {
 
   const saveCoachProfile = useCallback(async () => {
     setSaving(true);
-    setErrorMessage(null);
+    setProfileState((current) => ({ ...current, errorMessage: null }));
 
     try {
       const payload = mapCoachProfileFormDataToRequest(formData);
@@ -152,12 +153,13 @@ export const useCoachProfileEditor = () => {
         setPendingCertificates([]);
         await loadCoachProfile();
       } else {
-        const nextState = resolveCoachProfileQueryState(response);
-        setFormData(nextState.formData);
-        setCoachProfileId(nextState.coachProfileId);
+        applyProfileState(resolveCoachProfileQueryState(response));
       }
 
-      setHasCoachProfile(true);
+      setProfileState((current) => ({
+        ...current,
+        hasCoachProfile: true,
+      }));
       setStatusMessage(
         coachProfileId
           ? "Coach profile updated successfully."
@@ -165,12 +167,16 @@ export const useCoachProfileEditor = () => {
       );
       return true;
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Saving failed.");
+      setProfileState((current) => ({
+        ...current,
+        errorMessage: error instanceof Error ? error.message : "Saving failed.",
+      }));
       return false;
     } finally {
       setSaving(false);
     }
   }, [
+    applyProfileState,
     coachProfileId,
     createCoachProfile,
     formData,
@@ -183,28 +189,33 @@ export const useCoachProfileEditor = () => {
   const deleteCertificate = useCallback(
     async (certificateId: string) => {
       if (!coachProfileId) {
-        setErrorMessage("Coach profile not found.");
+        setProfileState((current) => ({
+          ...current,
+          errorMessage: "Coach profile not found.",
+        }));
         return false;
       }
 
       setDeletingCertificateId(certificateId);
-      setErrorMessage(null);
       setStatusMessage(null);
+      setProfileState((current) => ({ ...current, errorMessage: null }));
 
       try {
         await deleteCoachCertificate(coachProfileId, certificateId);
-        setFormData((prev) => ({
-          ...prev,
-          certificates: prev.certificates.filter(
+        setFormData((current) => ({
+          ...current,
+          certificates: current.certificates.filter(
             (certificate) => certificate.id !== certificateId
           ),
         }));
         setStatusMessage("Certificate deleted successfully.");
         return true;
       } catch (error) {
-        setErrorMessage(
-          error instanceof Error ? error.message : "Certificate deletion failed."
-        );
+        setProfileState((current) => ({
+          ...current,
+          errorMessage:
+            error instanceof Error ? error.message : "Certificate deletion failed.",
+        }));
         return false;
       } finally {
         setDeletingCertificateId(null);

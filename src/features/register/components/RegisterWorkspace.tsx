@@ -11,7 +11,6 @@ import RegisterActionPanel from "./RegisterActionPanel";
 import RegisterHeroAside from "./RegisterHeroAside";
 import { RegisterProgressPanel } from "./RegisterProgressPanel";
 import { RegisterStepContent } from "./RegisterStepContent";
-import { RegisterSummaryPanel } from "./RegisterSummaryPanel";
 import { REGISTER_STEP_COUNT, REGISTER_STEP_META } from "../lib/register.steps";
 import type { RegisterWorkspaceProps } from "../types/register-workspace.types";
 
@@ -84,7 +83,6 @@ export default function RegisterWorkspace({
               roleLabel={roleLabel}
             />
             <RegisterProgressPanel step={step} />
-            <RegisterSummaryPanel values={values} roleLabel={roleLabel} />
           </div>
         </div>
       </section>

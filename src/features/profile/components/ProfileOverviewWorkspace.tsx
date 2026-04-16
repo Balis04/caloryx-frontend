@@ -75,10 +75,6 @@ export default function ProfileOverviewWorkspace({
                 <h2 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
                   {profile.fullName}
                 </h2>
-                <p className="max-w-2xl text-sm leading-7 text-slate-600 md:text-base">
-                  Your baseline, current momentum, and target direction now live in one
-                  shared CalorieX workspace.
-                </p>
               </div>
             </div>
 
