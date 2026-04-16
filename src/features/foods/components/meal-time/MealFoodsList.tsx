@@ -5,7 +5,26 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import type { MealFoodListProps } from "../../types/meal-food-list.types";
+import type { Dispatch, SetStateAction } from "react";
+import type { FoodLogResponse } from "../../model/food.model";
+
+interface MealFoodListProps {
+  actionError: string | null;
+  actionType: "update" | "delete" | null;
+  activeFoodId: string | null;
+  editingAmount: string;
+  editingFoodId: string | null;
+  foods: FoodLogResponse[];
+  isLoading: boolean;
+  error: string | null;
+  mealTitle: string;
+  beginEdit: (food: FoodLogResponse) => void;
+  cancelEdit: () => void;
+  handleDelete: (foodId: string) => Promise<void>;
+  openAddFood: () => void;
+  saveEdit: (foodId: string) => Promise<void>;
+  setEditingAmount: Dispatch<SetStateAction<string>>;
+}
 
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (

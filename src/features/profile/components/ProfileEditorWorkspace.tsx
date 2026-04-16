@@ -6,7 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { BasicInfoSection } from "./BasicInfoSection";
 import { PhysicalStatsSection } from "./PhysicalStatsSection";
 import ProfileEditorSavePanel from "./ProfileEditorSavePanel";
-import type { ProfileEditorWorkspaceProps } from "../types/profile-editor.types";
+import type { ProfileFormValues } from "../model/profile.form";
+
+interface ProfileEditorWorkspaceProps {
+  values: ProfileFormValues;
+  setField: <K extends keyof ProfileFormValues>(
+    key: K,
+    value: ProfileFormValues[K]
+  ) => void;
+  onSave: () => Promise<void>;
+  canSave: boolean;
+}
 
 export default function ProfileEditorWorkspace({
   values,

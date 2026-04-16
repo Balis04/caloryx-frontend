@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { useCaloriesSummaryApi } from "../../api/calories-summary.api";
-import { useFoodApi } from "../../api/food.api";
+import { getMealTimeSummary } from "../../api/calories-summary.api";
+import { deleteFood, updateFoodAmount } from "../../api/food.api";
 import {
   formatDateInput,
-  formatDiaryDisplayDate,
   getValidDateOrFallback,
   toMealTitle,
   VALID_MEALS,
@@ -16,9 +15,6 @@ export const useMealTimeDetailsPage = () => {
   const { mealTime } = useParams<{ mealTime: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const { getMealTimeSummary } = useCaloriesSummaryApi();
-  const { updateFoodAmount, deleteFood } = useFoodApi();
 
   const normalizedMeal = mealTime?.toUpperCase() as MealTime;
   const fallbackDate = formatDateInput(new Date());
@@ -36,45 +32,41 @@ export const useMealTimeDetailsPage = () => {
 
   const isValidMeal = Boolean(normalizedMeal && VALID_MEALS.includes(normalizedMeal));
 
-  const loadData = useCallback(async () => {
-    if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await getMealTimeSummary(date, normalizedMeal);
-      setSummary(data);
-      setFoods(data.foods ?? []);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to load meal details.";
-      setError(message);
-      setSummary(null);
-      setFoods([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [date, getMealTimeSummary, normalizedMeal]);
-
   useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    const loadMealDetails = async () => {
+      if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
+        return;
+      }
 
-  const consumed = useMemo(
-    () =>
-      foods.reduce(
-        (acc, food) => {
-          acc.calories += food.calories;
-          acc.protein += food.protein;
-          acc.carbohydrates += food.carbohydrates;
-          acc.fat += food.fat;
-          return acc;
-        },
-        { calories: 0, protein: 0, carbohydrates: 0, fat: 0 }
-      ),
-    [foods]
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await getMealTimeSummary(date, normalizedMeal);
+        setSummary(data);
+        setFoods(data.foods ?? []);
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "Failed to load meal details.";
+        setError(message);
+        setSummary(null);
+        setFoods([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadMealDetails();
+  }, [date, normalizedMeal]);
+
+  const consumed = foods.reduce(
+    (acc, food) => {
+      acc.calories += food.calories;
+      acc.protein += food.protein;
+      acc.carbohydrates += food.carbohydrates;
+      acc.fat += food.fat;
+      return acc;
+    },
+    { calories: 0, protein: 0, carbohydrates: 0, fat: 0 }
   );
 
   const calorieProgress =
@@ -88,61 +80,65 @@ export const useMealTimeDetailsPage = () => {
     setActionError(null);
   };
 
-  const cancelEdit = useCallback(() => {
+  const cancelEdit = () => {
     setEditingFoodId(null);
     setEditingAmount("");
     setActionError(null);
-  }, []);
+  };
 
-  const saveEdit = useCallback(
-    async (foodId: string) => {
-      const newAmount = Number(editingAmount);
+  const reloadMealDetails = async () => {
+    if (!normalizedMeal || !VALID_MEALS.includes(normalizedMeal)) {
+      return;
+    }
 
-      if (Number.isNaN(newAmount) || newAmount <= 0) {
-        setActionError("Amount must be a positive number.");
-        return;
-      }
+    const data = await getMealTimeSummary(date, normalizedMeal);
+    setSummary(data);
+    setFoods(data.foods ?? []);
+  };
 
-      setActiveFoodId(foodId);
-      setActionType("update");
-      setActionError(null);
+  const saveEdit = async (foodId: string) => {
+    const newAmount = Number(editingAmount);
 
-      try {
-        await updateFoodAmount(foodId, newAmount);
-        await loadData();
+    if (Number.isNaN(newAmount) || newAmount <= 0) {
+      setActionError("Amount must be a positive number.");
+      return;
+    }
+
+    setActiveFoodId(foodId);
+    setActionType("update");
+    setActionError(null);
+
+    try {
+      await updateFoodAmount(foodId, newAmount);
+      await reloadMealDetails();
+      cancelEdit();
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : "Update failed.");
+    } finally {
+      setActiveFoodId(null);
+      setActionType(null);
+    }
+  };
+
+  const handleDelete = async (foodId: string) => {
+    setActiveFoodId(foodId);
+    setActionType("delete");
+    setActionError(null);
+
+    try {
+      await deleteFood(foodId);
+      await reloadMealDetails();
+
+      if (editingFoodId === foodId) {
         cancelEdit();
-      } catch (e) {
-        setActionError(e instanceof Error ? e.message : "Update failed.");
-      } finally {
-        setActiveFoodId(null);
-        setActionType(null);
       }
-    },
-    [cancelEdit, editingAmount, loadData, updateFoodAmount]
-  );
-
-  const handleDelete = useCallback(
-    async (foodId: string) => {
-      setActiveFoodId(foodId);
-      setActionType("delete");
-      setActionError(null);
-
-      try {
-        await deleteFood(foodId);
-        await loadData();
-
-        if (editingFoodId === foodId) {
-          cancelEdit();
-        }
-      } catch (e) {
-        setActionError(e instanceof Error ? e.message : "Delete failed.");
-      } finally {
-        setActiveFoodId(null);
-        setActionType(null);
-      }
-    },
-    [cancelEdit, deleteFood, editingFoodId, loadData]
-  );
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : "Delete failed.");
+    } finally {
+      setActiveFoodId(null);
+      setActionType(null);
+    }
+  };
 
   return {
     actionError,
@@ -156,11 +152,10 @@ export const useMealTimeDetailsPage = () => {
     editingFoodId,
     error,
     foods,
-    formattedDate: formatDiaryDisplayDate(date),
     isLoading,
     isValidMeal,
     mealTitle: normalizedMeal ? toMealTitle(normalizedMeal) : "",
-    navigateBack: () => navigate("/calorie-counter"),
+    onBack: () => navigate("/calorie-counter"),
     openAddFood: () => {
       if (!normalizedMeal) {
         return;
@@ -175,5 +170,3 @@ export const useMealTimeDetailsPage = () => {
     handleDelete,
   };
 };
-
-export type UseMealTimeDetailsPageResult = ReturnType<typeof useMealTimeDetailsPage>;

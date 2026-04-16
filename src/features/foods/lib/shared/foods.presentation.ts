@@ -12,24 +12,6 @@ export const MEAL_LABELS: Record<MealTime, string> = {
 export type FoodsMainTab = "usda" | "create" | "saved";
 export type SavedFoodsScope = "own" | "other" | "all";
 
-export const FOODS_TAB_META: Record<
-  FoodsMainTab,
-  { label: string; description: string }
-> = {
-  usda: {
-    label: "USDA search",
-    description: "Search public food entries and log them straight into the selected meal.",
-  },
-  create: {
-    label: "Create custom food",
-    description: "Save your own reusable food with nutrition values per 100 grams.",
-  },
-  saved: {
-    label: "Saved foods",
-    description: "Browse food items already created by you or other users.",
-  },
-};
-
 export const DIARY_MEALS: Array<{ title: string; type: MealTime; accent: string }> = [
   { title: "Breakfast", type: "BREAKFAST", accent: "from-amber-200/60 to-orange-100/50" },
   { title: "Lunch", type: "LUNCH", accent: "from-emerald-200/60 to-teal-100/50" },
@@ -78,35 +60,6 @@ export const getValidDateOrFallback = (value: string | null, fallback: string) =
   }
 
   return value;
-};
-
-export const formatFoodDateLabel = (date?: string) => {
-  if (!date) {
-    return "Today";
-  }
-
-  const parsedDate = new Date(`${date}T00:00:00`);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return date;
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(parsedDate);
-};
-
-export const formatDiaryDisplayDate = (date: string): string => {
-  const parsed = new Date(`${date}T00:00:00`);
-  const safeDate = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
-
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(safeDate);
 };
 
 export const mapCaloriesSummaryToFallback = (date: string): CaloriesSummaryResponse => ({

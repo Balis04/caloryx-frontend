@@ -1,23 +1,34 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
-import { useFoodApi } from "../../api/food.api";
-import { useFoodSearch } from "../useFoodSearch";
-import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custom-foods";
 import {
-  FOODS_TAB_META,
-  formatFoodDateLabel,
+  createCustomFood,
+  deleteCustomFood,
+  getAllCustomFoods,
+  getMyCustomFoods,
+  getOtherCustomFoods,
+} from "../../api/food.api";
+import { searchFoods } from "../../api/usda.api";
+import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custom-foods";
+import { mapUsdaFoodToFood } from "../../lib/usda.mapper";
+import {
   getOptionalValidDate,
-  MEAL_LABELS,
   type FoodsMainTab,
   type SavedFoodsScope,
   VALID_MEALS,
 } from "../../lib/shared/foods.presentation";
-import type { NewFoodDraft } from "../../types/food-search.types";
 import type { CustomFoodResponse, Food, MealTime } from "../../model/food.model";
 
-const EMPTY_NEW_FOOD: NewFoodDraft = {
+export interface NewFoodForm {
+  name: string;
+  calories: string;
+  protein: string;
+  carbohydrates: string;
+  fat: string;
+}
+
+const EMPTY_NEW_FOOD: NewFoodForm = {
   name: "",
   calories: "",
   protein: "",
@@ -26,7 +37,6 @@ const EMPTY_NEW_FOOD: NewFoodDraft = {
 };
 
 export const useFoodSearchPage = () => {
-  const navigate = useNavigate();
   const { mealTime } = useParams<{ mealTime: string }>();
   const [searchParams] = useSearchParams();
   const consumedDate = getOptionalValidDate(searchParams.get("date") ?? null);
@@ -35,17 +45,10 @@ export const useFoodSearchPage = () => {
   const isValidMeal =
     !!normalizedMealParam && VALID_MEALS.includes(normalizedMealParam as MealTime);
   const normalizedMeal = (normalizedMealParam as MealTime) ?? "BREAKFAST";
+  const [foods, setFoods] = useState<Food[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { foods, isLoading, performSearch } = useFoodSearch("cheddar cheese", "LIDL");
-  const {
-    getAllCustomFoods,
-    getMyCustomFoods,
-    getOtherCustomFoods,
-    createCustomFood,
-    deleteCustomFood,
-  } = useFoodApi();
-
-  const [newFood, setNewFood] = useState<NewFoodDraft>(EMPTY_NEW_FOOD);
+  const [newFood, setNewFood] = useState<NewFoodForm>(EMPTY_NEW_FOOD);
   const [createError, setCreateError] = useState<string | null>(null);
   const [createLoading, setCreateLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<FoodsMainTab>("usda");
@@ -56,111 +59,142 @@ export const useFoodSearchPage = () => {
   const [savedSearchTerm, setSavedSearchTerm] = useState("");
   const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
 
-  const loadSavedFoods = useCallback(async () => {
-    setSavedLoading(true);
-    setSavedError(null);
-
-    try {
-      const response =
-        savedScope === "own"
-          ? await getMyCustomFoods()
-          : savedScope === "other"
-            ? await getOtherCustomFoods()
-            : await getAllCustomFoods();
-
-      const items = Array.isArray(response)
-        ? response
-        : ((response as { content?: CustomFoodResponse[] }).content ?? []);
-
-      setSavedFoods(items.map(mapCustomFoodToFood));
-    } catch (e) {
-      setSavedError(e instanceof Error ? e.message : "Failed to load saved foods.");
-      setSavedFoods([]);
-    } finally {
-      setSavedLoading(false);
-    }
-  }, [getAllCustomFoods, getMyCustomFoods, getOtherCustomFoods, savedScope]);
-
   useEffect(() => {
-    if (activeTab === "saved") {
-      void loadSavedFoods();
-    }
-  }, [activeTab, loadSavedFoods]);
-
-  const filteredSavedFoods = useMemo(() => {
-    const query = savedSearchTerm.trim().toLowerCase();
-
-    if (!query) {
-      return savedFoods;
-    }
-
-    return savedFoods.filter((food) => food.description.toLowerCase().includes(query));
-  }, [savedFoods, savedSearchTerm]);
-
-  const handleCreateFood = useCallback(
-    async (event: FormEvent) => {
-      event.preventDefault();
-      setCreateError(null);
-
-      const name = newFood.name.trim();
-
-      if (!name) {
-        setCreateError("Name is required.");
-        return;
-      }
-
-      const calories = toNumber(newFood.calories);
-      const protein = toNumber(newFood.protein);
-      const carbohydrates = toNumber(newFood.carbohydrates);
-      const fat = toNumber(newFood.fat);
-
-      if ([calories, protein, carbohydrates, fat].some((value) => value < 0)) {
-        setCreateError("Nutrition values cannot be negative.");
-        return;
-      }
-
-      setCreateLoading(true);
+    const loadInitialFoods = async () => {
+      setIsLoading(true);
 
       try {
-        await createCustomFood({ name, calories, protein, carbohydrates, fat });
-        setNewFood(EMPTY_NEW_FOOD);
-        setSavedScope("own");
-        setSavedSearchTerm("");
-        setActiveTab("saved");
-      } catch (e) {
-        setCreateError(e instanceof Error ? e.message : "Creation failed.");
+        const response = await searchFoods("cheddar cheese", "LIDL");
+        setFoods((response ?? []).map(mapUsdaFoodToFood));
+      } catch (error) {
+        console.error(error);
+        setFoods([]);
       } finally {
-        setCreateLoading(false);
+        setIsLoading(false);
       }
-    },
-    [createCustomFood, newFood]
-  );
+    };
 
-  const handleDeleteSavedFood = useCallback(
-    async (foodId?: string) => {
-      if (!foodId) {
-        return;
-      }
+    void loadInitialFoods();
+  }, []);
 
-      setActiveDeleteId(foodId);
+  useEffect(() => {
+    if (activeTab !== "saved") {
+      return;
+    }
+
+    const loadSavedFoods = async () => {
+      setSavedLoading(true);
       setSavedError(null);
 
       try {
-        await deleteCustomFood(foodId);
-        await loadSavedFoods();
+        const response =
+          savedScope === "own"
+            ? await getMyCustomFoods()
+            : savedScope === "other"
+              ? await getOtherCustomFoods()
+              : await getAllCustomFoods();
+
+        const items = Array.isArray(response)
+          ? response
+          : ((response as { content?: CustomFoodResponse[] }).content ?? []);
+
+        setSavedFoods(items.map(mapCustomFoodToFood));
       } catch (e) {
-        setSavedError(e instanceof Error ? e.message : "Delete failed.");
+        setSavedError(e instanceof Error ? e.message : "Failed to load saved foods.");
+        setSavedFoods([]);
       } finally {
-        setActiveDeleteId(null);
+        setSavedLoading(false);
       }
-    },
-    [deleteCustomFood, loadSavedFoods]
-  );
+    };
+
+    void loadSavedFoods();
+  }, [activeTab, savedScope]);
+
+  const query = savedSearchTerm.trim().toLowerCase();
+  const filteredSavedFoods = !query
+    ? savedFoods
+    : savedFoods.filter((food) => food.description.toLowerCase().includes(query));
+
+  const search = async (product: string, brand: string) => {
+    if (!product && !brand) {
+      setFoods([]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await searchFoods(product, brand);
+      setFoods((response ?? []).map(mapUsdaFoodToFood));
+    } catch (error) {
+      console.error(error);
+      setFoods([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCreateFood = async (event: FormEvent) => {
+    event.preventDefault();
+    setCreateError(null);
+
+    const name = newFood.name.trim();
+
+    if (!name) {
+      setCreateError("Name is required.");
+      return;
+    }
+
+    const calories = toNumber(newFood.calories);
+    const protein = toNumber(newFood.protein);
+    const carbohydrates = toNumber(newFood.carbohydrates);
+    const fat = toNumber(newFood.fat);
+
+    if ([calories, protein, carbohydrates, fat].some((value) => value < 0)) {
+      setCreateError("Nutrition values cannot be negative.");
+      return;
+    }
+
+    setCreateLoading(true);
+
+    try {
+      await createCustomFood({ name, calories, protein, carbohydrates, fat });
+      setNewFood(EMPTY_NEW_FOOD);
+      setSavedScope("own");
+      setSavedSearchTerm("");
+      setActiveTab("saved");
+    } catch (e) {
+      setCreateError(e instanceof Error ? e.message : "Creation failed.");
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+  const handleDeleteSavedFood = async (foodId?: string) => {
+    if (!foodId) {
+      return;
+    }
+
+    setActiveDeleteId(foodId);
+    setSavedError(null);
+
+    try {
+      await deleteCustomFood(foodId);
+      const response = await getMyCustomFoods();
+      const items = Array.isArray(response)
+        ? response
+        : ((response as { content?: CustomFoodResponse[] }).content ?? []);
+      setSavedFoods(items.map(mapCustomFoodToFood));
+    } catch (e) {
+      setSavedError(e instanceof Error ? e.message : "Delete failed.");
+    } finally {
+      setActiveDeleteId(null);
+    }
+  };
 
   return {
     activeDeleteId,
     activeTab,
-    activeTabMeta: FOODS_TAB_META[activeTab],
     consumedDate,
     createError,
     createLoading,
@@ -168,11 +202,9 @@ export const useFoodSearchPage = () => {
     foods,
     isLoading,
     isValidMeal,
-    mealLabel: MEAL_LABELS[normalizedMeal],
-    navigateBack: () => navigate("/calorie-counter"),
     newFood,
+    onSearch: search,
     normalizedMeal,
-    performSearch,
     savedError,
     savedLoading,
     savedScope,
@@ -183,8 +215,5 @@ export const useFoodSearchPage = () => {
     setSavedSearchTerm,
     handleCreateFood,
     handleDeleteSavedFood,
-    formattedConsumedDate: formatFoodDateLabel(consumedDate),
   };
 };
-
-export type UseFoodSearchPageResult = ReturnType<typeof useFoodSearchPage>;

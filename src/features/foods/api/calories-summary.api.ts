@@ -5,12 +5,14 @@ import type {
   MealTimeSummaryResponse,
 } from "../model/food.model";
 
-const getSummaryByDate = async (date: string): Promise<CaloriesSummaryResponse> => {
+export const getSummaryByDate = async (
+  date: string
+): Promise<CaloriesSummaryResponse> => {
   const query = encodeURIComponent(date);
   return apiClient<CaloriesSummaryResponse>(`/api/calories-summary?date=${query}`);
 };
 
-const getMealTimeSummary = async (
+export const getMealTimeSummary = async (
   date: string,
   mealTime: MealTime
 ): Promise<MealTimeSummaryResponse> => {
@@ -19,8 +21,4 @@ const getMealTimeSummary = async (
   return apiClient<MealTimeSummaryResponse>(
     `/api/calories-summary/meal-times?date=${dateQuery}&mealTime=${mealQuery}`
   );
-};
-
-export const useCaloriesSummaryApi = () => {
-  return { getSummaryByDate, getMealTimeSummary };
 };

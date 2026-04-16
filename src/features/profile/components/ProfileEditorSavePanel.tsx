@@ -4,7 +4,14 @@ import {
   SummaryPanel,
 } from "@/components/caloriex";
 import { ArrowRight, Save, Sparkles } from "lucide-react";
-import type { ProfileEditorSavePanelProps } from "../types/profile-editor.types";
+import type { ProfileFormValues } from "../model/profile.form";
+
+interface ProfileEditorSavePanelProps {
+  values: ProfileFormValues;
+  roleLabel: string;
+  canSave: boolean;
+  onSave: () => Promise<void>;
+}
 
 export default function ProfileEditorSavePanel({
   values,

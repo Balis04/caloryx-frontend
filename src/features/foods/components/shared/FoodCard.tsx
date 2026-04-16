@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { useFoodApi } from "../../api/food.api";
-import { useFoodCalculator } from "../../hooks/useFoodCalculator";
+import { saveFood } from "../../api/food.api";
 import { createFoodLogPayload } from "../../lib/food.mapper";
 import type { Food } from "../../model/food.model";
 import { NutrientList } from "./NutrientList";
@@ -25,10 +24,19 @@ export default function FoodCard({
   consumedDate?: string;
 }) {
   const navigate = useNavigate();
-  const { saveFood } = useFoodApi();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const calculator = useFoodCalculator(food);
+  const [amount, setAmount] = useState(100);
+  const [unit, setUnit] = useState<"g" | "serv">("g");
+
+  const totalGrams = unit === "g" ? amount : amount * (food.servingSize || 100);
+  const calculateNutrient = (baseValue: number) =>
+    Math.round((baseValue / 100) * totalGrams);
+
+  const handleUnitChange = (nextUnit: "g" | "serv") => {
+    setUnit(nextUnit);
+    setAmount(nextUnit === "g" ? 100 : 1);
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -38,8 +46,8 @@ export default function FoodCard({
       const payload = createFoodLogPayload(
         food,
         mealTime,
-        calculator.totalGrams,
-        calculator.calculateNutrient,
+        totalGrams,
+        calculateNutrient,
         consumedDate
       );
       await saveFood(payload);
@@ -62,7 +70,7 @@ export default function FoodCard({
             <div className="flex flex-wrap gap-2">
               <GlassChip className="px-3 py-1 text-xs">{food.brandOwner || "General"}</GlassChip>
               <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs">
-                {Math.round(calculator.totalGrams)} g total
+                {Math.round(totalGrams)} g total
               </Badge>
             </div>
           </div>
@@ -70,7 +78,7 @@ export default function FoodCard({
           <Button
             size="icon"
             onClick={handleSave}
-            disabled={isSaving || calculator.value <= 0}
+            disabled={isSaving || amount <= 0}
             className="h-10 w-10 rounded-full"
           >
             {isSaving ? (
@@ -83,7 +91,7 @@ export default function FoodCard({
       </CardHeader>
 
       <CardContent className="flex-grow p-5 pt-0">
-        <NutrientList nutrients={food.foodNutrients} calculate={calculator.calculateNutrient} />
+        <NutrientList nutrients={food.foodNutrients} calculate={calculateNutrient} />
       </CardContent>
 
       <CardFooter className="flex flex-col gap-3 border-t border-white/50 bg-white/35 p-5 pt-4">
@@ -91,10 +99,10 @@ export default function FoodCard({
           <Input
             type="number"
             className="h-10 border-white/70 bg-white/80 text-center font-semibold"
-            value={calculator.value === 0 ? "" : calculator.value}
-            onChange={(e) => calculator.setValue(parseFloat(e.target.value) || 0)}
+            value={amount === 0 ? "" : amount}
+            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
           />
-          <UnitSelect unit={calculator.unit} food={food} onUnitChange={calculator.handleUnitChange} />
+          <UnitSelect unit={unit} food={food} onUnitChange={handleUnitChange} />
         </div>
 
         {saveError ? <p className="w-full text-xs text-red-700">{saveError}</p> : null}

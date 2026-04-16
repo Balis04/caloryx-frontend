@@ -1,5 +1,12 @@
 import type { Food, FoodLogRequest, MealTime } from "../model/food.model";
-import { getNutrientValue } from "./food.nutrients";
+
+const getNutrientValue = (name: string, food: Food) => {
+  return (
+    food.foodNutrients.find(
+      (nutrient) => nutrient.nutrientName.toLowerCase() === name.toLowerCase()
+    )?.value ?? 0
+  );
+};
 
 const toConsumedAtIso = (consumedDate?: string): string => {
   if (!consumedDate) {
@@ -20,11 +27,9 @@ export const createFoodLogPayload = (
   mealTime: mealTime.toUpperCase() as MealTime,
   amount: totalGrams,
   unit: "g",
-  calories: calc(getNutrientValue(food.foodNutrients, "Energy")),
-  protein: calc(getNutrientValue(food.foodNutrients, "Protein")),
-  carbohydrates: calc(
-    getNutrientValue(food.foodNutrients, "Carbohydrate, by difference")
-  ),
-  fat: calc(getNutrientValue(food.foodNutrients, "Total lipid (fat)")),
+  calories: calc(getNutrientValue("Energy", food)),
+  protein: calc(getNutrientValue("Protein", food)),
+  carbohydrates: calc(getNutrientValue("Carbohydrate, by difference", food)),
+  fat: calc(getNutrientValue("Total lipid (fat)", food)),
   consumedAt: toConsumedAtIso(consumedDate),
 });
