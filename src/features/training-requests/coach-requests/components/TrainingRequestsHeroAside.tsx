@@ -1,5 +1,6 @@
 import { GlassCard, GlassMetric } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
+import { coachRequestFilterLabelMap } from "../lib/coach-training-requests.utils";
 import type { CoachRequestFilter } from "../model/coach-training-request.model";
 
 export default function TrainingRequestsHeroAside({
@@ -26,7 +27,7 @@ export default function TrainingRequestsHeroAside({
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <GlassMetric label="Visible" value={String(visibleCount)} description="Requests currently shown under the selected view." />
-          <GlassMetric label="Filter" value={showCoachIncomingRequests ? coachRequestFilter : "history"} description="Current request list grouping." />
+          <GlassMetric label="Filter" value={showCoachIncomingRequests ? coachRequestFilterLabelMap[coachRequestFilter] : "History"} description="Current request list grouping." />
         </div>
       </CardContent>
     </GlassCard>

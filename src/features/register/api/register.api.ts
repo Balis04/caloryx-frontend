@@ -1,18 +1,12 @@
-import { useApi } from "@/hooks/useApi";
-import { useCallback } from "react";
+import { apiClient } from "@/lib/api-client";
 import type { RegisterRequestDto, RegisterResponseDto } from "./register.dto";
 
+const register = (data: RegisterRequestDto) =>
+  apiClient<RegisterResponseDto>("/api/user/profile", {
+    method: "POST",
+    body: data,
+  });
+
 export const useRegisterApi = () => {
-  const { request } = useApi();
-
-  const register = useCallback(
-    (data: RegisterRequestDto) =>
-      request<RegisterResponseDto>("/api/user/profile", {
-        method: "POST",
-        body: data,
-      }),
-    [request]
-  );
-
   return { register };
 };

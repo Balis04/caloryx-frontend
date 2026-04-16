@@ -1,23 +1,141 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useProfileQuery } from "@/features/profile/hooks/useProfileQuery";
 import { isCoachRole } from "@/shared/utils/profileRole";
 
 import { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
 import { useTrainingRequestApi } from "../../shared/api/training-request.api";
+import type {
+  ClosedTrainingRequestResponseDto,
+  TrainingRequestResponseDto,
+} from "../../shared/api/training-request.dto";
 import {
-  buildCoachTrainingRequestsLoadPayload,
-  getVisibleCoachTrainingRequests,
-} from "../lib/coach-training-requests.data";
+  mapClosedTrainingRequestDtoToModel,
+  mapTrainingRequestDtoToModel,
+  mapTrainingRequestStatusToUpdateDto,
+} from "../../shared/lib/training-request.mapper";
 import type {
   CoachRequestFilter,
   CoachRequestViewMode,
+  CoachTrainingRequest,
+  TrainingPlanDraft,
+  TrainingRequestStatus,
 } from "../model/coach-training-request.model";
-import { useCoachTrainingRequestsActions } from "./useCoachTrainingRequestsActions";
 import {
-  coachTrainingRequestsReducer,
-  initialCoachTrainingRequestsState,
-} from "../state/coach-training-requests.state";
+  createTrainingPlanDraft,
+  dedupeRequests,
+  getDecisionDescription,
+  getTrainingPlanDescription,
+  getTrainingPlanFileName,
+  getTrainingPlanName,
+} from "../lib/coach-training-requests.utils";
+
+interface TrainingRequestsData {
+  approvedRequests: CoachTrainingRequest[];
+  closedRequests: CoachTrainingRequest[];
+  outgoingRequests: CoachTrainingRequest[];
+  pendingRequests: CoachTrainingRequest[];
+  rejectedRequests: CoachTrainingRequest[];
+}
+
+const emptyData = (): TrainingRequestsData => ({
+  approvedRequests: [],
+  closedRequests: [],
+  outgoingRequests: [],
+  pendingRequests: [],
+  rejectedRequests: [],
+});
+
+const buildRequestData = async (
+  isCoach: boolean,
+  getMyTrainingRequests: () => Promise<TrainingRequestResponseDto[]>,
+  getCoachTrainingRequests: (
+    status?: "PENDING" | "APPROVED" | "REJECTED"
+  ) => Promise<TrainingRequestResponseDto[]>,
+  getClosedCoachTrainingRequests: () => Promise<ClosedTrainingRequestResponseDto[]>
+): Promise<TrainingRequestsData> => {
+  const [
+    outgoingResponse,
+    pendingResponse,
+    approvedResponse,
+    closedResponse,
+    rejectedResponse,
+  ] = await Promise.all([
+    getMyTrainingRequests(),
+    isCoach ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
+    isCoach ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
+    isCoach ? getClosedCoachTrainingRequests() : Promise.resolve([]),
+    isCoach ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
+  ]);
+
+  return {
+    approvedRequests: dedupeRequests(approvedResponse.map(mapTrainingRequestDtoToModel)),
+    closedRequests: dedupeRequests(closedResponse.map(mapClosedTrainingRequestDtoToModel)),
+    outgoingRequests: outgoingResponse.map(mapTrainingRequestDtoToModel),
+    pendingRequests: dedupeRequests(pendingResponse.map(mapTrainingRequestDtoToModel)),
+    rejectedRequests: dedupeRequests(rejectedResponse.map(mapTrainingRequestDtoToModel)),
+  };
+};
+
+const mergeDecisionDescriptions = (
+  requests: CoachTrainingRequest[],
+  previous: Record<string, string>
+) => {
+  const next = { ...previous };
+
+  requests.forEach((request) => {
+    if (!(request.id in next)) {
+      next[request.id] = getDecisionDescription(request);
+    }
+  });
+
+  return next;
+};
+
+const mergeTrainingPlanDrafts = (
+  requests: CoachTrainingRequest[],
+  previous: Record<string, TrainingPlanDraft>
+) => {
+  const next = { ...previous };
+
+  requests
+    .filter((request) => request.status === "APPROVED")
+    .forEach((request) => {
+      if (!next[request.id]) {
+        const draft = createTrainingPlanDraft(request);
+        next[request.id] = {
+          ...draft,
+          existingFileName: draft.existingFileName || getTrainingPlanFileName(request),
+          planDescription: draft.planDescription || getTrainingPlanDescription(request),
+          planName: draft.planName || getTrainingPlanName(request),
+        };
+      }
+    });
+
+  return next;
+};
+
+const getVisibleRequests = (
+  isCoach: boolean,
+  coachViewMode: CoachRequestViewMode,
+  coachRequestFilter: CoachRequestFilter,
+  data: TrainingRequestsData
+) => {
+  if (!isCoach || coachViewMode === "user") {
+    return data.outgoingRequests;
+  }
+
+  switch (coachRequestFilter) {
+    case "approved":
+      return data.approvedRequests;
+    case "rejected":
+      return data.rejectedRequests;
+    case "closed":
+      return data.closedRequests;
+    default:
+      return data.pendingRequests;
+  }
+};
 
 export const useCoachTrainingRequests = () => {
   const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
@@ -29,59 +147,60 @@ export const useCoachTrainingRequests = () => {
   } = useCoachTrainingRequestsApi();
   const { profile, loading: profileLoading } = useProfileQuery();
   const isCoach = isCoachRole(profile?.role);
-  const [state, dispatch] = useReducer(
-    coachTrainingRequestsReducer,
-    initialCoachTrainingRequestsState
+
+  const [coachViewMode, setCoachViewMode] = useState<CoachRequestViewMode>("coach");
+  const [coachRequestFilter, setCoachRequestFilter] = useState<CoachRequestFilter>("pending");
+  const [requests, setRequests] = useState<TrainingRequestsData>(emptyData);
+  const [decisionDescriptions, setDecisionDescriptions] = useState<Record<string, string>>({});
+  const [trainingPlanDrafts, setTrainingPlanDrafts] = useState<Record<string, TrainingPlanDraft>>(
+    {}
   );
-  const decisionDescriptionsRef = useRef(state.decisionDescriptions);
-  const trainingPlanDraftsRef = useRef(state.trainingPlanDrafts);
+  const [expandedApprovedRequestId, setExpandedApprovedRequestId] = useState<string | null>(null);
+  const [downloadingRequestId, setDownloadingRequestId] = useState<string | null>(null);
+  const [savingApprovedRequestId, setSavingApprovedRequestId] = useState<string | null>(null);
+  const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch({ type: "set-view", payload: isCoach ? "coach" : "user" });
+    setCoachViewMode(isCoach ? "coach" : "user");
   }, [isCoach]);
 
-  useEffect(() => {
-    decisionDescriptionsRef.current = state.decisionDescriptions;
-    trainingPlanDraftsRef.current = state.trainingPlanDrafts;
-  }, [state.decisionDescriptions, state.trainingPlanDrafts]);
+  const loadRequests = useCallback(
+    async (
+      previousDecisionDescriptions: Record<string, string> = decisionDescriptions,
+      previousTrainingPlanDrafts: Record<string, TrainingPlanDraft> = trainingPlanDrafts
+    ) => {
+      setLoading(true);
+      setError(null);
 
-  const loadRequests = useCallback(async () => {
-    dispatch({ type: "load/start" });
+      try {
+        const nextRequests = await buildRequestData(
+          isCoach,
+          getMyTrainingRequests,
+          getCoachTrainingRequests,
+          getClosedCoachTrainingRequests
+        );
+        const allRequests = [
+          ...nextRequests.outgoingRequests,
+          ...nextRequests.pendingRequests,
+          ...nextRequests.approvedRequests,
+          ...nextRequests.closedRequests,
+          ...nextRequests.rejectedRequests,
+        ];
 
-    try {
-      const [
-        outgoingResponse,
-        pendingResponse,
-        approvedResponse,
-        closedResponse,
-        rejectedResponse,
-      ] = await Promise.all([
-        getMyTrainingRequests(),
-        isCoach ? getCoachTrainingRequests("PENDING") : Promise.resolve([]),
-        isCoach ? getCoachTrainingRequests("APPROVED") : Promise.resolve([]),
-        isCoach ? getClosedCoachTrainingRequests() : Promise.resolve([]),
-        isCoach ? getCoachTrainingRequests("REJECTED") : Promise.resolve([]),
-      ]);
-
-      dispatch({
-        type: "load/success",
-        payload: buildCoachTrainingRequestsLoadPayload({
-          approvedResponse,
-          closedResponse,
-          outgoingResponse,
-          pendingResponse,
-          previousDecisionDescriptions: decisionDescriptionsRef.current,
-          previousTrainingPlanDrafts: trainingPlanDraftsRef.current,
-          rejectedResponse,
-        }),
-      });
-    } catch (error) {
-      dispatch({
-        type: "load/error",
-        payload: error instanceof Error ? error.message : "Failed to load requests.",
-      });
-    }
-  }, [getClosedCoachTrainingRequests, getCoachTrainingRequests, getMyTrainingRequests, isCoach]);
+        setRequests(nextRequests);
+        setDecisionDescriptions(mergeDecisionDescriptions(allRequests, previousDecisionDescriptions));
+        setTrainingPlanDrafts(mergeTrainingPlanDrafts(allRequests, previousTrainingPlanDrafts));
+      } catch (loadError) {
+        setRequests(emptyData());
+        setError(loadError instanceof Error ? loadError.message : "Failed to load requests.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [getClosedCoachTrainingRequests, getCoachTrainingRequests, getMyTrainingRequests, isCoach]
+  );
 
   useEffect(() => {
     if (!profileLoading) {
@@ -89,64 +208,178 @@ export const useCoachTrainingRequests = () => {
     }
   }, [loadRequests, profileLoading]);
 
+  const updateRequestStatus = useCallback(
+    async (trainingRequestId: string, status: TrainingRequestStatus, coachResponse: string) => {
+      if (status === "PENDING" || status === "CLOSED") {
+        setError("Only APPROVED or REJECTED status updates are allowed.");
+        return;
+      }
+
+      const trimmedCoachResponse = coachResponse.trim();
+      if (!trimmedCoachResponse) {
+        setError("A status comment is required when approving or rejecting a request.");
+        return;
+      }
+
+      setUpdatingRequestId(trainingRequestId);
+      setError(null);
+
+      try {
+        await updateCoachTrainingRequestStatus(
+          trainingRequestId,
+          mapTrainingRequestStatusToUpdateDto(status, trimmedCoachResponse)
+        );
+
+        const nextDecisionDescriptions = {
+          ...decisionDescriptions,
+          [trainingRequestId]: trimmedCoachResponse,
+        };
+
+        setDecisionDescriptions(nextDecisionDescriptions);
+
+        if (status === "APPROVED") {
+          setExpandedApprovedRequestId(trainingRequestId);
+        }
+
+        await loadRequests(nextDecisionDescriptions, trainingPlanDrafts);
+      } catch (updateError) {
+        setError(updateError instanceof Error ? updateError.message : "Failed to update status.");
+      } finally {
+        setUpdatingRequestId(null);
+      }
+    },
+    [
+      decisionDescriptions,
+      loadRequests,
+      trainingPlanDrafts,
+      updateCoachTrainingRequestStatus,
+    ]
+  );
+
+  const saveTrainingPlan = useCallback(
+    async (request: CoachTrainingRequest) => {
+      const draft = trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request);
+      const trimmedPlanName = draft.planName.trim();
+      const trimmedPlanDescription = draft.planDescription.trim();
+
+      if (request.status !== "APPROVED") {
+        setError("Training plan can only be uploaded for approved requests.");
+        return;
+      }
+
+      if (!draft.file) {
+        setError("Select a PDF or DOCX file to upload the training plan.");
+        return;
+      }
+
+      setSavingApprovedRequestId(request.id);
+      setError(null);
+
+      try {
+        const formData = new FormData();
+        formData.append("file", draft.file);
+        if (trimmedPlanName) {
+          formData.append("planName", trimmedPlanName);
+        }
+        if (trimmedPlanDescription) {
+          formData.append("planDescription", trimmedPlanDescription);
+        }
+
+        await uploadCoachTrainingPlan(request.id, formData);
+
+        const nextDrafts = {
+          ...trainingPlanDrafts,
+          [request.id]: {
+            existingFileName: draft.file.name,
+            file: null,
+            planDescription: trimmedPlanDescription,
+            planName: trimmedPlanName || draft.file.name.replace(/\.[^.]+$/, ""),
+          },
+        };
+
+        setTrainingPlanDrafts(nextDrafts);
+        await loadRequests(decisionDescriptions, nextDrafts);
+      } catch (saveError) {
+        setError(
+          saveError instanceof Error ? saveError.message : "Failed to upload the training plan."
+        );
+      } finally {
+        setSavingApprovedRequestId(null);
+      }
+    },
+    [decisionDescriptions, loadRequests, trainingPlanDrafts, uploadCoachTrainingPlan]
+  );
+
+  const downloadTrainingPlan = useCallback(
+    async (request: CoachTrainingRequest) => {
+      setDownloadingRequestId(request.id);
+      setError(null);
+
+      try {
+        const { blob, fileName } = await downloadTrainingPlanFile(request.id);
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      } catch (downloadError) {
+        setError(
+          downloadError instanceof Error ? downloadError.message : "Failed to download the training plan."
+        );
+      } finally {
+        setDownloadingRequestId(null);
+      }
+    },
+    [downloadTrainingPlanFile]
+  );
+
+  const setDecisionDescription = useCallback((requestId: string, value: string) => {
+    setDecisionDescriptions((current) => ({
+      ...current,
+      [requestId]: value,
+    }));
+  }, []);
+
+  const updateTrainingPlanDraft = useCallback((requestId: string, draft: TrainingPlanDraft) => {
+    setTrainingPlanDrafts((current) => ({
+      ...current,
+      [requestId]: draft,
+    }));
+  }, []);
+
+  const toggleApprovedRequestEditor = useCallback((requestId: string) => {
+    setExpandedApprovedRequestId((current) => (current === requestId ? null : requestId));
+  }, []);
+
   const visibleRequests = useMemo(
-    () =>
-      getVisibleCoachTrainingRequests(
-        isCoach,
-        state.coachViewMode,
-        state.coachRequestFilter,
-        state
-      ),
-    [isCoach, state]
-  );
-
-  const {
-    downloadTrainingPlan,
-    saveTrainingPlan,
-    setDecisionDescription,
-    toggleApprovedRequestEditor,
-    updateRequestStatus,
-    updateTrainingPlanDraft,
-  } = useCoachTrainingRequestsActions({
-    downloadTrainingPlanFile,
-    dispatch,
-    loadRequests,
-    state,
-    updateCoachTrainingRequestStatus,
-    uploadCoachTrainingPlan,
-  });
-
-  const setCoachRequestFilter = useCallback(
-    (value: CoachRequestFilter) => dispatch({ type: "set-filter", payload: value }),
-    []
-  );
-
-  const setCoachViewMode = useCallback(
-    (value: CoachRequestViewMode) => dispatch({ type: "set-view", payload: value }),
-    []
+    () => getVisibleRequests(isCoach, coachViewMode, coachRequestFilter, requests),
+    [coachRequestFilter, coachViewMode, isCoach, requests]
   );
 
   return {
-    coachRequestFilter: state.coachRequestFilter,
-    coachViewMode: state.coachViewMode,
-    decisionDescriptions: state.decisionDescriptions,
-    downloadingRequestId: state.downloadingRequestId,
+    coachRequestFilter,
+    coachViewMode,
+    decisionDescriptions,
+    downloadingRequestId,
     downloadTrainingPlan,
-    error: state.error,
-    expandedApprovedRequestId: state.expandedApprovedRequestId,
+    error,
+    expandedApprovedRequestId,
     isCoach,
-    loading: state.loading,
+    loading,
     profileLoading,
     saveTrainingPlan,
-    savingApprovedRequestId: state.savingApprovedRequestId,
+    savingApprovedRequestId,
     setCoachRequestFilter,
     setCoachViewMode,
     setDecisionDescription,
     toggleApprovedRequestEditor,
-    trainingPlanDrafts: state.trainingPlanDrafts,
+    trainingPlanDrafts,
     updateRequestStatus,
     updateTrainingPlanDraft,
-    updatingRequestId: state.updatingRequestId,
+    updatingRequestId,
     visibleRequests,
   };
 };

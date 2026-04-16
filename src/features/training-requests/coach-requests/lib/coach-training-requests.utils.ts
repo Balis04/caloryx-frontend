@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "@/lib/api-client";
 import type {
+  CoachRequestFilter,
   CoachTrainingRequest,
   TrainingPlanDraft,
   TrainingRequestStatus,
@@ -10,6 +11,13 @@ export const statusLabelMap: Record<TrainingRequestStatus, string> = {
   APPROVED: "Approved",
   REJECTED: "Rejected",
   CLOSED: "Closed",
+};
+
+export const coachRequestFilterLabelMap: Record<CoachRequestFilter, string> = {
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Rejected",
+  closed: "Closed",
 };
 
 export const statusVariantMap: Record<

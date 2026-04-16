@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import { useApi } from "@/hooks/useApi";
+import { apiClient } from "@/lib/api-client";
 import type {
   CustomFoodRequest,
   CustomFoodResponse,
@@ -7,75 +6,52 @@ import type {
   FoodLogResponse,
 } from "../model/food.model";
 
+const saveFood = (payload: FoodLogRequest): Promise<FoodLogResponse> =>
+  apiClient<FoodLogResponse>("/api/food-log", {
+    body: payload,
+    method: "POST",
+  });
+
+const updateFoodAmount = (id: string, amount: number): Promise<FoodLogResponse> =>
+  apiClient<FoodLogResponse>(`/api/food-log/${id}/amount`, {
+    body: { amount },
+    method: "PATCH",
+  });
+
+const deleteFood = async (id: string): Promise<void> => {
+  await apiClient<void>(`/api/food-log/${id}`, {
+    method: "DELETE",
+  });
+};
+
+const getAllCustomFoods = (): Promise<CustomFoodResponse[]> =>
+  apiClient<CustomFoodResponse[]>("/api/custom-foods", {
+    method: "GET",
+  });
+
+const getMyCustomFoods = (): Promise<CustomFoodResponse[]> =>
+  apiClient<CustomFoodResponse[]>("/api/custom-foods/mine", {
+    method: "GET",
+  });
+
+const getOtherCustomFoods = (): Promise<CustomFoodResponse[]> =>
+  apiClient<CustomFoodResponse[]>("/api/custom-foods/not-mine", {
+    method: "GET",
+  });
+
+const createCustomFood = (payload: CustomFoodRequest): Promise<CustomFoodResponse> =>
+  apiClient<CustomFoodResponse>("/api/custom-foods", {
+    body: payload,
+    method: "POST",
+  });
+
+const deleteCustomFood = async (id: string): Promise<void> => {
+  await apiClient<void>(`/api/custom-foods/${id}`, {
+    method: "DELETE",
+  });
+};
+
 export const useFoodApi = () => {
-  const { request } = useApi();
-
-  const saveFood = useCallback(
-    async (payload: FoodLogRequest): Promise<FoodLogResponse> => {
-      return request<FoodLogResponse>("/api/food-log", {
-        body: payload,
-        method: "POST",
-      });
-    },
-    [request]
-  );
-
-  const updateFoodAmount = useCallback(
-    async (id: string, amount: number): Promise<FoodLogResponse> => {
-      return request<FoodLogResponse>(`/api/food-log/${id}/amount`, {
-        body: { amount },
-        method: "PATCH",
-      });
-    },
-    [request]
-  );
-
-  const deleteFood = useCallback(
-    async (id: string): Promise<void> => {
-      await request<void>(`/api/food-log/${id}`, {
-        method: "DELETE",
-      });
-    },
-    [request]
-  );
-
-  const getAllCustomFoods = useCallback(async (): Promise<CustomFoodResponse[]> => {
-    return request<CustomFoodResponse[]>("/api/custom-foods", {
-      method: "GET",
-    });
-  }, [request]);
-
-  const getMyCustomFoods = useCallback(async (): Promise<CustomFoodResponse[]> => {
-    return request<CustomFoodResponse[]>("/api/custom-foods/mine", {
-      method: "GET",
-    });
-  }, [request]);
-
-  const getOtherCustomFoods = useCallback(async (): Promise<CustomFoodResponse[]> => {
-    return request<CustomFoodResponse[]>("/api/custom-foods/not-mine", {
-      method: "GET",
-    });
-  }, [request]);
-
-  const createCustomFood = useCallback(
-    async (payload: CustomFoodRequest): Promise<CustomFoodResponse> => {
-      return request<CustomFoodResponse>("/api/custom-foods", {
-        body: payload,
-        method: "POST",
-      });
-    },
-    [request]
-  );
-
-  const deleteCustomFood = useCallback(
-    async (id: string): Promise<void> => {
-      await request<void>(`/api/custom-foods/${id}`, {
-        method: "DELETE",
-      });
-    },
-    [request]
-  );
-
   return {
     saveFood,
     updateFoodAmount,

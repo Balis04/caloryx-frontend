@@ -1,5 +1,4 @@
-import { useApi } from "@/hooks/useApi";
-import { useCallback } from "react";
+import { apiClient } from "@/lib/api-client";
 import type {
   CoachCertificateResponseDto,
   CoachProfileResponseDto,
@@ -8,55 +7,38 @@ import type {
 
 const COACH_PROFILES_BASE_PATH = "/api/coach-profiles";
 
+const getMyCoachProfile = () =>
+  apiClient<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/me`, {
+    suppressErrorLog: true,
+  });
+
+const createCoachProfile = (body: SaveCoachProfileRequestDto) =>
+  apiClient<CoachProfileResponseDto>(COACH_PROFILES_BASE_PATH, {
+    method: "POST",
+    body,
+  });
+
+const updateCoachProfile = (coachProfileId: string, body: SaveCoachProfileRequestDto) =>
+  apiClient<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}`, {
+    method: "PUT",
+    body,
+  });
+
+const uploadCoachCertificate = (coachProfileId: string, body: FormData) =>
+  apiClient<CoachCertificateResponseDto>(
+    `${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates`,
+    {
+      method: "POST",
+      body,
+    }
+  );
+
+const deleteCoachCertificate = (coachProfileId: string, certificateId: string) =>
+  apiClient<void>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates/${certificateId}`, {
+    method: "DELETE",
+  });
+
 export const useCoachProfileApi = () => {
-  const { request } = useApi();
-
-  const getMyCoachProfile = useCallback(
-    () =>
-      request<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/me`, {
-        suppressErrorLog: true,
-      }),
-    [request]
-  );
-
-  const createCoachProfile = useCallback(
-    (body: SaveCoachProfileRequestDto) =>
-      request<CoachProfileResponseDto>(COACH_PROFILES_BASE_PATH, {
-        method: "POST",
-        body,
-      }),
-    [request]
-  );
-
-  const updateCoachProfile = useCallback(
-    (coachProfileId: string, body: SaveCoachProfileRequestDto) =>
-      request<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}`, {
-        method: "PUT",
-        body,
-      }),
-    [request]
-  );
-
-  const uploadCoachCertificate = useCallback(
-    (coachProfileId: string, body: FormData) =>
-      request<CoachCertificateResponseDto>(
-        `${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates`,
-        {
-          method: "POST",
-          body,
-        }
-      ),
-    [request]
-  );
-
-  const deleteCoachCertificate = useCallback(
-    (coachProfileId: string, certificateId: string) =>
-      request<void>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates/${certificateId}`, {
-        method: "DELETE",
-      }),
-    [request]
-  );
-
   return {
     createCoachProfile,
     deleteCoachCertificate,
