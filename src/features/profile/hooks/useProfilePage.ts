@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ACTIVITY_OPTIONS,
@@ -7,17 +7,36 @@ import {
   USER_ROLE_OPTIONS,
 } from "@/shared/constants/user-options";
 import { getLabelFromOptions } from "@/shared/utils/optionMapper";
-import { useProfileQuery } from "./useProfileQuery";
-import { canManageCoachProfile } from "../lib/profile.permissions";
-import {
-  calculateProgress,
-  formatWeeklyGoal,
-  getProgressMessage,
-} from "../lib/profile.formatters";
+import { isCoachRole } from "@/shared/utils/profileRole";
+import { useProfileApi } from "../api/profile.api";
+import { formatWeeklyGoal } from "../lib/profile.formatters";
+import type { ProfileResponseDto } from "../model/profile.types";
 
 export const useProfilePage = () => {
   const navigate = useNavigate();
-  const { profile, loading, error } = useProfileQuery();
+  const { getProfile } = useProfileApi();
+  const [profile, setProfile] = useState<ProfileResponseDto | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await getProfile();
+        setProfile(response);
+      } catch (loadError) {
+        setError(loadError instanceof Error ? loadError.message : "Ismeretlen hiba");
+        setProfile(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadProfile();
+  }, [getProfile]);
 
   const viewModel = useMemo(() => {
     if (!profile) {
@@ -31,8 +50,6 @@ export const useProfilePage = () => {
       ACTIVITY_OPTIONS,
       profile.activityLevel
     );
-    const progressValue = calculateProgress(profile);
-    const progressMessage = getProgressMessage(profile);
     const weeklyTarget = formatWeeklyGoal(profile.goal, profile.weeklyGoalKg);
 
     return {
@@ -41,10 +58,8 @@ export const useProfilePage = () => {
       genderLabel,
       goalLabel,
       activityLabel,
-      progressValue,
-      progressMessage,
       weeklyTarget,
-      canManageCoachProfile: canManageCoachProfile(profile.role),
+      canManageCoachProfile: isCoachRole(profile.role),
     };
   }, [profile]);
 

@@ -1,13 +1,12 @@
 import { useProfileApi } from "@/features/profile/api/profile.api";
-import { mapProfileDtoToModel } from "@/features/profile/lib/profile.mapper";
-import type { Profile } from "@/features/profile/model/profile.model";
+import type { ProfileResponseDto } from "@/features/profile/model/profile.types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTrainingRequestApi } from "../../shared/api/training-request.api";
 import { mapTrainingRequestFormToCreateDto } from "../lib/training-request.mapper";
 import type { TrainingRequestFormData } from "../types/training-request-form.types";
 
 const createInitialFormData = (
-  profile?: Profile | null
+  profile?: ProfileResponseDto | null
 ): TrainingRequestFormData => ({
   weeklyWorkouts: "",
   preferredSessionLength: "",
@@ -20,7 +19,7 @@ const createInitialFormData = (
 });
 
 export interface UseTrainingRequestFormResult {
-  profile: Profile | null;
+  profile: ProfileResponseDto | null;
   formData: TrainingRequestFormData;
   loading: boolean;
   submitting: boolean;
@@ -39,7 +38,7 @@ export const useTrainingRequestForm = (
 ): UseTrainingRequestFormResult => {
   const { getProfile } = useProfileApi();
   const { createTrainingRequest } = useTrainingRequestApi();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<ProfileResponseDto | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
     createInitialFormData()
   );
@@ -54,7 +53,7 @@ export const useTrainingRequestForm = (
 
     try {
       const response = await getProfile();
-      const nextProfile = mapProfileDtoToModel(response);
+      const nextProfile = response;
       setProfile(nextProfile);
       setFormData(createInitialFormData(nextProfile));
     } catch (err) {

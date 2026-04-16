@@ -48,8 +48,6 @@ export default function ProfilePage() {
           activityLabel={profile.activityLabel}
           goalLabel={profile.goalLabel}
           weeklyTarget={profile.weeklyTarget}
-          progressValue={profile.progressValue}
-          progressMessage={profile.progressMessage}
           canManageCoachProfile={profile.canManageCoachProfile}
           onOpenCoachProfile={onOpenCoachProfile}
           onEditProfile={onEditProfile}

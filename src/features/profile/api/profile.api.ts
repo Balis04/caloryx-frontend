@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api-client";
 import type {
   ProfileResponseDto,
   UpdateProfileRequestDto,
-} from "./profile.dto";
+} from "../model/profile.types";
 
 const getProfile = () => apiClient<ProfileResponseDto>("/api/user/profile");
 

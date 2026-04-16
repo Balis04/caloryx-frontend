@@ -7,28 +7,23 @@ import {
 } from "@/components/caloriex";
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import type { Profile } from "../model/profile.model";
+import type { ProfileResponseDto } from "../model/profile.types";
 import {
   ArrowRight,
   Briefcase,
   Edit3,
   Flame,
-  Target,
-  TrendingUp,
   UserCircle2,
 } from "lucide-react";
 import { formatBirthDate } from "../lib/profile.formatters";
 
 interface ProfileOverviewWorkspaceProps {
-  profile: Profile;
+  profile: ProfileResponseDto;
   roleLabel: string;
   genderLabel: string;
   activityLabel: string;
   goalLabel: string;
   weeklyTarget: string;
-  progressValue: number;
-  progressMessage: string;
   canManageCoachProfile: boolean;
   onOpenCoachProfile: () => void;
   onEditProfile: () => void;
@@ -41,8 +36,6 @@ export default function ProfileOverviewWorkspace({
   activityLabel,
   goalLabel,
   weeklyTarget,
-  progressValue,
-  progressMessage,
   canManageCoachProfile,
   onOpenCoachProfile,
   onEditProfile,
@@ -77,31 +70,14 @@ export default function ProfileOverviewWorkspace({
                 </h2>
               </div>
             </div>
-
-            <div className="cx-glass-block rounded-[28px] p-5 lg:max-w-xs">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                Progress signal
-              </p>
-              <div className="mt-3 flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-4xl font-semibold text-slate-950">
-                    {progressValue.toFixed(0)}%
-                  </p>
-                  <p className="mt-2 text-sm text-slate-600">{goalLabel}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-slate-500" />
-              </div>
-              <Progress value={progressValue} className="mt-4 h-2.5 bg-white/70" />
-              <p className="mt-3 text-sm leading-6 text-slate-600">{progressMessage}</p>
-            </div>
           </div>
         </div>
 
         <CardContent className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
           <GlassMetric
-            label="Current weight"
-            value={`${profile.actualWeightKg} kg`}
-            description="Latest tracked bodyweight in your profile."
+            label="Primary goal"
+            value={goalLabel}
+            description="Your primary goal."
           />
           <GlassMetric
             label="Weekly pace"
@@ -159,28 +135,6 @@ export default function ProfileOverviewWorkspace({
         </div>
 
         <div className="space-y-6">
-          <SummaryPanel eyebrow="Goal focus" title="Current direction" icon={Target}>
-            <div className="space-y-4 p-6">
-              <ReadonlyField label="Primary goal" value={goalLabel} fallback="Not set" />
-              <ReadonlyField label="Weekly target" value={weeklyTarget} fallback="Not set" />
-              <div className="cx-glass-block rounded-[24px] p-5">
-                <div className="flex items-end justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
-                      Completion
-                    </p>
-                    <p className="mt-2 text-3xl font-semibold text-slate-950">
-                      {progressValue.toFixed(0)}%
-                    </p>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-slate-400" />
-                </div>
-                <Progress value={progressValue} className="mt-4 h-2.5 bg-white/70" />
-                <p className="mt-3 text-sm leading-6 text-slate-600">{progressMessage}</p>
-              </div>
-            </div>
-          </SummaryPanel>
-
           <GlassCard className="overflow-hidden">
             <CardContent className="space-y-4 p-6">
               <div>

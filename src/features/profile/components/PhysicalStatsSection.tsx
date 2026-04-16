@@ -1,7 +1,6 @@
 import { SummaryPanel } from "@/components/caloriex";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProfileEditData } from "../types/profile.types";
 import {
   Select,
   SelectContent,
@@ -15,12 +14,13 @@ import {
 } from "@/shared/constants/user-options";
 import type { ActivityLevel, Goal } from "@/shared/types/profile.types";
 import { Activity } from "lucide-react";
+import type { ProfileFormValues } from "../model/profile.form";
 
 interface PhysicalStatsProps {
-  userProfile: ProfileEditData;
-  setField: <K extends keyof ProfileEditData>(
+  userProfile: ProfileFormValues;
+  setField: <K extends keyof ProfileFormValues>(
     key: K,
-    value: ProfileEditData[K]
+    value: ProfileFormValues[K]
   ) => void;
 }
 

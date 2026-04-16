@@ -10,18 +10,9 @@ export interface ProfileEditorWorkspaceProps {
   canSave: boolean;
 }
 
-export interface ProfileEditorHeroAsideProps {
-  roleLabel: string;
-  canSave: boolean;
-}
-
 export interface ProfileEditorSavePanelProps {
   values: ProfileFormValues;
   roleLabel: string;
   canSave: boolean;
   onSave: () => Promise<void>;
-}
-
-export interface ProfileEditorSnapshotPanelProps {
-  values: ProfileFormValues;
 }

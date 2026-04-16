@@ -1,19 +1,14 @@
 import type {
   ProfileResponseDto,
   UpdateProfileRequestDto,
-} from "../api/profile.dto";
+} from "../model/profile.types";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
 } from "../model/profile.form";
-import type { Profile } from "../model/profile.model";
-
-export const mapProfileDtoToModel = (dto: ProfileResponseDto): Profile => ({
-  ...dto,
-});
 
 export const mapProfileToFormValues = (
-  profile: Profile | null | undefined
+  profile: ProfileResponseDto | null | undefined
 ): ProfileFormValues => {
   if (!profile) {
     return initialProfileFormValues;
