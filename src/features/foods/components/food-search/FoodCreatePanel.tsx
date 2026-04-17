@@ -7,7 +7,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { NewFoodForm } from "../../hooks/food-search/useFoodSearchPage";
+import type { CustomFoodForm } from "../../model/food.model";
 
 interface NutrientInputProps {
   id: string;
@@ -36,9 +36,9 @@ function NutrientInput({ id, label, value, onChange }: NutrientInputProps) {
 interface Props {
   createError: string | null;
   createLoading: boolean;
-  newFood: NewFoodForm;
+  newFood: CustomFoodForm;
   onCreateFood: (event: FormEvent) => Promise<void>;
-  onNewFoodChange: Dispatch<SetStateAction<NewFoodForm>>;
+  onNewFoodChange: Dispatch<SetStateAction<CustomFoodForm>>;
 }
 
 export default function FoodCreatePanel({

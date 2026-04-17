@@ -9,7 +9,13 @@ import {
   formatCommunityPlanDate,
   formatCommunityPlanFileSize,
 } from "../lib/community-training-plans.presentation";
-import type { CommunityPlansGridProps } from "../types/community-training-plans.types";
+import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
+
+interface CommunityPlansGridProps {
+  error: string | null;
+  isLoading: boolean;
+  plans: CommunityTrainingPlan[];
+}
 
 export default function CommunityPlansGrid({
   error,

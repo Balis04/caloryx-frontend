@@ -59,6 +59,14 @@ export interface CustomFoodRequest {
   fat: number;
 }
 
+export interface CustomFoodForm {
+  name: string;
+  calories: string;
+  protein: string;
+  carbohydrates: string;
+  fat: string;
+}
+
 export interface CustomFoodResponse {
   id: string;
   name?: string;
