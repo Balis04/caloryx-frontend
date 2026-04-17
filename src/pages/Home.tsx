@@ -3,7 +3,6 @@ import {
   ArrowRightLeft,
   Dumbbell,
   Flame,
-  Orbit,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,11 +10,7 @@ import {
   AccentButton,
   type AccentTone,
   CaloriexPage,
-  FeatureCard,
-  GlassMetric,
-  HeroBadge,
-  PageHero,
-  SummaryPanel,
+  FeatureCard
 } from "@/components/caloriex";
 
 type HomeFeature = {
@@ -77,29 +72,6 @@ export default function Home() {
 
   return (
     <CaloriexPage>
-      <PageHero
-        badge={<HeroBadge>CalorieX platform</HeroBadge>}
-        title="Training, nutrition, and coaching in one clean flow."
-        description="Build better routines with coach requests, calorie tracking, and instant-access community plans designed around real fitness goals."
-        chips={["Personalized coaching", "Goal-based nutrition", "Community downloads"]}
-        aside={
-          <SummaryPanel eyebrow="System overview" title="Core experience" icon={Orbit}>
-            <div className="grid gap-4 p-6 sm:grid-cols-2">
-              <GlassMetric
-                label="Modules"
-                value="04"
-                description="Coaching, nutrition, requests, and public training plans."
-              />
-              <GlassMetric
-                label="Focus"
-                value="Progress"
-                description="Everything on the home page leads directly into action."
-              />
-            </div>
-          </SummaryPanel>
-        }
-      />
-
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {HOME_FEATURES.map((feature) => (

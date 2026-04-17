@@ -12,13 +12,13 @@ import {
   uploadCoachTrainingPlan,
 } from "../api/training-request.api";
 import type {
-  ClosedTrainingRequestResponseDto,
-  TrainingRequestResponseDto,
+  ClosedTrainingRequestResponse,
+  TrainingRequestResponse,
 } from "../api/training-request.dto";
 import {
-  mapClosedTrainingRequestDtoToModel,
-  mapTrainingRequestDtoToModel,
-  mapTrainingRequestStatusToUpdateDto,
+  mapClosedTrainingRequestResponseToModel,
+  mapTrainingRequestResponseToModel,
+  mapTrainingRequestStatusToRequest,
 } from "../lib/training-request.mapper";
 import type {
   CoachRequestFilter,
@@ -54,11 +54,11 @@ const emptyData = (): TrainingRequestsData => ({
 
 const buildRequestData = async (
   isCoach: boolean,
-  getMyTrainingRequests: () => Promise<TrainingRequestResponseDto[]>,
+  getMyTrainingRequests: () => Promise<TrainingRequestResponse[]>,
   getCoachTrainingRequests: (
     status?: "PENDING" | "APPROVED" | "REJECTED"
-  ) => Promise<TrainingRequestResponseDto[]>,
-  getClosedCoachTrainingRequests: () => Promise<ClosedTrainingRequestResponseDto[]>
+  ) => Promise<TrainingRequestResponse[]>,
+  getClosedCoachTrainingRequests: () => Promise<ClosedTrainingRequestResponse[]>
 ): Promise<TrainingRequestsData> => {
   const [
     outgoingResponse,
@@ -75,11 +75,11 @@ const buildRequestData = async (
   ]);
 
   return {
-    approvedRequests: dedupeRequests(approvedResponse.map(mapTrainingRequestDtoToModel)),
-    closedRequests: dedupeRequests(closedResponse.map(mapClosedTrainingRequestDtoToModel)),
-    outgoingRequests: outgoingResponse.map(mapTrainingRequestDtoToModel),
-    pendingRequests: dedupeRequests(pendingResponse.map(mapTrainingRequestDtoToModel)),
-    rejectedRequests: dedupeRequests(rejectedResponse.map(mapTrainingRequestDtoToModel)),
+    approvedRequests: dedupeRequests(approvedResponse.map(mapTrainingRequestResponseToModel)),
+    closedRequests: dedupeRequests(closedResponse.map(mapClosedTrainingRequestResponseToModel)),
+    outgoingRequests: outgoingResponse.map(mapTrainingRequestResponseToModel),
+    pendingRequests: dedupeRequests(pendingResponse.map(mapTrainingRequestResponseToModel)),
+    rejectedRequests: dedupeRequests(rejectedResponse.map(mapTrainingRequestResponseToModel)),
   };
 };
 
@@ -145,7 +145,7 @@ const getVisibleRequests = (
 
 export const useCoachTrainingRequests = () => {
   const { getProfile } = useProfileApi();
-  const [profile, setProfile] = useState<import("@/features/profile/model/profile.types").ProfileResponseDto | null>(null);
+  const [profile, setProfile] = useState<import("@/features/profile/model/profile.types").ProfileResponse | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const isCoach = isCoachRole(profile?.role);
 
@@ -245,7 +245,7 @@ export const useCoachTrainingRequests = () => {
       try {
         await updateCoachTrainingRequestStatus(
           trainingRequestId,
-          mapTrainingRequestStatusToUpdateDto(status, trimmedCoachResponse)
+          mapTrainingRequestStatusToRequest(status, trimmedCoachResponse)
         );
 
         const nextDecisionDescriptions = {

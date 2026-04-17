@@ -21,7 +21,7 @@ import { initialCoachProfileFormData } from "../model/coach-profile.form";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
-  CoachProfileResponseDto,
+  CoachProfileResponse,
   PendingCoachCertificateUpload,
 } from "../model/coach-profile.types";
 
@@ -45,7 +45,7 @@ const createEmptyCoachProfileState = (
 });
 
 const mapCoachProfileResponseToState = (
-  response: CoachProfileResponseDto
+  response: CoachProfileResponse
 ): CoachProfileEditState => ({
   coachProfileId: response.id,
   errorMessage: null,

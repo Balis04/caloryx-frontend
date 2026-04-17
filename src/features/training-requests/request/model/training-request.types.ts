@@ -38,7 +38,7 @@ export interface CoachCardData {
   certificates?: CoachCertificateData[];
 }
 
-export interface CoachProfileListResponseDto {
+export interface CoachProfileListResponse {
   id?: string;
   userId?: string;
   coachName?: string | null;

@@ -7,7 +7,6 @@ import {
 } from "@/components/caloriex";
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
-import type { ProfileResponseDto } from "../model/profile.types";
 import {
   ArrowRight,
   Briefcase,
@@ -15,10 +14,12 @@ import {
   Flame,
   UserCircle2,
 } from "lucide-react";
-import { formatBirthDate } from "../lib/profile.formatters";
 
-interface ProfileOverviewWorkspaceProps {
-  profile: ProfileResponseDto;
+import { formatBirthDate } from "../lib/profile.formatters";
+import type { ProfileResponse } from "../model/profile.types";
+
+interface ProfileOverviewSectionProps {
+  profile: ProfileResponse;
   roleLabel: string;
   genderLabel: string;
   activityLabel: string;
@@ -29,7 +30,7 @@ interface ProfileOverviewWorkspaceProps {
   onEditProfile: () => void;
 }
 
-export default function ProfileOverviewWorkspace({
+export default function ProfileOverviewSection({
   profile,
   roleLabel,
   genderLabel,
@@ -39,7 +40,7 @@ export default function ProfileOverviewWorkspace({
   canManageCoachProfile,
   onOpenCoachProfile,
   onEditProfile,
-}: ProfileOverviewWorkspaceProps) {
+}: ProfileOverviewSectionProps) {
   const weightDelta = profile.actualWeightKg - profile.startWeightKg;
   const deltaText =
     Math.abs(weightDelta) < 0.05

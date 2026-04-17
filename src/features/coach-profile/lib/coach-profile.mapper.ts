@@ -1,7 +1,7 @@
 import type {
-  CoachProfileCertificateDto,
-  CoachProfileResponseDto,
-  SaveCoachProfileRequestDto,
+  CoachProfileCertificateResponse,
+  CoachProfileResponse,
+  SaveCoachProfileRequest,
 } from "../model/coach-profile.types";
 import {
   createInitialAvailability,
@@ -12,8 +12,8 @@ import type {
   CoachProfileFormData,
 } from "../model/coach-profile.types";
 
-export const mapCoachCertificateDtoToModel = (
-  certificate: CoachProfileCertificateDto,
+export const mapCoachCertificateResponseToModel = (
+  certificate: CoachProfileCertificateResponse,
   index: number
 ): CoachCertificate => {
   if (typeof certificate === "string") {
@@ -41,7 +41,7 @@ export const mapCoachCertificateDtoToModel = (
 };
 
 export const mapCoachProfileResponseToFormData = (
-  data: CoachProfileResponseDto
+  data: CoachProfileResponse
 ): CoachProfileFormData => ({
   ...initialCoachProfileFormData,
   description: data.shortDescription ?? initialCoachProfileFormData.description,
@@ -53,7 +53,7 @@ export const mapCoachProfileResponseToFormData = (
   currency: data.currency ?? initialCoachProfileFormData.currency,
   contactNote: data.contactNote ?? initialCoachProfileFormData.contactNote,
   certificates: Array.isArray(data.certificates)
-    ? data.certificates.map(mapCoachCertificateDtoToModel)
+    ? data.certificates.map(mapCoachCertificateResponseToModel)
     : initialCoachProfileFormData.certificates,
   availability:
     Array.isArray(data.availabilities) && data.availabilities.length > 0
@@ -75,7 +75,7 @@ export const mapCoachProfileResponseToFormData = (
 
 export const mapCoachProfileFormDataToRequest = (
   formData: CoachProfileFormData
-): SaveCoachProfileRequestDto => ({
+): SaveCoachProfileRequest => ({
   trainingStartedAt: formData.startedCoachingAt,
   shortDescription: formData.description,
   trainingFormat: formData.sessionFormat,

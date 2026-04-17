@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
 import { useProfileApi } from "../api/profile.api";
 import {
-  mapProfileFormValuesToUpdateRequest,
-  mapProfileToFormValues,
+  mapProfileFormValuesToRequest,
+  mapProfileResponseToFormValues,
 } from "../lib/profile.mapper";
 import { canSaveProfileForm } from "../lib/profile.validation";
 import {
@@ -27,7 +27,7 @@ export const useProfileEditForm = () => {
 
       try {
         const response = await getProfile();
-        setValues(mapProfileToFormValues(response));
+        setValues(mapProfileResponseToFormValues(response));
       } catch (error: unknown) {
         console.error("Load error:", error);
         navigate("/register");
@@ -41,7 +41,7 @@ export const useProfileEditForm = () => {
 
   const saveProfile = async () => {
     try {
-      await updateProfile(mapProfileFormValuesToUpdateRequest(values));
+      await updateProfile(mapProfileFormValuesToRequest(values));
       await refreshAuth();
       return true;
     } catch (error) {

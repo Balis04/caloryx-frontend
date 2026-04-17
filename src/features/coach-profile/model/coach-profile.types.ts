@@ -39,14 +39,14 @@ export interface CoachProfileFormData {
   availability: AvailabilitySlot[];
 }
 
-export interface CoachProfileAvailabilityDto {
+export interface CoachProfileAvailabilityResponse {
   dayOfWeek?: string;
   available?: boolean;
   startTime?: string | null;
   endTime?: string | null;
 }
 
-export interface CoachCertificateResponseDto {
+export interface CoachCertificateResponse {
   id: string;
   certificateName?: string | null;
   issuer?: string | null;
@@ -55,7 +55,7 @@ export interface CoachCertificateResponseDto {
   fileUrl?: string | null;
 }
 
-export type CoachProfileCertificateDto =
+export type CoachProfileCertificateResponse =
   | string
   | {
       id?: string;
@@ -66,7 +66,7 @@ export type CoachProfileCertificateDto =
       fileUrl?: string | null;
     };
 
-export interface CoachProfileResponseDto {
+export interface CoachProfileResponse {
   id: string;
   trainingStartedAt: string | null;
   shortDescription: string | null;
@@ -76,18 +76,18 @@ export interface CoachProfileResponseDto {
   currency: Currency | "";
   maxCapacity: number | null;
   contactNote: string | null;
-  availabilities?: CoachProfileAvailabilityDto[];
-  certificates?: CoachProfileCertificateDto[];
+  availabilities?: CoachProfileAvailabilityResponse[];
+  certificates?: CoachProfileCertificateResponse[];
 }
 
-export interface SaveCoachProfileAvailabilityRequestDto {
+export interface SaveCoachProfileAvailabilityRequest {
   dayOfWeek: string;
   available: boolean;
   startTime: string | null;
   endTime: string | null;
 }
 
-export interface SaveCoachProfileRequestDto {
+export interface SaveCoachProfileRequest {
   trainingStartedAt: string;
   shortDescription: string;
   trainingFormat: TrainingFormat | "";
@@ -96,6 +96,6 @@ export interface SaveCoachProfileRequestDto {
   currency: Currency | "" | null;
   maxCapacity: number;
   contactNote: string | null;
-  availabilities: SaveCoachProfileAvailabilityRequestDto[];
-  certificates: CoachProfileCertificateDto[];
+  availabilities: SaveCoachProfileAvailabilityRequest[];
+  certificates: CoachProfileCertificateResponse[];
 }

@@ -1,19 +1,19 @@
 import { apiClient } from "@/lib/api-client";
 import type {
-  ProfileResponseDto,
-  UpdateProfileRequestDto,
+  ProfileResponse,
+  UpdateProfileRequest,
 } from "../model/profile.types";
 
-const getProfile = () => apiClient<ProfileResponseDto>("/api/user/profile");
+const getProfile = () => apiClient<ProfileResponse>("/api/user/profile");
 
-const createProfile = (data: UpdateProfileRequestDto) =>
-  apiClient<ProfileResponseDto>("/api/user/profile", {
+const createProfile = (data: UpdateProfileRequest) =>
+  apiClient<ProfileResponse>("/api/user/profile", {
     method: "POST",
     body: data,
   });
 
-const updateProfile = (data: UpdateProfileRequestDto) =>
-  apiClient<ProfileResponseDto>("/api/user/profile", {
+const updateProfile = (data: UpdateProfileRequest) =>
+  apiClient<ProfileResponse>("/api/user/profile", {
     method: "PUT",
     body: data,
   });

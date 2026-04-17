@@ -1,11 +1,11 @@
 import type {
   CoachCardData,
-  CoachProfileListResponseDto,
+  CoachProfileListResponse,
 } from "../model/training-request.types";
 import { formatAvailability, formatExperience } from "./coach-directory.presentation";
 
-export const mapCoachDirectoryDtoToCard = (
-  coach: CoachProfileListResponseDto,
+export const mapCoachDirectoryResponseToCard = (
+  coach: CoachProfileListResponse,
   index: number
 ): CoachCardData => {
   const availability = formatAvailability(coach.availabilities);
@@ -53,5 +53,5 @@ export const mapCoachDirectoryDtoToCard = (
   };
 };
 
-export const mapCoachDirectoryDtosToCards = (coaches: CoachProfileListResponseDto[]) =>
-  coaches.map(mapCoachDirectoryDtoToCard);
+export const mapCoachDirectoryResponsesToCards = (coaches: CoachProfileListResponse[]) =>
+  coaches.map(mapCoachDirectoryResponseToCard);

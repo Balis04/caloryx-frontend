@@ -1,4 +1,4 @@
-import type { CoachProfileListResponseDto } from "../model/training-request.types";
+import type { CoachProfileListResponse } from "../model/training-request.types";
 
 const dayLabels: Record<string, string> = {
   MONDAY: "Monday",
@@ -11,7 +11,7 @@ const dayLabels: Record<string, string> = {
 };
 
 export const formatAvailability = (
-  availabilities?: CoachProfileListResponseDto["availabilities"]
+  availabilities?: CoachProfileListResponse["availabilities"]
 ) => {
   const activeAvailabilities = availabilities?.filter((slot) => slot.available) ?? [];
 

@@ -3,7 +3,7 @@ import {
   GlassCard,
 } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
-import ProfileOverviewWorkspace from "../components/ProfileOverviewWorkspace";
+import ProfileOverviewSection from "../components/ProfileOverviewSection";
 import { useProfilePage } from "../hooks/useProfilePage";
 
 export default function ProfilePage() {
@@ -41,7 +41,7 @@ export default function ProfilePage() {
   return (
     <CaloriexPage>
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
-        <ProfileOverviewWorkspace
+        <ProfileOverviewSection
           profile={profile.profile}
           roleLabel={profile.roleLabel}
           genderLabel={profile.genderLabel}

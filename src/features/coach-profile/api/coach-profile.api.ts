@@ -1,34 +1,34 @@
 import { apiClient } from "@/lib/api-client";
 import type {
-  CoachCertificateResponseDto,
-  CoachProfileResponseDto,
-  SaveCoachProfileRequestDto,
+  CoachCertificateResponse,
+  CoachProfileResponse,
+  SaveCoachProfileRequest,
 } from "../model/coach-profile.types";
 
 const COACH_PROFILES_BASE_PATH = "/api/coach-profiles";
 
 export const getMyCoachProfile = () =>
-  apiClient<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/me`, {
+  apiClient<CoachProfileResponse>(`${COACH_PROFILES_BASE_PATH}/me`, {
     suppressErrorLog: true,
   });
 
-export const createCoachProfile = (body: SaveCoachProfileRequestDto) =>
-  apiClient<CoachProfileResponseDto>(COACH_PROFILES_BASE_PATH, {
+export const createCoachProfile = (body: SaveCoachProfileRequest) =>
+  apiClient<CoachProfileResponse>(COACH_PROFILES_BASE_PATH, {
     method: "POST",
     body,
   });
 
 export const updateCoachProfile = (
   coachProfileId: string,
-  body: SaveCoachProfileRequestDto
+  body: SaveCoachProfileRequest
 ) =>
-  apiClient<CoachProfileResponseDto>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}`, {
+  apiClient<CoachProfileResponse>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}`, {
     method: "PUT",
     body,
   });
 
 export const uploadCoachCertificate = (coachProfileId: string, body: FormData) =>
-  apiClient<CoachCertificateResponseDto>(
+  apiClient<CoachCertificateResponse>(
     `${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates`,
     {
       method: "POST",

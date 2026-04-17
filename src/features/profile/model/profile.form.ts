@@ -1,7 +1,7 @@
-import type { ProfileResponseDto } from "./profile.types";
+import type { ProfileResponse } from "./profile.types";
 
 export type ProfileFormValues = Omit<
-  ProfileResponseDto,
+  ProfileResponse,
   | "heightCm"
   | "startWeightKg"
   | "actualWeightKg"
@@ -14,7 +14,7 @@ export type ProfileFormValues = Omit<
   actualWeightKg: string;
   targetWeightKg: string;
   weeklyGoalKg: string;
-  userRole: ProfileResponseDto["role"];
+  userRole: ProfileResponse["role"];
 };
 
 export const initialProfileFormValues: ProfileFormValues = {

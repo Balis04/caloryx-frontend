@@ -1,33 +1,33 @@
 import { ApiError, apiClient, buildApiUrl } from "@/lib/api-client";
 
 import type {
-  ClosedTrainingRequestResponseDto,
-  TrainingRequestResponseDto,
-  UpdateTrainingRequestStatusDto,
+  ClosedTrainingRequestResponse,
+  TrainingRequestResponse,
+  UpdateTrainingRequestStatusRequest,
 } from "./training-request.dto";
 
 const COACH_TRAINING_REQUESTS_BASE_PATH = "/api/coach/training-requests";
 
 export const getMyTrainingRequests = () =>
-  apiClient<TrainingRequestResponseDto[]>("/api/training-requests/me");
+  apiClient<TrainingRequestResponse[]>("/api/training-requests/me");
 
 export const getCoachTrainingRequests = (status?: "PENDING" | "APPROVED" | "REJECTED") =>
-  apiClient<TrainingRequestResponseDto[]>(
+  apiClient<TrainingRequestResponse[]>(
     status
       ? `${COACH_TRAINING_REQUESTS_BASE_PATH}?status=${status}`
       : COACH_TRAINING_REQUESTS_BASE_PATH
   );
 
 export const getClosedCoachTrainingRequests = () =>
-  apiClient<ClosedTrainingRequestResponseDto[]>(
+  apiClient<ClosedTrainingRequestResponse[]>(
     `${COACH_TRAINING_REQUESTS_BASE_PATH}/closed`
   );
 
 export const updateCoachTrainingRequestStatus = (
   trainingRequestId: string,
-  data: UpdateTrainingRequestStatusDto
+  data: UpdateTrainingRequestStatusRequest
 ) =>
-  apiClient<TrainingRequestResponseDto>(
+  apiClient<TrainingRequestResponse>(
     `${COACH_TRAINING_REQUESTS_BASE_PATH}/${trainingRequestId}/status`,
     {
       method: "PATCH",
@@ -36,7 +36,7 @@ export const updateCoachTrainingRequestStatus = (
   );
 
 export const uploadCoachTrainingPlan = (trainingRequestId: string, body: FormData) =>
-  apiClient<ClosedTrainingRequestResponseDto>(
+  apiClient<ClosedTrainingRequestResponse>(
     `${COACH_TRAINING_REQUESTS_BASE_PATH}/${trainingRequestId}/training-plan`,
     {
       method: "POST",

@@ -1,4 +1,4 @@
-export interface CreateTrainingRequestDto {
+export interface CreateTrainingRequestRequest {
   weeklyTrainingCount: number;
   sessionDurationMinutes: number;
   preferredLocation: string;

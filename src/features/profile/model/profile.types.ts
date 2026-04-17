@@ -5,7 +5,7 @@ import type {
   UserRole,
 } from "@/shared/types/profile.types";
 
-export interface ProfileResponseDto {
+export interface ProfileResponse {
   fullName: string;
   birthDate: string;
   gender: Gender | null;
@@ -19,4 +19,4 @@ export interface ProfileResponseDto {
   goal: Goal | null;
 }
 
-export type UpdateProfileRequestDto = Partial<ProfileResponseDto>;
+export type UpdateProfileRequest = Partial<ProfileResponse>;

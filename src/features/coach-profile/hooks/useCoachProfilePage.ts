@@ -5,7 +5,7 @@ import { mapCoachProfileResponseToFormData } from "../lib/coach-profile.mapper";
 import { initialCoachProfileFormData } from "../model/coach-profile.form";
 import type {
   CoachProfileFormData,
-  CoachProfileResponseDto,
+  CoachProfileResponse,
 } from "../model/coach-profile.types";
 
 interface CoachProfilePageState {
@@ -28,7 +28,7 @@ const createEmptyCoachProfileState = (
 });
 
 const mapCoachProfileResponseToState = (
-  response: CoachProfileResponseDto
+  response: CoachProfileResponse
 ): CoachProfilePageState => ({
   coachProfileId: response.id,
   errorMessage: null,

@@ -10,12 +10,12 @@ import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import { isCoachRole } from "@/shared/utils/profileRole";
 import { useProfileApi } from "../api/profile.api";
 import { formatWeeklyGoal } from "../lib/profile.formatters";
-import type { ProfileResponseDto } from "../model/profile.types";
+import type { ProfileResponse } from "../model/profile.types";
 
 export const useProfilePage = () => {
   const navigate = useNavigate();
   const { getProfile } = useProfileApi();
-  const [profile, setProfile] = useState<ProfileResponseDto | null>(null);
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

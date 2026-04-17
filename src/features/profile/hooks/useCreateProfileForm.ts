@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
 import { useProfileApi } from "../api/profile.api";
-import { mapProfileFormValuesToUpdateRequest } from "../lib/profile.mapper";
+import { mapProfileFormValuesToRequest } from "../lib/profile.mapper";
 import { canSaveProfileForm } from "../lib/profile.validation";
 import {
   initialProfileFormValues,
@@ -30,7 +30,7 @@ export const useCreateProfileForm = () => {
     setError(null);
 
     try {
-      const payload = mapProfileFormValuesToUpdateRequest({
+      const payload = mapProfileFormValuesToRequest({
         ...values,
         actualWeightKg: values.startWeightKg,
       });

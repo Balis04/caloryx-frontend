@@ -1,12 +1,12 @@
 import { useProfileApi } from "@/features/profile/api/profile.api";
-import type { ProfileResponseDto } from "@/features/profile/model/profile.types";
+import type { ProfileResponse } from "@/features/profile/model/profile.types";
 import { useEffect, useState } from "react";
 import { createTrainingRequest } from "../api/training-request.api";
-import { mapTrainingRequestFormToCreateDto } from "../lib/training-request.mapper";
+import { mapTrainingRequestFormDataToRequest } from "../lib/training-request.mapper";
 import type { TrainingRequestFormData } from "../model/training-request.types";
 
 const createInitialFormData = (
-  profile?: ProfileResponseDto | null
+  profile?: ProfileResponse | null
 ): TrainingRequestFormData => ({
   weeklyWorkouts: "",
   preferredSessionLength: "",
@@ -22,7 +22,7 @@ export const useTrainingRequestForm = (
   coachProfileId: string | null
 ) => {
   const { getProfile } = useProfileApi();
-  const [profile, setProfile] = useState<ProfileResponseDto | null>(null);
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
     createInitialFormData()
   );
@@ -70,7 +70,7 @@ export const useTrainingRequestForm = (
     try {
       await createTrainingRequest(
         coachProfileId,
-        mapTrainingRequestFormToCreateDto(formData)
+        mapTrainingRequestFormDataToRequest(formData)
       );
       setSubmitMessage("Your training plan request was sent successfully to the coach.");
       return true;

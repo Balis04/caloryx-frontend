@@ -1,4 +1,4 @@
-import ProfileEditorWorkspace from "../components/ProfileEditorWorkspace";
+import ProfileEditorForm from "../components/ProfileEditorForm";
 import { useCreateProfileForm } from "../hooks/useCreateProfileForm";
 
 export default function CreateProfilePage() {
@@ -9,7 +9,7 @@ export default function CreateProfilePage() {
   };
 
   return (
-    <ProfileEditorWorkspace
+    <ProfileEditorForm
       values={values}
       setField={setField}
       onSave={handleSave}

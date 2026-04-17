@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { USER_ROLE_OPTIONS } from "@/shared/constants/user-options";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import type { ProfileFormValues } from "../model/profile.form";
 import { BasicInfoSection } from "./BasicInfoSection";
 import { PhysicalStatsSection } from "./PhysicalStatsSection";
 import ProfileEditorSavePanel from "./ProfileEditorSavePanel";
-import type { ProfileFormValues } from "../model/profile.form";
 
-interface ProfileEditorWorkspaceProps {
+interface ProfileEditorFormProps {
   values: ProfileFormValues;
   setField: <K extends keyof ProfileFormValues>(
     key: K,
@@ -24,7 +25,7 @@ interface ProfileEditorWorkspaceProps {
   showActualWeight?: boolean;
 }
 
-export default function ProfileEditorWorkspace({
+export default function ProfileEditorForm({
   values,
   setField,
   onSave,
@@ -35,7 +36,7 @@ export default function ProfileEditorWorkspace({
   saveLabel,
   disabledSaveLabel,
   showActualWeight = true,
-}: ProfileEditorWorkspaceProps) {
+}: ProfileEditorFormProps) {
   const navigate = useNavigate();
   const roleLabel =
     USER_ROLE_OPTIONS.find((option) => option.value === values.userRole)?.label ?? "User";
@@ -44,10 +45,10 @@ export default function ProfileEditorWorkspace({
     <CaloriexPage>
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(backPath)}
-            className="mb-2.5 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(backPath)}
+          className="mb-2.5 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
         >
           <ArrowLeft className="mr-2 h-3 w-3" />
           {backLabel}

@@ -12,7 +12,7 @@ import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import CoachRequestNextStepPanel from "../components/CoachRequestNextStepPanel";
 import TrainingRequestFormSection from "../components/TrainingRequestFormSection";
 import { getCoachDirectory } from "../api/coach-directory.api";
-import { mapCoachDirectoryDtosToCards } from "../lib/coach-directory.mapper";
+import { mapCoachDirectoryResponsesToCards } from "../lib/coach-directory.mapper";
 import type { CoachCardData } from "../model/training-request.types";
 import { useTrainingRequestForm } from "../hooks/useTrainingRequestForm";
 import { useEffect, useState } from "react";
@@ -32,7 +32,7 @@ export default function TrainingRequestFormPage() {
 
       try {
         const response = await getCoachDirectory();
-        setCoaches(mapCoachDirectoryDtosToCards(response));
+        setCoaches(mapCoachDirectoryResponsesToCards(response));
       } catch {
         setCoaches([]);
         setCoachesError("Failed to load the coach list from the backend.");

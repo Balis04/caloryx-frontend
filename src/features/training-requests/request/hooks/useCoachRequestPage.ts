@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCoachDirectory } from "../api/coach-directory.api";
-import { mapCoachDirectoryDtosToCards } from "../lib/coach-directory.mapper";
+import { mapCoachDirectoryResponsesToCards } from "../lib/coach-directory.mapper";
 import type { CoachCardData } from "../model/training-request.types";
 
 export const useCoachRequestPage = () => {
@@ -16,7 +16,7 @@ export const useCoachRequestPage = () => {
 
       try {
         const response = await getCoachDirectory();
-        setCoaches(mapCoachDirectoryDtosToCards(response));
+        setCoaches(mapCoachDirectoryResponsesToCards(response));
       } catch {
         setCoaches([]);
         setError("Failed to load the coach list from the backend.");

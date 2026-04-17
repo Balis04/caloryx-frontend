@@ -1,6 +1,6 @@
 export type TrainingRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CLOSED";
 
-export interface TrainingRequestResponseDto {
+export interface TrainingRequestResponse {
   id: string;
   coachProfileId: string;
   requesterUserId: string;
@@ -16,7 +16,7 @@ export interface TrainingRequestResponseDto {
   createdAt: string;
 }
 
-export interface ClosedTrainingRequestResponseDto {
+export interface ClosedTrainingRequestResponse {
   requestId: string;
   coachName: string;
   requesterName: string;
@@ -34,7 +34,7 @@ export interface ClosedTrainingRequestResponseDto {
   uploadedAt?: string | null;
 }
 
-export interface UpdateTrainingRequestStatusDto {
+export interface UpdateTrainingRequestStatusRequest {
   status: Exclude<TrainingRequestStatus, "PENDING" | "CLOSED">;
   coachResponse: string;
 }

@@ -1,14 +1,14 @@
 import type {
-  ProfileResponseDto,
-  UpdateProfileRequestDto,
+  ProfileResponse,
+  UpdateProfileRequest,
 } from "../model/profile.types";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
 } from "../model/profile.form";
 
-export const mapProfileToFormValues = (
-  profile: ProfileResponseDto | null | undefined
+export const mapProfileResponseToFormValues = (
+  profile: ProfileResponse | null | undefined
 ): ProfileFormValues => {
   if (!profile) {
     return initialProfileFormValues;
@@ -29,9 +29,9 @@ export const mapProfileToFormValues = (
   };
 };
 
-export const mapProfileFormValuesToUpdateRequest = (
+export const mapProfileFormValuesToRequest = (
   values: ProfileFormValues
-): UpdateProfileRequestDto => {
+): UpdateProfileRequest => {
   const { userRole, ...restValues } = values;
   return {
     ...restValues,

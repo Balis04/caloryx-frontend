@@ -4,24 +4,23 @@ import {
 } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+
 import { openCoachCertificate } from "../../lib/coach-profile.certificates";
-import {
-  getCurrencyLabel
-} from "../../lib/coach-profile.presentation";
+import { getCurrencyLabel } from "../../lib/coach-profile.presentation";
 import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
+import type {
+  AvailabilitySlot,
+  CoachProfileFormData,
+  PendingCoachCertificateUpload,
+} from "../../model/coach-profile.types";
 import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
 import CoachProfileAvailabilitySection from "./CoachProfileAvailabilitySection";
 import CoachProfileCertificatesSection from "./CoachProfileCertificatesSection";
 import CoachProfileIntroSection from "./CoachProfileIntroSection";
 import CoachProfilePendingCertificatesPanel from "./CoachProfilePendingCertificatesPanel";
 import CoachProfileSavePanel from "./CoachProfileSavePanel";
-import type {
-  AvailabilitySlot,
-  CoachProfileFormData,
-  PendingCoachCertificateUpload,
-} from "../../model/coach-profile.types";
 
-interface CoachProfileEditorPageProps {
+interface CoachProfileEditorFormProps {
   formData: CoachProfileFormData;
   loading: boolean;
   saving: boolean;
@@ -55,7 +54,7 @@ interface CoachProfileEditorPageProps {
   onSave: () => Promise<boolean>;
 }
 
-export default function CoachProfileEditorWorkspace({
+export default function CoachProfileEditorForm({
   formData,
   loading,
   saving,
@@ -76,7 +75,7 @@ export default function CoachProfileEditorWorkspace({
   onCancel,
   onDeleteCertificate,
   onSave,
-}: CoachProfileEditorPageProps) {
+}: CoachProfileEditorFormProps) {
   const downloadableCertificates = formData.certificates.filter(
     (certificate) => certificate.fileUrl
   );
@@ -123,14 +122,14 @@ export default function CoachProfileEditorWorkspace({
     <CaloriexPage>
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
         <Button
-            variant="ghost"
-            size="sm"
-            onClick={onCancel}
-            className="mb-10 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
-          >
-            <ArrowLeft className="mr-2 h-3 w-3" />
-            {hasCoachProfile ? "Back to coach profile" : "Back to profile"}
-          </Button>
+          variant="ghost"
+          size="sm"
+          onClick={onCancel}
+          className="mb-10 w-fit rounded-full border border-white/60 bg-white/55 px-4 text-xs text-slate-600 backdrop-blur hover:bg-white/70 hover:text-slate-900"
+        >
+          <ArrowLeft className="mr-2 h-3 w-3" />
+          {hasCoachProfile ? "Back to coach profile" : "Back to profile"}
+        </Button>
 
         <CoachProfileStatusNotices
           errorMessage={errorMessage}

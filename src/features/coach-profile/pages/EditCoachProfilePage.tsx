@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CoachProfileEditorWorkspace from "../components/edit/CoachProfileEditorWorkspace";
+import CoachProfileEditorForm from "../components/edit/CoachProfileEditorForm";
 import { useCoachProfileEditForm } from "../hooks/useCoachProfileEditForm";
 
 export default function EditCoachProfilePage() {
@@ -26,7 +26,7 @@ export default function EditCoachProfilePage() {
   } = useCoachProfileEditForm();
 
   return (
-    <CoachProfileEditorWorkspace
+    <CoachProfileEditorForm
       formData={formData}
       loading={loading}
       saving={saving}
