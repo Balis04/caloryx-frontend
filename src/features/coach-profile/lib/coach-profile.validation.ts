@@ -1,7 +1,7 @@
 import type {
   CoachProfileFormData,
   PendingCoachCertificateUpload,
-} from "../model/coach-profile.types";
+} from "../types";
 
 export interface CoachProfileValidationState {
   canSave: boolean;
@@ -87,3 +87,4 @@ export const arePendingCertificatesValid = (
       certificate.issuer.trim().length > 0 &&
       certificate.issuedAt.trim().length > 0
   );
+

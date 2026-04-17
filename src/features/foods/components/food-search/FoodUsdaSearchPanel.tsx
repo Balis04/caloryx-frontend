@@ -4,7 +4,7 @@ import FoodCard from "../shared/FoodCard";
 import FoodsEmptyState from "../shared/FoodsEmptyState";
 import FoodsSkeletonCards from "../shared/FoodsSkeletonCards";
 import { FoodSearchForm } from "./FoodSearchForm";
-import type { Food, MealTime } from "../../model/food.model";
+import type { Food, MealTime } from "../../types";
 
 interface Props {
   consumedDate?: string;
@@ -53,3 +53,4 @@ export default function FoodUsdaSearchPanel({
     </div>
   );
 }
+

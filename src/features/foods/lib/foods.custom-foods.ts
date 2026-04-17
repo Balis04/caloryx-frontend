@@ -1,4 +1,4 @@
-import type { CustomFoodResponse, Food, Nutrient } from "../../model/food.model";
+import type { CustomFoodResponse, Food, Nutrient } from "../../types";
 
 export const toNumber = (value: string): number => {
   const parsed = Number(value);
@@ -53,3 +53,4 @@ export const mapCustomFoodToFood = (food: CustomFoodResponse): Food => {
     foodNutrients: nutrients,
   };
 };
+

@@ -13,7 +13,7 @@ import CoachRequestNextStepPanel from "../components/CoachRequestNextStepPanel";
 import TrainingRequestFormSection from "../components/TrainingRequestFormSection";
 import { getCoachDirectory } from "../api/coach-directory.api";
 import { mapCoachDirectoryResponsesToCards } from "../lib/coach-directory.mapper";
-import type { CoachCardData } from "../model/training-request.types";
+import type { CoachCardData } from "@/features/training-requests/types";
 import { useTrainingRequestForm } from "../hooks/useTrainingRequestForm";
 import { useEffect, useState } from "react";
 
@@ -101,3 +101,4 @@ export default function TrainingRequestFormPage() {
     </CaloriexPage>
   );
 }
+

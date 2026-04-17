@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 
 import { saveFood } from "../../api/food.api";
 import { createFoodLogPayload } from "../../lib/food.mapper";
-import type { Food } from "../../model/food.model";
+import type { Food } from "../../types";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
@@ -110,3 +110,4 @@ export default function FoodCard({
     </GlassCard>
   );
 }
+

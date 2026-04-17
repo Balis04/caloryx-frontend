@@ -8,8 +8,8 @@ import {
   getValidDateOrFallback,
   toMealTitle,
   VALID_MEALS,
-} from "../../lib/shared/foods.presentation";
-import type { FoodLogResponse, MealTime, MealTimeSummaryResponse } from "../../model/food.model";
+} from "../../lib/foods.formatters";
+import type { FoodLogResponse, MealTime, MealTimeSummaryResponse } from "../../types";
 
 export const useMealTimeDetailsPage = () => {
   const { mealTime } = useParams<{ mealTime: string }>();
@@ -170,3 +170,4 @@ export const useMealTimeDetailsPage = () => {
     handleDelete,
   };
 };
+

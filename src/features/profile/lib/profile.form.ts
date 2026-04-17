@@ -1,4 +1,4 @@
-import type { ProfileResponse } from "./profile.types";
+import type { ProfileResponse } from "../types";
 
 export type ProfileFormValues = Omit<
   ProfileResponse,
@@ -30,3 +30,4 @@ export const initialProfileFormValues: ProfileFormValues = {
   targetWeightKg: "",
   weeklyGoalKg: "",
 };
+

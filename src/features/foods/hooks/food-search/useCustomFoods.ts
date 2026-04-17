@@ -8,13 +8,13 @@ import {
   getMyCustomFoods,
   getOtherCustomFoods,
 } from "../../api/food.api";
-import { mapCustomFoodToFood, toNumber } from "../../lib/food-search/foods.custom-foods";
+import { mapCustomFoodToFood, toNumber } from "../../lib/foods.custom-foods";
 import type {
   CustomFoodForm,
   CustomFoodResponse,
   Food,
-} from "../../model/food.model";
-import type { SavedFoodsScope } from "../../lib/shared/foods.presentation";
+} from "../../types";
+import type { SavedFoodsScope } from "../../lib/foods.formatters";
 
 const EMPTY_CUSTOM_FOOD_FORM: CustomFoodForm = {
   name: "",
@@ -157,3 +157,4 @@ export const useCustomFoods = ({
     setSavedSearchTerm,
   };
 };
+

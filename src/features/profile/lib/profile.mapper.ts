@@ -1,11 +1,11 @@
 import type {
   ProfileResponse,
   UpdateProfileRequest,
-} from "../model/profile.types";
+} from "../types";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
-} from "../model/profile.form";
+} from "../lib/profile.form";
 
 export const mapProfileResponseToFormValues = (
   profile: ProfileResponse | null | undefined
@@ -43,3 +43,4 @@ export const mapProfileFormValuesToRequest = (
     weeklyGoalKg: Number(values.weeklyGoalKg),
   };
 };
+

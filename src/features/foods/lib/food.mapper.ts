@@ -1,4 +1,4 @@
-import type { Food, FoodLogRequest, MealTime } from "../model/food.model";
+import type { Food, FoodLogRequest, MealTime } from "../types";
 
 const getNutrientValue = (name: string, food: Food) => {
   return (
@@ -33,3 +33,4 @@ export const createFoodLogPayload = (
   fat: calc(getNutrientValue("Total lipid (fat)", food)),
   consumedAt: toConsumedAtIso(consumedDate),
 });
+

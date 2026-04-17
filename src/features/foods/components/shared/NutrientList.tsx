@@ -1,4 +1,4 @@
-import type { Nutrient } from "../../model/food.model";
+import type { Nutrient } from "../../types";
 
 interface NutrientListProps {
   nutrients: Nutrient[];
@@ -19,3 +19,4 @@ export const NutrientList = ({ nutrients, calculate }: NutrientListProps) => (
     ))}
   </div>
 );
+

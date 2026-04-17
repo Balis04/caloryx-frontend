@@ -4,7 +4,7 @@ import type {
   CoachTrainingRequest,
   TrainingPlanDraft,
   TrainingRequestStatus,
-} from "../model/coach-training-request.model";
+} from "@/features/training-requests/types";
 
 export const statusLabelMap: Record<TrainingRequestStatus, string> = {
   PENDING: "Pending",
@@ -90,3 +90,4 @@ export const openFile = (fileUrl: string) => {
     : `${API_BASE_URL}${fileUrl.startsWith("/") ? "" : "/"}${fileUrl}`;
   window.open(normalizedUrl, "_blank", "noopener,noreferrer");
 };
+

@@ -5,7 +5,7 @@ import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { TrainingRequestFormData } from "../model/training-request.types";
+import type { TrainingRequestFormData } from "@/features/training-requests/types";
 
 const fieldClassName =
   "flex h-11 w-full rounded-2xl border border-white/70 bg-white/70 px-4 py-2 text-sm text-slate-900 shadow-sm outline-none backdrop-blur transition focus-visible:ring-2 focus-visible:ring-sky-300/60";
@@ -75,3 +75,4 @@ export default function TrainingRequestFormSection({
     </SummaryPanel>
   );
 }
+

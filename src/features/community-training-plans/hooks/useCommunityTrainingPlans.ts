@@ -4,8 +4,8 @@ import { getCommunityTrainingPlans } from "../api/community-training-plans.api";
 import {
   COMMUNITY_PLAN_SORT_ORDER,
   detectCommunityPlanVariant,
-} from "../lib/community-training-plans.presentation";
-import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
+} from "../lib/community-training-plans.formatters";
+import type { CommunityTrainingPlan } from "../types";
 
 export const useCommunityTrainingPlans = () => {
   const [plans, setPlans] = useState<CommunityTrainingPlan[]>([]);
@@ -46,3 +46,4 @@ export const useCommunityTrainingPlans = () => {
     sortedPlans,
   };
 };
+

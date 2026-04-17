@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-import type { MealTime } from "../../model/food.model";
+import type { MealTime } from "../../types";
 
 interface DiaryMealItem {
   accent: string;
@@ -89,3 +89,4 @@ export default function DiaryMealsList({
     </div>
   );
 }
+

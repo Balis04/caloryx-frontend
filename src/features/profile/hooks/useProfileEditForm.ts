@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
-import { useProfileApi } from "../api/profile.api";
+import { getProfile, updateProfile } from "../api/profile.api";
 import {
   mapProfileFormValuesToRequest,
   mapProfileResponseToFormValues,
@@ -10,10 +10,9 @@ import { canSaveProfileForm } from "../lib/profile.validation";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
-} from "../model/profile.form";
+} from "../lib/profile.form";
 
 export const useProfileEditForm = () => {
-  const { getProfile, updateProfile } = useProfileApi();
   const { refreshAuth } = useAuth();
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState<ProfileFormValues>(
@@ -37,7 +36,7 @@ export const useProfileEditForm = () => {
     };
 
     void loadProfile();
-  }, [getProfile, navigate]);
+  }, [navigate]);
 
   const saveProfile = async () => {
     try {
@@ -67,3 +66,4 @@ export const useProfileEditForm = () => {
     canSave,
   };
 };
+

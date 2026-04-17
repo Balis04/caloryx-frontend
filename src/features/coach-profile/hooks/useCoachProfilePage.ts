@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { getMyCoachProfile } from "../api/coach-profile.api";
 import { mapCoachProfileResponseToFormData } from "../lib/coach-profile.mapper";
-import { initialCoachProfileFormData } from "../model/coach-profile.form";
+import { initialCoachProfileFormData } from "../lib/coach-profile.form";
 import type {
   CoachProfileFormData,
   CoachProfileResponse,
-} from "../model/coach-profile.types";
+} from "../types";
 
 interface CoachProfilePageState {
   coachProfileId: string | null;
@@ -81,3 +81,4 @@ export const useCoachProfilePage = () => {
     loading,
   };
 };
+

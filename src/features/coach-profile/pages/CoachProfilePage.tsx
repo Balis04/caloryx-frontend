@@ -16,7 +16,7 @@ import { openCoachCertificate } from "../lib/coach-profile.certificates";
 import {
   formatPriceRange,
   getTrainingFormatLabel,
-} from "../lib/coach-profile.presentation";
+} from "../lib/coach-profile.formatters";
 
 export default function CoachProfilePage() {
   const navigate = useNavigate();
@@ -140,3 +140,4 @@ export default function CoachProfilePage() {
     </CaloriexPage>
   );
 }
+

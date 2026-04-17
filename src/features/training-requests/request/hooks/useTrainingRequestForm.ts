@@ -1,9 +1,9 @@
-import { useProfileApi } from "@/features/profile/api/profile.api";
-import type { ProfileResponse } from "@/features/profile/model/profile.types";
+import { getProfile } from "@/features/profile/api/profile.api";
+import type { ProfileResponse } from "@/features/profile/types";
 import { useEffect, useState } from "react";
 import { createTrainingRequest } from "../api/training-request.api";
 import { mapTrainingRequestFormDataToRequest } from "../lib/training-request.mapper";
-import type { TrainingRequestFormData } from "../model/training-request.types";
+import type { TrainingRequestFormData } from "@/features/training-requests/types";
 
 const createInitialFormData = (
   profile?: ProfileResponse | null
@@ -21,7 +21,6 @@ const createInitialFormData = (
 export const useTrainingRequestForm = (
   coachProfileId: string | null
 ) => {
-  const { getProfile } = useProfileApi();
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
     createInitialFormData()
@@ -48,7 +47,7 @@ export const useTrainingRequestForm = (
     };
 
     void loadProfile();
-  }, [getProfile]);
+  }, []);
 
   const setField = <K extends keyof TrainingRequestFormData>(
     key: K,
@@ -100,3 +99,4 @@ export const useTrainingRequestForm = (
     canSubmit,
   };
 };
+

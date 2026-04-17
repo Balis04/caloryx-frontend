@@ -1,4 +1,4 @@
-import type { PendingCoachCertificateUpload } from "../model/coach-profile.types";
+import type { PendingCoachCertificateUpload } from "../types";
 
 export const createCoachCertificateUploadFormData = (
   certificate: PendingCoachCertificateUpload
@@ -15,3 +15,4 @@ export const createCoachCertificateUploadFormData = (
 
   return formData;
 };
+

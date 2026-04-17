@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import type { Food } from "../../model/food.model";
+import type { Food } from "../../types";
 
 interface UnitSelectProps {
   unit: "g" | "serv";
@@ -30,3 +30,4 @@ export const UnitSelect = ({ unit, food, onUnitChange }: UnitSelectProps) => {
     </Select>
   );
 };
+

@@ -3,7 +3,7 @@ import { ArrowRight, Send } from "lucide-react";
 import { AccentButton, SummaryPanel } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 
-import type { CoachCardData } from "../model/training-request.types";
+import type { CoachCardData } from "@/features/training-requests/types";
 
 export default function CoachRequestNextStepPanel({
   selectedCoach,
@@ -70,3 +70,4 @@ export default function CoachRequestNextStepPanel({
     </SummaryPanel>
   );
 }
+

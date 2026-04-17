@@ -2,15 +2,15 @@ import type {
   CoachProfileCertificateResponse,
   CoachProfileResponse,
   SaveCoachProfileRequest,
-} from "../model/coach-profile.types";
+} from "../types";
 import {
   initialAvailability,
   initialCoachProfileFormData,
-} from "../model/coach-profile.form";
+} from "../lib/coach-profile.form";
 import type {
   CoachCertificate,
   CoachProfileFormData,
-} from "../model/coach-profile.types";
+} from "../types";
 
 export const mapCoachCertificateResponseToModel = (
   certificate: CoachProfileCertificateResponse,
@@ -96,3 +96,4 @@ export const mapCoachProfileFormDataToRequest = (
   })),
   certificates: [],
 });
+

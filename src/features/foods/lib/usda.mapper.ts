@@ -1,4 +1,4 @@
-import type { Food, Nutrient, UsdaFoodSearchItem } from "../model/food.model";
+import type { Food, Nutrient, UsdaFoodSearchItem } from "../types";
 
 const buildNutrients = (item: UsdaFoodSearchItem): Nutrient[] => [
   { nutrientName: "Energy", unitName: "kcal", value: item.calories },
@@ -19,3 +19,4 @@ export const mapUsdaFoodToFood = (item: UsdaFoodSearchItem): Food => ({
   servingSize: item.servingSize,
   foodNutrients: buildNutrients(item),
 });
+

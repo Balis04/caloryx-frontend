@@ -5,7 +5,7 @@ import {
   SummaryPanel,
 } from "@/components/caloriex";
 import { ArrowRight, Save, Sparkles } from "lucide-react";
-import type { ProfileFormValues } from "../model/profile.form";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 interface ProfileEditorSavePanelProps {
   values: ProfileFormValues;
@@ -49,3 +49,4 @@ export default function ProfileEditorSavePanel({
     </SummaryPanel>
   );
 }
+

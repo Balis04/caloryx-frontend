@@ -1,4 +1,4 @@
-import type { CaloriesSummaryResponse, MealTime } from "../../model/food.model";
+import type { CaloriesSummaryResponse, MealTime } from "../../types";
 
 export const VALID_MEALS: MealTime[] = ["BREAKFAST", "LUNCH", "DINNER", "SNACK"];
 
@@ -101,3 +101,4 @@ export const getMealCalories = (
 };
 
 export const toMealTitle = (mealTime: MealTime): string => MEAL_LABELS[mealTime] ?? mealTime;
+

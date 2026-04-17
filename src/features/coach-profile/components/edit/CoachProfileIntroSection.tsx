@@ -16,12 +16,12 @@ import {
   coachProfileTextareaClassName,
   CURRENCY_OPTIONS,
   TRAINING_FORMAT_OPTIONS,
-} from "../../lib/coach-profile.presentation";
+} from "../../lib/coach-profile.formatters";
 import type {
   CoachProfileFormData,
   Currency,
   TrainingFormat,
-} from "../../model/coach-profile.types";
+} from "../../types";
 
 export default function CoachProfileIntroSection({
   formData,
@@ -175,3 +175,4 @@ export default function CoachProfileIntroSection({
     </SummaryPanel>
   );
 }
+

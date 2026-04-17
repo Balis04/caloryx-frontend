@@ -1,5 +1,5 @@
 import { GlassMetric } from "@/components/caloriex";
-import type { CoachTrainingRequest } from "../model/coach-training-request.model";
+import type { CoachTrainingRequest } from "@/features/training-requests/types";
 
 export default function TrainingRequestMetrics({ request }: { request: CoachTrainingRequest }) {
   return (
@@ -10,3 +10,4 @@ export default function TrainingRequestMetrics({ request }: { request: CoachTrai
     </div>
   );
 }
+

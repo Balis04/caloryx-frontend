@@ -4,7 +4,7 @@ import type {
   CustomFoodResponse,
   FoodLogRequest,
   FoodLogResponse,
-} from "../model/food.model";
+} from "../types";
 
 export const saveFood = (payload: FoodLogRequest): Promise<FoodLogResponse> =>
   apiClient<FoodLogResponse>("/api/food-log", {
@@ -55,3 +55,4 @@ export const deleteCustomFood = async (id: string): Promise<void> => {
     method: "DELETE",
   });
 };
+

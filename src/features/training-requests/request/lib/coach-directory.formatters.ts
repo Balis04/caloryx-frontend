@@ -1,4 +1,4 @@
-import type { CoachProfileListResponse } from "../model/training-request.types";
+import type { CoachProfileListResponse } from "@/features/training-requests/types";
 
 const dayLabels: Record<string, string> = {
   MONDAY: "Monday",
@@ -51,3 +51,4 @@ export const formatExperience = (trainingStartedAt?: string | null) => {
   const years = Math.max(currentYear - startedYear, 0);
   return years === 0 ? "Less than 1 year of experience" : `${years} years of experience`;
 };
+

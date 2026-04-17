@@ -10,8 +10,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FoodCard from "../shared/FoodCard";
 import FoodsEmptyState from "../shared/FoodsEmptyState";
 import FoodsSkeletonCards from "../shared/FoodsSkeletonCards";
-import type { Food, MealTime } from "../../model/food.model";
-import type { SavedFoodsScope } from "../../lib/shared/foods.presentation";
+import type { Food, MealTime } from "../../types";
+import type { SavedFoodsScope } from "../../lib/foods.formatters";
 
 interface Props {
   activeDeleteId: string | null;
@@ -117,3 +117,4 @@ export default function FoodSavedPanel({
     </div>
   );
 }
+

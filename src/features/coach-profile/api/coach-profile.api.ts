@@ -3,7 +3,7 @@ import type {
   CoachCertificateResponse,
   CoachProfileResponse,
   SaveCoachProfileRequest,
-} from "../model/coach-profile.types";
+} from "../types";
 
 const COACH_PROFILES_BASE_PATH = "/api/coach-profiles";
 
@@ -43,3 +43,4 @@ export const deleteCoachCertificate = (
   apiClient<void>(`${COACH_PROFILES_BASE_PATH}/${coachProfileId}/certificates/${certificateId}`, {
     method: "DELETE",
   });
+

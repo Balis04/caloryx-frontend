@@ -1,4 +1,4 @@
-import type { Currency, TrainingFormat } from "../model/coach-profile.types";
+import type { Currency, TrainingFormat } from "../types";
 
 export const TRAINING_FORMAT_OPTIONS = [
   { value: "ONLINE", label: "Online" },
@@ -32,3 +32,4 @@ export const formatPriceRange = (
   priceTo: string,
   currency: Currency | ""
 ) => (priceFrom || priceTo ? `${priceFrom || "0"} - ${priceTo || "0"} ${currency || ""}` : "");
+

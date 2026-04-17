@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
-import { useProfileApi } from "../api/profile.api";
+import { createProfile } from "../api/profile.api";
 import { mapProfileFormValuesToRequest } from "../lib/profile.mapper";
 import { canSaveProfileForm } from "../lib/profile.validation";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
-} from "../model/profile.form";
+} from "../lib/profile.form";
 
 export const useCreateProfileForm = () => {
   const navigate = useNavigate();
   const { refreshAuth } = useAuth();
-  const { createProfile } = useProfileApi();
-  const [values, setValues] = useState<ProfileFormValues>(initialProfileFormValues);
+  const [values, setValues] = useState<ProfileFormValues>(
+    initialProfileFormValues
+  );
   const [error, setError] = useState<string | null>(null);
 
   const setField = <K extends keyof ProfileFormValues>(
@@ -40,7 +41,9 @@ export const useCreateProfileForm = () => {
       navigate("/profile");
       return true;
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Network error.");
+      setError(
+        saveError instanceof Error ? saveError.message : "Network error."
+      );
       return false;
     }
   };
@@ -56,3 +59,4 @@ export const useCreateProfileForm = () => {
     saveProfile,
   };
 };
+

@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 
-import type { CreateTrainingRequestRequest } from "./training-request.dto";
+import type { CreateTrainingRequestRequest } from "@/features/training-requests/types";
 
 export const createTrainingRequest = (
   coachProfileId: string,
@@ -10,3 +10,4 @@ export const createTrainingRequest = (
     method: "POST",
     body: data,
   });
+

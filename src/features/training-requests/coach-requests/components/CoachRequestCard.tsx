@@ -12,12 +12,12 @@ import {
   getTrainingPlanName,
   statusLabelMap,
   statusVariantMap,
-} from "../lib/coach-training-requests.utils";
+} from "../lib/coach-training-requests.helpers";
 import type {
   CoachRequestFilter,
   CoachTrainingRequest,
   TrainingPlanDraft,
-} from "../model/coach-training-request.model";
+} from "@/features/training-requests/types";
 import RequestTextPanel from "./RequestTextPanel";
 import TrainingPlanEditor from "./TrainingPlanEditor";
 import TrainingRequestMetrics from "./TrainingRequestMetrics";
@@ -124,3 +124,4 @@ export default function CoachRequestCard(props: Props) {
     </GlassCard>
   );
 }
+

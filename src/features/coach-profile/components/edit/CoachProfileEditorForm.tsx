@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 import { openCoachCertificate } from "../../lib/coach-profile.certificates";
-import { getCurrencyLabel } from "../../lib/coach-profile.presentation";
+import { getCurrencyLabel } from "../../lib/coach-profile.formatters";
 import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
   PendingCoachCertificateUpload,
-} from "../../model/coach-profile.types";
+} from "../../types";
 import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
 import CoachProfileAvailabilitySection from "./CoachProfileAvailabilitySection";
 import CoachProfileCertificatesSection from "./CoachProfileCertificatesSection";
@@ -176,3 +176,4 @@ export default function CoachProfileEditorForm({
     </CaloriexPage>
   );
 }
+

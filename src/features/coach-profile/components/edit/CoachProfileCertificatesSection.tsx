@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download, FileText, Trash2 } from "lucide-react";
 
-import { coachProfileInputClassName } from "../../lib/coach-profile.presentation";
+import { coachProfileInputClassName } from "../../lib/coach-profile.formatters";
 import type { ChangeEvent } from "react";
-import type { CoachCertificate } from "../../model/coach-profile.types";
+import type { CoachCertificate } from "../../types";
 
 interface CoachProfileCertificatesSectionProps {
   downloadableCertificates: CoachCertificate[];
@@ -104,3 +104,4 @@ export default function CoachProfileCertificatesSection({
     </SummaryPanel>
   );
 }
+

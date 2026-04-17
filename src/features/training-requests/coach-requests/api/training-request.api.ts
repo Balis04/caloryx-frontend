@@ -4,7 +4,7 @@ import type {
   ClosedTrainingRequestResponse,
   TrainingRequestResponse,
   UpdateTrainingRequestStatusRequest,
-} from "./training-request.dto";
+} from "@/features/training-requests/types";
 
 const COACH_TRAINING_REQUESTS_BASE_PATH = "/api/coach/training-requests";
 
@@ -70,3 +70,4 @@ export const downloadTrainingPlanFile = async (trainingRequestId: string) => {
 
   return { blob, fileName };
 };
+

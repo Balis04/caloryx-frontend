@@ -8,7 +8,7 @@ import FoodUsdaSearchPanel from "../components/food-search/FoodUsdaSearchPanel";
 import { useCustomFoods } from "../hooks/food-search/useCustomFoods";
 import { useFoodSearchPage } from "../hooks/food-search/useFoodSearchPage";
 import { useUsdaFoodSearch } from "../hooks/food-search/useUsdaFoodSearch";
-import type { FoodsMainTab } from "../lib/shared/foods.presentation";
+import type { FoodsMainTab } from "../lib/foods.formatters";
 
 export default function FoodSearchPage() {
   const {
@@ -84,3 +84,4 @@ export default function FoodSearchPage() {
     </CaloriexPage>
   );
 }
+

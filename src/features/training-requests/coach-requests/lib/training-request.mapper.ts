@@ -2,8 +2,8 @@ import type {
   ClosedTrainingRequestResponse,
   TrainingRequestResponse,
   UpdateTrainingRequestStatusRequest,
-} from "../api/training-request.dto";
-import type { CoachTrainingRequest } from "../model/coach-training-request.model";
+} from "@/features/training-requests/types";
+import type { CoachTrainingRequest } from "@/features/training-requests/types";
 
 export const mapTrainingRequestResponseToModel = (
   response: TrainingRequestResponse
@@ -40,3 +40,4 @@ export const mapTrainingRequestStatusToRequest = (
   status,
   coachResponse: coachResponse.trim(),
 });
+

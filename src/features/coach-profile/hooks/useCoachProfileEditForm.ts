@@ -17,13 +17,13 @@ import {
   mapCoachProfileFormDataToRequest,
   mapCoachProfileResponseToFormData,
 } from "../lib/coach-profile.mapper";
-import { initialCoachProfileFormData } from "../model/coach-profile.form";
+import { initialCoachProfileFormData } from "../lib/coach-profile.form";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
   CoachProfileResponse,
   PendingCoachCertificateUpload,
-} from "../model/coach-profile.types";
+} from "../types";
 
 interface CoachProfileEditState {
   coachProfileId: string | null;
@@ -283,3 +283,4 @@ export const useCoachProfileEditForm = () => {
     updatePendingCertificate,
   };
 };
+

@@ -7,7 +7,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { CustomFoodForm } from "../../model/food.model";
+import type { CustomFoodForm } from "../../types";
 
 interface NutrientInputProps {
   id: string;
@@ -118,3 +118,4 @@ export default function FoodCreatePanel({
     </GlassCard>
   );
 }
+

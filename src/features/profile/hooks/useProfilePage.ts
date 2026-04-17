@@ -8,13 +8,12 @@ import {
 } from "@/shared/constants/user-options";
 import { getLabelFromOptions } from "@/shared/utils/optionMapper";
 import { isCoachRole } from "@/shared/utils/profileRole";
-import { useProfileApi } from "../api/profile.api";
+import { getProfile } from "../api/profile.api";
 import { formatWeeklyGoal } from "../lib/profile.formatters";
-import type { ProfileResponse } from "../model/profile.types";
+import type { ProfileResponse } from "../types";
 
 export const useProfilePage = () => {
   const navigate = useNavigate();
-  const { getProfile } = useProfileApi();
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +27,9 @@ export const useProfilePage = () => {
         const response = await getProfile();
         setProfile(response);
       } catch (loadError) {
-        setError(loadError instanceof Error ? loadError.message : "Ismeretlen hiba");
+        setError(
+          loadError instanceof Error ? loadError.message : "Ismeretlen hiba"
+        );
         setProfile(null);
       } finally {
         setLoading(false);
@@ -36,7 +37,7 @@ export const useProfilePage = () => {
     };
 
     void loadProfile();
-  }, [getProfile]);
+  }, []);
 
   const viewModel = useMemo(() => {
     if (!profile) {
@@ -71,3 +72,4 @@ export const useProfilePage = () => {
     onOpenCoachProfile: () => navigate("/coach-profile"),
   };
 };
+

@@ -14,7 +14,7 @@ import {
 } from "@/shared/constants/user-options";
 import { User } from "lucide-react";
 import type { UserRole, Gender } from "@/shared/types/profile.types";
-import type { ProfileFormValues } from "../model/profile.form";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 interface Props {
   userProfile: ProfileFormValues;
@@ -115,3 +115,4 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
     </SummaryPanel>
   );
 };
+

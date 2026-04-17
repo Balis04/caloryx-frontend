@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import type {
   CoachCardData,
   CoachCertificateData,
-} from "../model/training-request.types";
+} from "@/features/training-requests/types";
 
 const openCertificate = (certificate: CoachCertificateData) => {
   if (!certificate.fileUrl) {
@@ -196,3 +196,4 @@ export default function CoachSelectionCard({
     </GlassCard>
   );
 }
+

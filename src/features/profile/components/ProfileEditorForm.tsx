@@ -4,7 +4,7 @@ import { USER_ROLE_OPTIONS } from "@/shared/constants/user-options";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import type { ProfileFormValues } from "../model/profile.form";
+import type { ProfileFormValues } from "../lib/profile.form";
 import { BasicInfoSection } from "./BasicInfoSection";
 import { PhysicalStatsSection } from "./PhysicalStatsSection";
 import ProfileEditorSavePanel from "./ProfileEditorSavePanel";
@@ -79,3 +79,4 @@ export default function ProfileEditorForm({
     </CaloriexPage>
   );
 }
+

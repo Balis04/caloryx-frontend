@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type {
   CoachRequestFilter,
   CoachRequestViewMode,
-} from "../model/coach-training-request.model";
+} from "@/features/training-requests/types";
 
 interface Props {
   isCoach: boolean;
@@ -77,3 +77,4 @@ export default function TrainingRequestsHeader(props: Props) {
     </GlassCard>
   );
 }
+

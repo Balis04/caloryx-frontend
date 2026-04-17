@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import type {
   CoachTrainingRequest,
   TrainingPlanDraft,
-} from "../model/coach-training-request.model";
+} from "@/features/training-requests/types";
 
 interface Props {
   draft: TrainingPlanDraft;
@@ -144,3 +144,4 @@ export default function TrainingPlanEditor({
     </GlassCardSoft>
   );
 }
+

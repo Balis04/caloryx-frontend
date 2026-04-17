@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 import { formatBirthDate } from "../lib/profile.formatters";
-import type { ProfileResponse } from "../model/profile.types";
+import type { ProfileResponse } from "../types";
 
 interface ProfileOverviewSectionProps {
   profile: ProfileResponse;
@@ -185,3 +185,4 @@ export default function ProfileOverviewSection({
     </div>
   );
 }
+

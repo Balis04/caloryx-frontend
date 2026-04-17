@@ -8,8 +8,8 @@ import {
   getMealCalories,
   mapCaloriesSummaryToFallback,
   shiftDate,
-} from "../../lib/shared/foods.presentation";
-import type { CaloriesSummaryResponse, MealTime } from "../../model/food.model";
+} from "../../lib/foods.formatters";
+import type { CaloriesSummaryResponse, MealTime } from "../../types";
 
 export const useDiaryPage = () => {
   const navigate = useNavigate();
@@ -80,3 +80,4 @@ export const useDiaryPage = () => {
     today,
   };
 };
+

@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "@/lib/api-client";
 
-import type { CoachCertificate } from "../model/coach-profile.types";
+import type { CoachCertificate } from "../types";
 
 export function getCoachCertificateFileUrl(fileUrl: string | null | undefined) {
   if (!fileUrl) return null;
@@ -19,3 +19,4 @@ export function openCoachCertificate(certificate: CoachCertificate) {
 
   window.open(normalizedUrl, "_blank", "noopener,noreferrer");
 }
+

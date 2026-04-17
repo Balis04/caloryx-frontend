@@ -3,7 +3,7 @@ import { CardContent } from "@/components/ui/card";
 import CoachRequestCard from "../components/CoachRequestCard";
 import TrainingRequestsHeader from "../components/TrainingRequestsHeader";
 import UserRequestCard from "../components/UserRequestCard";
-import { createTrainingPlanDraft } from "../lib/coach-training-requests.utils";
+import { createTrainingPlanDraft } from "../lib/coach-training-requests.helpers";
 import { useCoachTrainingRequests } from "../hooks/useCoachTrainingRequests";
 
 export default function CoachTrainingRequestsPage() {
@@ -125,3 +125,4 @@ export default function CoachTrainingRequestsPage() {
     </CaloriexPage>
   );
 }
+

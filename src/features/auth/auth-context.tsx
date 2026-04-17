@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { AuthContext } from "./auth-context.shared";
-import type { AuthMeResponse } from "./auth.types";
+import type { AuthMeResponse } from "./types";
 
 export interface AuthContextValue {
   authState: AuthMeResponse | null;
@@ -169,3 +169,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+

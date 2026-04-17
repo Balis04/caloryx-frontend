@@ -5,8 +5,8 @@ import {
   getOptionalValidDate,
   type FoodsMainTab,
   VALID_MEALS,
-} from "../../lib/shared/foods.presentation";
-import type { MealTime } from "../../model/food.model";
+} from "../../lib/foods.formatters";
+import type { MealTime } from "../../types";
 
 export const useFoodSearchPage = () => {
   const { mealTime } = useParams<{ mealTime: string }>();
@@ -27,3 +27,4 @@ export const useFoodSearchPage = () => {
     setActiveTab,
   };
 };
+

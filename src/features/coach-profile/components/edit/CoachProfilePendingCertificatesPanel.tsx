@@ -2,8 +2,8 @@ import { SummaryPanel } from "@/components/caloriex";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText } from "lucide-react";
-import { coachProfileInputClassName } from "../../lib/coach-profile.presentation";
-import type { PendingCoachCertificateUpload } from "../../model/coach-profile.types";
+import { coachProfileInputClassName } from "../../lib/coach-profile.formatters";
+import type { PendingCoachCertificateUpload } from "../../types";
 
 interface CoachProfilePendingCertificatesPanelProps {
   pendingCertificates: PendingCoachCertificateUpload[];
@@ -125,3 +125,4 @@ export default function CoachProfilePendingCertificatesPanel({
     </SummaryPanel>
   );
 }
+

@@ -1,7 +1,7 @@
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
-} from "./coach-profile.types";
+} from "../types";
 
 export const initialAvailability = (): AvailabilitySlot[] => [
   {
@@ -67,3 +67,4 @@ export const initialCoachProfileFormData: CoachProfileFormData = {
   certificates: [],
   availability: initialAvailability(),
 };
+

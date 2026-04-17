@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { UsdaFoodSearchItem } from "../model/food.model";
+import type { UsdaFoodSearchItem } from "../types";
 
 export const searchFoods = async (product: string, brand: string) => {
   const params = new URLSearchParams();
@@ -8,3 +8,4 @@ export const searchFoods = async (product: string, brand: string) => {
 
   return apiClient<UsdaFoodSearchItem[]>(`/api/foods/search?${params.toString()}`);
 };
+

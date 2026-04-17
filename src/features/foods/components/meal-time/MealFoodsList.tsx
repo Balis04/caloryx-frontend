@@ -6,7 +6,7 @@ import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import type { Dispatch, SetStateAction } from "react";
-import type { FoodLogResponse } from "../../model/food.model";
+import type { FoodLogResponse } from "../../types";
 
 interface MealFoodListProps {
   actionError: string | null;
@@ -195,3 +195,4 @@ export default function MealFoodsList({
     </>
   );
 }
+

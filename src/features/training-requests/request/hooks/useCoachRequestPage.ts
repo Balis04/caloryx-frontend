@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCoachDirectory } from "../api/coach-directory.api";
 import { mapCoachDirectoryResponsesToCards } from "../lib/coach-directory.mapper";
-import type { CoachCardData } from "../model/training-request.types";
+import type { CoachCardData } from "@/features/training-requests/types";
 
 export const useCoachRequestPage = () => {
   const [coaches, setCoaches] = useState<CoachCardData[]>([]);
@@ -38,3 +38,4 @@ export const useCoachRequestPage = () => {
     selectCoach: (coachId: string) => setSelectedCoachId(coachId),
   };
 };
+

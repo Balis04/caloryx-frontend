@@ -3,7 +3,7 @@ import type {
   CaloriesSummaryResponse,
   MealTime,
   MealTimeSummaryResponse,
-} from "../model/food.model";
+} from "../types";
 
 export const getSummaryByDate = async (
   date: string
@@ -22,3 +22,4 @@ export const getMealTimeSummary = async (
     `/api/calories-summary/meal-times?date=${dateQuery}&mealTime=${mealQuery}`
   );
 };
+

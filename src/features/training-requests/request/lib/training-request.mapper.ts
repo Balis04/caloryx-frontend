@@ -1,5 +1,5 @@
-import type { CreateTrainingRequestRequest } from "../api/training-request.dto";
-import type { TrainingRequestFormData } from "../model/training-request.types";
+import type { CreateTrainingRequestRequest } from "@/features/training-requests/types";
+import type { TrainingRequestFormData } from "@/features/training-requests/types";
 
 export const mapTrainingRequestFormDataToRequest = (
   formData: TrainingRequestFormData
@@ -9,3 +9,4 @@ export const mapTrainingRequestFormDataToRequest = (
   preferredLocation: formData.trainingLocation.trim(),
   requestDescription: formData.customerDescription.trim(),
 });
+

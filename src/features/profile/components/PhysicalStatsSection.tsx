@@ -14,7 +14,7 @@ import {
 } from "@/shared/constants/user-options";
 import type { ActivityLevel, Goal } from "@/shared/types/profile.types";
 import { Activity } from "lucide-react";
-import type { ProfileFormValues } from "../model/profile.form";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 interface PhysicalStatsProps {
   userProfile: ProfileFormValues;
@@ -175,3 +175,4 @@ export const PhysicalStatsSection = ({
     </SummaryPanel>
   );
 };
+

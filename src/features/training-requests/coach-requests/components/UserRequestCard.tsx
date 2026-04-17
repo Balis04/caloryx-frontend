@@ -12,8 +12,8 @@ import {
   getTrainingPlanFileName,
   statusLabelMap,
   statusVariantMap,
-} from "../lib/coach-training-requests.utils";
-import type { CoachTrainingRequest } from "../model/coach-training-request.model";
+} from "../lib/coach-training-requests.helpers";
+import type { CoachTrainingRequest } from "@/features/training-requests/types";
 import RequestTextPanel from "./RequestTextPanel";
 
 export default function UserRequestCard({
@@ -74,3 +74,4 @@ export default function UserRequestCard({
     </GlassCard>
   );
 }
+
