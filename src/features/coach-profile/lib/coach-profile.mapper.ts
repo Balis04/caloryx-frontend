@@ -4,7 +4,7 @@ import type {
   SaveCoachProfileRequest,
 } from "../model/coach-profile.types";
 import {
-  createInitialAvailability,
+  initialAvailability,
   initialCoachProfileFormData,
 } from "../model/coach-profile.form";
 import type {
@@ -45,9 +45,13 @@ export const mapCoachProfileResponseToFormData = (
 ): CoachProfileFormData => ({
   ...initialCoachProfileFormData,
   description: data.shortDescription ?? initialCoachProfileFormData.description,
-  startedCoachingAt: data.trainingStartedAt ?? initialCoachProfileFormData.startedCoachingAt,
-  maxCapacity: String(data.maxCapacity ?? initialCoachProfileFormData.maxCapacity),
-  sessionFormat: data.trainingFormat ?? initialCoachProfileFormData.sessionFormat,
+  startedCoachingAt:
+    data.trainingStartedAt ?? initialCoachProfileFormData.startedCoachingAt,
+  maxCapacity: String(
+    data.maxCapacity ?? initialCoachProfileFormData.maxCapacity
+  ),
+  sessionFormat:
+    data.trainingFormat ?? initialCoachProfileFormData.sessionFormat,
   priceFrom: String(data.priceFrom ?? initialCoachProfileFormData.priceFrom),
   priceTo: String(data.priceTo ?? initialCoachProfileFormData.priceTo),
   currency: data.currency ?? initialCoachProfileFormData.currency,
@@ -57,7 +61,7 @@ export const mapCoachProfileResponseToFormData = (
     : initialCoachProfileFormData.certificates,
   availability:
     Array.isArray(data.availabilities) && data.availabilities.length > 0
-      ? createInitialAvailability().map((defaultSlot) => {
+      ? initialAvailability().map((defaultSlot) => {
           const matchingSlot = data.availabilities?.find(
             (slot) => slot.dayOfWeek === defaultSlot.dayOfWeek
           );
@@ -70,7 +74,7 @@ export const mapCoachProfileResponseToFormData = (
             until: matchingSlot?.endTime ?? defaultSlot.until,
           };
         })
-      : createInitialAvailability(),
+      : initialAvailability(),
 });
 
 export const mapCoachProfileFormDataToRequest = (

@@ -55,7 +55,10 @@ const mapCoachProfileResponseToState = (
 });
 
 const mapCoachProfileErrorToState = (error: unknown): CoachProfileEditState => {
-  if (error instanceof ApiError && (error.status === 400 || error.status === 404)) {
+  if (
+    error instanceof ApiError &&
+    (error.status === 400 || error.status === 404)
+  ) {
     return createEmptyCoachProfileState();
   }
 
@@ -90,10 +93,18 @@ export const useCoachProfileEditForm = () => {
   >([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [deletingCertificateId, setDeletingCertificateId] = useState<string | null>(null);
+  const [deletingCertificateId, setDeletingCertificateId] = useState<
+    string | null
+  >(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const { coachProfileId, errorMessage, formData, hasCoachProfile, isForbidden } = profileState;
+  const {
+    coachProfileId,
+    errorMessage,
+    formData,
+    hasCoachProfile,
+    isForbidden,
+  } = profileState;
 
   useEffect(() => {
     const loadCoachProfile = async () => {
@@ -114,11 +125,14 @@ export const useCoachProfileEditForm = () => {
   }, []);
 
   const setFormData = (
-    updater: CoachProfileFormData | ((current: CoachProfileFormData) => CoachProfileFormData)
+    updater:
+      | CoachProfileFormData
+      | ((current: CoachProfileFormData) => CoachProfileFormData)
   ) => {
     setProfileState((current) => ({
       ...current,
-      formData: typeof updater === "function" ? updater(current.formData) : updater,
+      formData:
+        typeof updater === "function" ? updater(current.formData) : updater,
     }));
   };
 
@@ -238,7 +252,9 @@ export const useCoachProfileEditForm = () => {
       setProfileState((current) => ({
         ...current,
         errorMessage:
-          error instanceof Error ? error.message : "Certificate deletion failed.",
+          error instanceof Error
+            ? error.message
+            : "Certificate deletion failed.",
       }));
       return false;
     } finally {
