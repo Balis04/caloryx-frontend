@@ -1,42 +1,50 @@
 import { ApiError, apiClient, buildApiUrl } from "@/lib/api-client";
+
 import type {
   ClosedTrainingRequestResponseDto,
-  CreateTrainingRequestDto,
   TrainingRequestResponseDto,
   UpdateTrainingRequestStatusDto,
 } from "./training-request.dto";
 
-const createTrainingRequest = (coachProfileId: string, data: CreateTrainingRequestDto) =>
+const COACH_TRAINING_REQUESTS_BASE_PATH = "/api/coach/training-requests";
+
+export const getMyTrainingRequests = () =>
+  apiClient<TrainingRequestResponseDto[]>("/api/training-requests/me");
+
+export const getCoachTrainingRequests = (status?: "PENDING" | "APPROVED" | "REJECTED") =>
+  apiClient<TrainingRequestResponseDto[]>(
+    status
+      ? `${COACH_TRAINING_REQUESTS_BASE_PATH}?status=${status}`
+      : COACH_TRAINING_REQUESTS_BASE_PATH
+  );
+
+export const getClosedCoachTrainingRequests = () =>
+  apiClient<ClosedTrainingRequestResponseDto[]>(
+    `${COACH_TRAINING_REQUESTS_BASE_PATH}/closed`
+  );
+
+export const updateCoachTrainingRequestStatus = (
+  trainingRequestId: string,
+  data: UpdateTrainingRequestStatusDto
+) =>
   apiClient<TrainingRequestResponseDto>(
-    `/api/training-requests/coach-profiles/${coachProfileId}`,
+    `${COACH_TRAINING_REQUESTS_BASE_PATH}/${trainingRequestId}/status`,
     {
-      method: "POST",
+      method: "PATCH",
       body: data,
     }
   );
 
-const getMyTrainingRequests = () =>
-  apiClient<TrainingRequestResponseDto[]>("/api/training-requests/me");
-
-const updateTrainingRequestStatus = (
-  trainingRequestId: string,
-  data: UpdateTrainingRequestStatusDto
-) =>
-  apiClient<TrainingRequestResponseDto>(`/api/training-requests/${trainingRequestId}/status`, {
-    method: "PATCH",
-    body: data,
-  });
-
-const uploadTrainingPlan = (trainingRequestId: string, body: FormData) =>
+export const uploadCoachTrainingPlan = (trainingRequestId: string, body: FormData) =>
   apiClient<ClosedTrainingRequestResponseDto>(
-    `/api/training-requests/${trainingRequestId}/training-plan`,
+    `${COACH_TRAINING_REQUESTS_BASE_PATH}/${trainingRequestId}/training-plan`,
     {
       method: "POST",
       body,
     }
   );
 
-const downloadTrainingPlanFile = async (trainingRequestId: string) => {
+export const downloadTrainingPlanFile = async (trainingRequestId: string) => {
   const response = await fetch(
     buildApiUrl(`/api/training-requests/${trainingRequestId}/training-plan/download`),
     {
@@ -61,14 +69,4 @@ const downloadTrainingPlanFile = async (trainingRequestId: string) => {
   );
 
   return { blob, fileName };
-};
-
-export const useTrainingRequestApi = () => {
-  return {
-    createTrainingRequest,
-    downloadTrainingPlanFile,
-    getMyTrainingRequests,
-    updateTrainingRequestStatus,
-    uploadTrainingPlan,
-  };
 };

@@ -16,7 +16,10 @@ import { CardContent } from "@/components/ui/card";
 import { API_BASE_URL } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
-import type { CoachCardData, CoachCertificateData } from "../types/coach.types";
+import type {
+  CoachCardData,
+  CoachCertificateData,
+} from "../model/training-request.types";
 
 const openCertificate = (certificate: CoachCertificateData) => {
   if (!certificate.fileUrl) {

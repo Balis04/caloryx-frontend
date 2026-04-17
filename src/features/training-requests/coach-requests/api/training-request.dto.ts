@@ -34,13 +34,6 @@ export interface ClosedTrainingRequestResponseDto {
   uploadedAt?: string | null;
 }
 
-export interface CreateTrainingRequestDto {
-  weeklyTrainingCount: number;
-  sessionDurationMinutes: number;
-  preferredLocation: string;
-  requestDescription: string;
-}
-
 export interface UpdateTrainingRequestStatusDto {
   status: Exclude<TrainingRequestStatus, "PENDING" | "CLOSED">;
   coachResponse: string;

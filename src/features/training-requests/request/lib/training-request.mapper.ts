@@ -1,5 +1,5 @@
-import type { CreateTrainingRequestDto } from "../../shared/api/training-request.dto";
-import type { TrainingRequestFormData } from "../types/training-request-form.types";
+import type { CreateTrainingRequestDto } from "../api/training-request.dto";
+import type { TrainingRequestFormData } from "../model/training-request.types";
 
 export const mapTrainingRequestFormToCreateDto = (
   formData: TrainingRequestFormData

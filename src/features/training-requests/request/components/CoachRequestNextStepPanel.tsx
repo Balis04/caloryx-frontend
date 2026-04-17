@@ -1,28 +1,40 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 
 import { AccentButton, SummaryPanel } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 
-import type { CoachCardData } from "../types/coach.types";
+import type { CoachCardData } from "../model/training-request.types";
 
 export default function CoachRequestNextStepPanel({
   selectedCoach,
-  onOpenForm,
+  actionLabel = "Open training request form",
+  description,
+  disabled,
+  loading,
+  title = "Open the request form",
+  onAction,
 }: {
   selectedCoach: CoachCardData | null;
-  onOpenForm: () => void;
+  actionLabel?: string;
+  description?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  title?: string;
+  onAction: () => void;
 }) {
+  const isSubmitAction = actionLabel.toLowerCase().includes("send");
+
   return (
     <SummaryPanel
       eyebrow="Next step"
-      title="Open the request form"
+      title={title}
       icon={ArrowRight}
       className="h-fit lg:sticky lg:top-6"
     >
       <CardContent className="space-y-5 p-6">
         <p className="text-sm leading-7 text-slate-600">
-          Continue with the selected coach and fill in the details of the training plan
-          you want to receive.
+          {description ??
+            "Continue with the selected coach and fill in the details of the training plan you want to receive."}
         </p>
         {selectedCoach ? (
           <>
@@ -46,9 +58,13 @@ export default function CoachRequestNextStepPanel({
           </div>
         )}
 
-        <AccentButton tone="sky" disabled={!selectedCoach} onClick={onOpenForm}>
-          <ArrowRight className="h-4 w-4" />
-          Open training request form
+        <AccentButton
+          tone="sky"
+          disabled={!selectedCoach || disabled || loading}
+          onClick={onAction}
+        >
+          {isSubmitAction ? <Send className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+          {loading ? "Sending..." : actionLabel}
         </AccentButton>
       </CardContent>
     </SummaryPanel>

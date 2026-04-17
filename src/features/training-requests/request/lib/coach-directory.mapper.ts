@@ -1,5 +1,7 @@
-import type { CoachCardData } from "../types/coach.types";
-import type { CoachProfileListResponseDto } from "../types/coach-directory.dto";
+import type {
+  CoachCardData,
+  CoachProfileListResponseDto,
+} from "../model/training-request.types";
 import { formatAvailability, formatExperience } from "./coach-directory.presentation";
 
 export const mapCoachDirectoryDtoToCard = (

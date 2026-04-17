@@ -1,11 +1,11 @@
 import { Dumbbell, Send, UserRound } from "lucide-react";
 
-import { AccentButton, ReadonlyField, SummaryPanel } from "@/components/caloriex";
+import { ReadonlyField, SummaryPanel } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { TrainingRequestFormData } from "../types/training-request-form.types";
+import type { TrainingRequestFormData } from "../model/training-request.types";
 
 const fieldClassName =
   "flex h-11 w-full rounded-2xl border border-white/70 bg-white/70 px-4 py-2 text-sm text-slate-900 shadow-sm outline-none backdrop-blur transition focus-visible:ring-2 focus-visible:ring-sky-300/60";
@@ -14,23 +14,15 @@ export default function TrainingRequestFormSection({
   formData,
   goalLabel,
   activityLevelLabel,
-  selectedCoach,
-  canSubmit,
-  submitting,
   onFieldChange,
-  onSubmit,
 }: {
   formData: TrainingRequestFormData;
   goalLabel?: string;
   activityLevelLabel?: string;
-  selectedCoach: boolean;
-  canSubmit: boolean;
-  submitting: boolean;
   onFieldChange: <K extends keyof TrainingRequestFormData>(
     key: K,
     value: TrainingRequestFormData[K]
   ) => void;
-  onSubmit: () => void;
 }) {
   return (
     <SummaryPanel eyebrow="New request" title="Training plan request" icon={Send}>
@@ -79,12 +71,6 @@ export default function TrainingRequestFormSection({
             </div>
           </div>
         </section>
-        <div className="flex justify-end">
-          <AccentButton tone="sky" onClick={onSubmit} disabled={!canSubmit || !selectedCoach || submitting} className="max-w-xs">
-            <Send className="h-4 w-4" />
-            {submitting ? "Sending..." : "Send to coach"}
-          </AccentButton>
-        </div>
       </CardContent>
     </SummaryPanel>
   );

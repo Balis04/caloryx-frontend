@@ -3,11 +3,11 @@ import type {
   TrainingRequestResponseDto,
   UpdateTrainingRequestStatusDto,
 } from "../api/training-request.dto";
-import type { TrainingRequest } from "../model/training-request.model";
+import type { CoachTrainingRequest } from "../model/coach-training-request.model";
 
 export const mapTrainingRequestDtoToModel = (
   dto: TrainingRequestResponseDto
-): TrainingRequest => ({
+): CoachTrainingRequest => ({
   ...dto,
   requestDescription: dto.requestDescription?.trim() || "",
   coachResponse: dto.coachResponse?.trim() || "",
@@ -15,7 +15,7 @@ export const mapTrainingRequestDtoToModel = (
 
 export const mapClosedTrainingRequestDtoToModel = (
   dto: ClosedTrainingRequestResponseDto
-): TrainingRequest => ({
+): CoachTrainingRequest => ({
   id: dto.requestId,
   coachName: dto.coachName,
   requesterName: dto.requesterName,
@@ -34,7 +34,7 @@ export const mapClosedTrainingRequestDtoToModel = (
 });
 
 export const mapTrainingRequestStatusToUpdateDto = (
-  status: Exclude<TrainingRequest["status"], "PENDING" | "CLOSED">,
+  status: Exclude<CoachTrainingRequest["status"], "PENDING" | "CLOSED">,
   coachResponse: string
 ): UpdateTrainingRequestStatusDto => ({
   status,

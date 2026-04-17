@@ -1,4 +1,4 @@
-import type { CoachProfileListResponseDto } from "../types/coach-directory.dto";
+import type { CoachProfileListResponseDto } from "../model/training-request.types";
 
 const dayLabels: Record<string, string> = {
   MONDAY: "Monday",

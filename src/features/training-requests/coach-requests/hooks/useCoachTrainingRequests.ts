@@ -3,17 +3,23 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useProfileApi } from "@/features/profile/api/profile.api";
 import { isCoachRole } from "@/shared/utils/profileRole";
 
-import { useCoachTrainingRequestsApi } from "../../shared/api/coach-training-requests.api";
-import { useTrainingRequestApi } from "../../shared/api/training-request.api";
+import {
+  getClosedCoachTrainingRequests,
+  getCoachTrainingRequests,
+  downloadTrainingPlanFile,
+  getMyTrainingRequests,
+  updateCoachTrainingRequestStatus,
+  uploadCoachTrainingPlan,
+} from "../api/training-request.api";
 import type {
   ClosedTrainingRequestResponseDto,
   TrainingRequestResponseDto,
-} from "../../shared/api/training-request.dto";
+} from "../api/training-request.dto";
 import {
   mapClosedTrainingRequestDtoToModel,
   mapTrainingRequestDtoToModel,
   mapTrainingRequestStatusToUpdateDto,
-} from "../../shared/lib/training-request.mapper";
+} from "../lib/training-request.mapper";
 import type {
   CoachRequestFilter,
   CoachRequestViewMode,
@@ -139,13 +145,6 @@ const getVisibleRequests = (
 
 export const useCoachTrainingRequests = () => {
   const { getProfile } = useProfileApi();
-  const { downloadTrainingPlanFile, getMyTrainingRequests } = useTrainingRequestApi();
-  const {
-    getClosedCoachTrainingRequests,
-    getCoachTrainingRequests,
-    updateCoachTrainingRequestStatus,
-    uploadCoachTrainingPlan,
-  } = useCoachTrainingRequestsApi();
   const [profile, setProfile] = useState<import("@/features/profile/model/profile.types").ProfileResponseDto | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const isCoach = isCoachRole(profile?.role);
