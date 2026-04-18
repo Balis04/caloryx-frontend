@@ -10,8 +10,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FoodCard from "./FoodCard";
 import FoodsEmptyState from "./FoodsEmptyState";
 import FoodsSkeletonCards from "./FoodsSkeletonCards";
+import type { SavedFoodsScope } from "../lib/foods.constants";
 import type { Food, MealTime } from "../types";
-import type { SavedFoodsScope } from "../lib/foods.formatters";
 
 interface Props {
   activeDeleteId: string | null;

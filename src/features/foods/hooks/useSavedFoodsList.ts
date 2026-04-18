@@ -1,24 +1,14 @@
-import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 
 import {
-  createCustomFood,
   deleteCustomFood,
   getAllCustomFoods,
   getMyCustomFoods,
   getOtherCustomFoods,
 } from "../api/food.api";
-import { mapCustomFoodToFood, toNumber } from "../lib/foods.custom-foods";
-import type { CustomFoodForm, CustomFoodResponse, Food } from "../types";
-import type { SavedFoodsScope } from "../lib/foods.formatters";
-
-const EMPTY_CUSTOM_FOOD_FORM: CustomFoodForm = {
-  name: "",
-  calories: "",
-  protein: "",
-  carbohydrates: "",
-  fat: "",
-};
+import type { SavedFoodsScope } from "../lib/foods.constants";
+import { mapCustomFoodToFood } from "../lib/foods.custom-foods";
+import type { CustomFoodResponse, Food } from "../types";
 
 const getSavedFoodsByScope = async (savedScope: SavedFoodsScope) => {
   const response =
@@ -35,18 +25,13 @@ const getSavedFoodsByScope = async (savedScope: SavedFoodsScope) => {
   return items.map(mapCustomFoodToFood);
 };
 
-interface UseCustomFoodsOptions {
-  isSavedTabActive: boolean;
-  onCreated?: () => void;
+interface UseSavedFoodsListOptions {
+  enabled: boolean;
 }
 
-export const useCustomFoods = ({
-  isSavedTabActive,
-  onCreated,
-}: UseCustomFoodsOptions) => {
-  const [form, setForm] = useState<CustomFoodForm>(EMPTY_CUSTOM_FOOD_FORM);
-  const [createError, setCreateError] = useState<string | null>(null);
-  const [createLoading, setCreateLoading] = useState(false);
+export const useSavedFoodsList = ({
+  enabled,
+}: UseSavedFoodsListOptions) => {
   const [savedFoods, setSavedFoods] = useState<Food[]>([]);
   const [savedLoading, setSavedLoading] = useState(false);
   const [savedError, setSavedError] = useState<string | null>(null);
@@ -55,7 +40,7 @@ export const useCustomFoods = ({
   const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isSavedTabActive) {
+    if (!enabled) {
       return;
     }
 
@@ -76,7 +61,7 @@ export const useCustomFoods = ({
     };
 
     void loadSavedFoods();
-  }, [isSavedTabActive, savedScope]);
+  }, [enabled, savedScope]);
 
   const filteredSavedFoods = !savedSearchTerm.trim()
     ? savedFoods
@@ -85,43 +70,6 @@ export const useCustomFoods = ({
           .toLowerCase()
           .includes(savedSearchTerm.trim().toLowerCase())
       );
-
-  const createFood = async (event: FormEvent) => {
-    event.preventDefault();
-    setCreateError(null);
-
-    const name = form.name.trim();
-    if (!name) {
-      setCreateError("Name is required.");
-      return;
-    }
-
-    const calories = toNumber(form.calories);
-    const protein = toNumber(form.protein);
-    const carbohydrates = toNumber(form.carbohydrates);
-    const fat = toNumber(form.fat);
-
-    if ([calories, protein, carbohydrates, fat].some((value) => value < 0)) {
-      setCreateError("Nutrition values cannot be negative.");
-      return;
-    }
-
-    setCreateLoading(true);
-
-    try {
-      await createCustomFood({ name, calories, protein, carbohydrates, fat });
-      setForm(EMPTY_CUSTOM_FOOD_FORM);
-      setSavedScope("own");
-      setSavedSearchTerm("");
-      onCreated?.();
-    } catch (error) {
-      setCreateError(
-        error instanceof Error ? error.message : "Creation failed."
-      );
-    } finally {
-      setCreateLoading(false);
-    }
-  };
 
   const deleteSavedFood = async (foodId?: string) => {
     if (!foodId) {
@@ -142,19 +90,20 @@ export const useCustomFoods = ({
     }
   };
 
+  const resetSavedFoodsFilters = () => {
+    setSavedScope("own");
+    setSavedSearchTerm("");
+  };
+
   return {
     activeDeleteId,
-    createError,
-    createFood,
-    createLoading,
     deleteSavedFood,
     filteredSavedFoods,
-    form,
+    resetSavedFoodsFilters,
     savedError,
     savedLoading,
     savedScope,
     savedSearchTerm,
-    setForm,
     setSavedScope,
     setSavedSearchTerm,
   };

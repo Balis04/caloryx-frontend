@@ -5,19 +5,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FoodCreatePanel from "../components/FoodCreatePanel";
 import FoodSavedPanel from "../components/FoodSavedPanel";
 import FoodUsdaSearchPanel from "../components/FoodUsdaSearchPanel";
-import { useCustomFoods } from "../hooks/useCustomFoods";
 import { useFoodSearchPage } from "../hooks/useFoodSearchPage";
-import { useUsdaFoodSearch } from "../hooks/useUsdaFoodSearch";
-import type { FoodsMainTab } from "../lib/foods.formatters";
+import type { FoodsMainTab } from "../lib/foods.constants";
 
 export default function FoodSearchPage() {
-  const { activeTab, consumedDate, isValidMeal, normalizedMeal, setActiveTab } =
-    useFoodSearchPage();
-  const usdaFoods = useUsdaFoodSearch();
-  const customFoods = useCustomFoods({
-    isSavedTabActive: activeTab === "saved",
-    onCreated: () => setActiveTab("saved"),
-  });
+  const {
+    activeTab,
+    customFoodForm,
+    consumedDate,
+    isValidMeal,
+    normalizedMeal,
+    savedFoodsList,
+    setActiveTab,
+    usdaSearch,
+  } = useFoodSearchPage();
 
   if (!isValidMeal) {
     return <Navigate to="/calorie-counter" replace />;
@@ -45,38 +46,38 @@ export default function FoodSearchPage() {
           <TabsContent value="usda" className="mt-8">
             <FoodUsdaSearchPanel
               consumedDate={consumedDate}
-              foods={usdaFoods.foods}
-              isLoading={usdaFoods.loading}
+              foods={usdaSearch.foods}
+              isLoading={usdaSearch.loading}
               normalizedMeal={normalizedMeal}
               onSearch={(product, brand) =>
-                void usdaFoods.search(product, brand)
+                void usdaSearch.search(product, brand)
               }
             />
           </TabsContent>
 
           <TabsContent value="create" className="mt-8">
             <FoodCreatePanel
-              createError={customFoods.createError}
-              createLoading={customFoods.createLoading}
-              newFood={customFoods.form}
-              onCreateFood={customFoods.createFood}
-              onNewFoodChange={customFoods.setForm}
+              createError={customFoodForm.createError}
+              createLoading={customFoodForm.createLoading}
+              newFood={customFoodForm.form}
+              onCreateFood={customFoodForm.createFood}
+              onNewFoodChange={customFoodForm.setForm}
             />
           </TabsContent>
 
           <TabsContent value="saved" className="mt-8">
             <FoodSavedPanel
-              activeDeleteId={customFoods.activeDeleteId}
+              activeDeleteId={savedFoodsList.activeDeleteId}
               consumedDate={consumedDate}
-              foods={customFoods.filteredSavedFoods}
+              foods={savedFoodsList.filteredSavedFoods}
               normalizedMeal={normalizedMeal}
-              onDeleteSavedFood={customFoods.deleteSavedFood}
-              savedError={customFoods.savedError}
-              savedLoading={customFoods.savedLoading}
-              savedScope={customFoods.savedScope}
-              savedSearchTerm={customFoods.savedSearchTerm}
-              setSavedScope={customFoods.setSavedScope}
-              setSavedSearchTerm={customFoods.setSavedSearchTerm}
+              onDeleteSavedFood={savedFoodsList.deleteSavedFood}
+              savedError={savedFoodsList.savedError}
+              savedLoading={savedFoodsList.savedLoading}
+              savedScope={savedFoodsList.savedScope}
+              savedSearchTerm={savedFoodsList.savedSearchTerm}
+              setSavedScope={savedFoodsList.setSavedScope}
+              setSavedSearchTerm={savedFoodsList.setSavedSearchTerm}
             />
           </TabsContent>
         </Tabs>

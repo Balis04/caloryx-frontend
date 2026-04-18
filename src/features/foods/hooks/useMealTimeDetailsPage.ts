@@ -3,12 +3,13 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { getMealTimeSummary } from "../api/calories-summary.api";
 import { deleteFood, updateFoodAmount } from "../api/food.api";
+import { VALID_MEALS } from "../lib/foods.constants";
+import { formatDateInput, getValidDateOrFallback } from "../lib/foods.date";
 import {
-  formatDateInput,
-  getValidDateOrFallback,
+  calculateCalorieProgress,
+  calculateConsumedMealTotals,
   toMealTitle,
-  VALID_MEALS,
-} from "../lib/foods.formatters";
+} from "../lib/foods.summary";
 import type {
   FoodLogResponse,
   MealTime,
@@ -66,25 +67,11 @@ export const useMealTimeDetailsPage = () => {
 
     void loadMealDetails();
   }, [date, normalizedMeal]);
-
-  const consumed = foods.reduce(
-    (acc, food) => {
-      acc.calories += food.calories;
-      acc.protein += food.protein;
-      acc.carbohydrates += food.carbohydrates;
-      acc.fat += food.fat;
-      return acc;
-    },
-    { calories: 0, protein: 0, carbohydrates: 0, fat: 0 }
+  const consumed = calculateConsumedMealTotals(foods);
+  const calorieProgress = calculateCalorieProgress(
+    consumed.calories,
+    summary?.targetCalories ?? 0
   );
-
-  const calorieProgress =
-    (summary?.targetCalories ?? 0) > 0
-      ? Math.min(
-          (consumed.calories / (summary?.targetCalories ?? 1)) * 100,
-          100
-        )
-      : 0;
 
   const beginEdit = (food: FoodLogResponse) => {
     setEditingFoodId(food.id);
@@ -167,7 +154,6 @@ export const useMealTimeDetailsPage = () => {
     isLoading,
     isValidMeal,
     mealTitle: normalizedMeal ? toMealTitle(normalizedMeal) : "",
-    onBack: () => navigate("/calorie-counter"),
     openAddFood: () => {
       if (!normalizedMeal) {
         return;

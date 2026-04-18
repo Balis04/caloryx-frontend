@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getSummaryByDate } from "../api/calories-summary.api";
+import { DIARY_MEALS } from "../lib/foods.constants";
+import { formatDateInput, shiftDate } from "../lib/foods.date";
 import {
-  DIARY_MEALS,
-  formatDateInput,
   getMealCalories,
   mapCaloriesSummaryToFallback,
-  shiftDate,
-} from "../lib/foods.formatters";
+} from "../lib/foods.summary";
 import type { CaloriesSummaryResponse, MealTime } from "../types";
 
 export const useDiaryPage = () => {

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
-import {
-  getOptionalValidDate,
-  type FoodsMainTab,
-  VALID_MEALS,
-} from "../lib/foods.formatters";
+import { type FoodsMainTab, VALID_MEALS } from "../lib/foods.constants";
+import { getOptionalValidDate } from "../lib/foods.date";
+import { useCustomFoodForm } from "./useCustomFoodForm";
+import { useSavedFoodsList } from "./useSavedFoodsList";
+import { useUsdaFoodSearch } from "./useUsdaFoodSearch";
 import type { MealTime } from "../types";
 
 export const useFoodSearchPage = () => {
@@ -19,12 +19,25 @@ export const useFoodSearchPage = () => {
     VALID_MEALS.includes(normalizedMealParam as MealTime);
   const normalizedMeal = (normalizedMealParam as MealTime) ?? "BREAKFAST";
   const [activeTab, setActiveTab] = useState<FoodsMainTab>("usda");
+  const usdaSearch = useUsdaFoodSearch();
+  const savedFoodsList = useSavedFoodsList({
+    enabled: activeTab === "saved",
+  });
+  const customFoodForm = useCustomFoodForm({
+    onCreated: () => {
+      savedFoodsList.resetSavedFoodsFilters();
+      setActiveTab("saved");
+    },
+  });
 
   return {
     activeTab,
+    customFoodForm,
     consumedDate,
     isValidMeal,
     normalizedMeal,
+    savedFoodsList,
     setActiveTab,
+    usdaSearch,
   };
 };
