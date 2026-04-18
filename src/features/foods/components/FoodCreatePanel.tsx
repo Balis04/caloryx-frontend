@@ -1,13 +1,13 @@
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 import { Loader2 } from "lucide-react";
 
-import { GlassCard} from "@/components/caloriex";
+import { GlassCard } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import type { CustomFoodForm } from "../../types";
+import type { CustomFoodForm } from "../types";
 
 interface NutrientInputProps {
   id: string;
@@ -55,12 +55,15 @@ export default function FoodCreatePanel({
           Create custom food
         </CardTitle>
         <p className="text-sm leading-6 text-slate-600">
-          Save nutrition values per 100 grams so the item becomes reusable in future meal
-          logging.
+          Save nutrition values per 100 grams so the item becomes reusable in
+          future meal logging.
         </p>
       </CardHeader>
       <CardContent className="p-6">
-        <form onSubmit={(event) => void onCreateFood(event)} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <form
+          onSubmit={(event) => void onCreateFood(event)}
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        >
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="food-name">Name</Label>
             <Input
@@ -86,7 +89,9 @@ export default function FoodCreatePanel({
             id="food-protein"
             label="Protein (g / 100 g)"
             value={newFood.protein}
-            onChange={(value) => onNewFoodChange((prev) => ({ ...prev, protein: value }))}
+            onChange={(value) =>
+              onNewFoodChange((prev) => ({ ...prev, protein: value }))
+            }
           />
           <NutrientInput
             id="food-carbs"
@@ -100,7 +105,9 @@ export default function FoodCreatePanel({
             id="food-fat"
             label="Fat (g / 100 g)"
             value={newFood.fat}
-            onChange={(value) => onNewFoodChange((prev) => ({ ...prev, fat: value }))}
+            onChange={(value) =>
+              onNewFoodChange((prev) => ({ ...prev, fat: value }))
+            }
           />
 
           {createError ? (
@@ -108,8 +115,14 @@ export default function FoodCreatePanel({
           ) : null}
 
           <div className="flex justify-end md:col-span-2">
-            <Button type="submit" disabled={createLoading} className="rounded-full px-6">
-              {createLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            <Button
+              type="submit"
+              disabled={createLoading}
+              className="rounded-full px-6"
+            >
+              {createLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
               Save to saved foods
             </Button>
           </div>
@@ -118,4 +131,3 @@ export default function FoodCreatePanel({
     </GlassCard>
   );
 }
-

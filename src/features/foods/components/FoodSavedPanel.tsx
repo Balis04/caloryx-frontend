@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import FoodCard from "../shared/FoodCard";
-import FoodsEmptyState from "../shared/FoodsEmptyState";
-import FoodsSkeletonCards from "../shared/FoodsSkeletonCards";
-import type { Food, MealTime } from "../../types";
-import type { SavedFoodsScope } from "../../lib/foods.formatters";
+import FoodCard from "./FoodCard";
+import FoodsEmptyState from "./FoodsEmptyState";
+import FoodsSkeletonCards from "./FoodsSkeletonCards";
+import type { Food, MealTime } from "../types";
+import type { SavedFoodsScope } from "../lib/foods.formatters";
 
 interface Props {
   activeDeleteId: string | null;
@@ -48,16 +48,23 @@ export default function FoodSavedPanel({
             Saved foods
           </CardTitle>
           <p className="text-sm leading-6 text-slate-600">
-            Browse foods from the backend and filter them before adding them to this meal.
+            Browse foods from the backend and filter them before adding them to
+            this meal.
           </p>
         </CardHeader>
         <CardContent className="space-y-4 p-6">
-          <Tabs value={savedScope} onValueChange={(value) => setSavedScope(value as SavedFoodsScope)}>
+          <Tabs
+            value={savedScope}
+            onValueChange={(value) => setSavedScope(value as SavedFoodsScope)}
+          >
             <TabsList className="grid h-auto w-full grid-cols-3 gap-2 rounded-[22px] border border-white/60 bg-slate-100/60 p-2">
               <TabsTrigger value="own" className="rounded-[18px] py-2 text-sm">
                 Own
               </TabsTrigger>
-              <TabsTrigger value="other" className="rounded-[18px] py-2 text-sm">
+              <TabsTrigger
+                value="other"
+                className="rounded-[18px] py-2 text-sm"
+              >
                 Others
               </TabsTrigger>
               <TabsTrigger value="all" className="rounded-[18px] py-2 text-sm">
@@ -77,7 +84,9 @@ export default function FoodSavedPanel({
             />
           </div>
 
-          {savedError ? <p className="text-sm text-red-700">{savedError}</p> : null}
+          {savedError ? (
+            <p className="text-sm text-red-700">{savedError}</p>
+          ) : null}
         </CardContent>
       </GlassCard>
 
@@ -87,7 +96,11 @@ export default function FoodSavedPanel({
         ) : foods.length > 0 ? (
           foods.map((food) => (
             <div key={food.customFoodId || food.fdcId} className="space-y-3">
-              <FoodCard food={food} mealTime={normalizedMeal} consumedDate={consumedDate} />
+              <FoodCard
+                food={food}
+                mealTime={normalizedMeal}
+                consumedDate={consumedDate}
+              />
 
               {savedScope === "own" && food.customFoodId ? (
                 <Button
@@ -117,4 +130,3 @@ export default function FoodSavedPanel({
     </div>
   );
 }
-

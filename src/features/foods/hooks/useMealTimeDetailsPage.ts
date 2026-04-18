@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { getMealTimeSummary } from "../../api/calories-summary.api";
-import { deleteFood, updateFoodAmount } from "../../api/food.api";
+import { getMealTimeSummary } from "../api/calories-summary.api";
+import { deleteFood, updateFoodAmount } from "../api/food.api";
 import {
   formatDateInput,
   getValidDateOrFallback,
   toMealTitle,
   VALID_MEALS,
-} from "../../lib/foods.formatters";
-import type { FoodLogResponse, MealTime, MealTimeSummaryResponse } from "../../types";
+} from "../lib/foods.formatters";
+import type {
+  FoodLogResponse,
+  MealTime,
+  MealTimeSummaryResponse,
+} from "../types";
 
 export const useMealTimeDetailsPage = () => {
   const { mealTime } = useParams<{ mealTime: string }>();
@@ -25,12 +29,16 @@ export const useMealTimeDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeFoodId, setActiveFoodId] = useState<string | null>(null);
-  const [actionType, setActionType] = useState<"update" | "delete" | null>(null);
+  const [actionType, setActionType] = useState<"update" | "delete" | null>(
+    null
+  );
   const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
   const [editingAmount, setEditingAmount] = useState<string>("");
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const isValidMeal = Boolean(normalizedMeal && VALID_MEALS.includes(normalizedMeal));
+  const isValidMeal = Boolean(
+    normalizedMeal && VALID_MEALS.includes(normalizedMeal)
+  );
 
   useEffect(() => {
     const loadMealDetails = async () => {
@@ -46,7 +54,8 @@ export const useMealTimeDetailsPage = () => {
         setSummary(data);
         setFoods(data.foods ?? []);
       } catch (e) {
-        const message = e instanceof Error ? e.message : "Failed to load meal details.";
+        const message =
+          e instanceof Error ? e.message : "Failed to load meal details.";
         setError(message);
         setSummary(null);
         setFoods([]);
@@ -71,7 +80,10 @@ export const useMealTimeDetailsPage = () => {
 
   const calorieProgress =
     (summary?.targetCalories ?? 0) > 0
-      ? Math.min((consumed.calories / (summary?.targetCalories ?? 1)) * 100, 100)
+      ? Math.min(
+          (consumed.calories / (summary?.targetCalories ?? 1)) * 100,
+          100
+        )
       : 0;
 
   const beginEdit = (food: FoodLogResponse) => {
@@ -170,4 +182,3 @@ export const useMealTimeDetailsPage = () => {
     handleDelete,
   };
 };
-

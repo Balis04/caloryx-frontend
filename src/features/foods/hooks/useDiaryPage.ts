@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getSummaryByDate } from "../../api/calories-summary.api";
+import { getSummaryByDate } from "../api/calories-summary.api";
 import {
   DIARY_MEALS,
   formatDateInput,
   getMealCalories,
   mapCaloriesSummaryToFallback,
   shiftDate,
-} from "../../lib/foods.formatters";
-import type { CaloriesSummaryResponse, MealTime } from "../../types";
+} from "../lib/foods.formatters";
+import type { CaloriesSummaryResponse, MealTime } from "../types";
 
 export const useDiaryPage = () => {
   const navigate = useNavigate();
@@ -29,7 +29,8 @@ export const useDiaryPage = () => {
         const data = await getSummaryByDate(selectedDate);
         setSummary(data);
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to fetch summary.";
+        const message =
+          error instanceof Error ? error.message : "Failed to fetch summary.";
         setSummaryError(message);
         setSummary(mapCaloriesSummaryToFallback(selectedDate));
       }
@@ -38,11 +39,17 @@ export const useDiaryPage = () => {
     void loadSummary();
   }, [selectedDate]);
 
-  const caloriesRemaining = Math.max(summary.targetCalories - summary.consumedCalories, 0);
+  const caloriesRemaining = Math.max(
+    summary.targetCalories - summary.consumedCalories,
+    0
+  );
   const progress =
     summary.targetCalories <= 0
       ? 0
-      : Math.min((summary.consumedCalories / summary.targetCalories) * 100, 100);
+      : Math.min(
+          (summary.consumedCalories / summary.targetCalories) * 100,
+          100
+        );
 
   const meals = DIARY_MEALS.map((meal) => {
     const mealCalories = getMealCalories(summary, meal.type);
@@ -63,7 +70,9 @@ export const useDiaryPage = () => {
   };
 
   const openMealDetails = (mealType: MealTime) => {
-    navigate(`/calorie-counter/meal/${mealType.toLowerCase()}?date=${selectedDate}`);
+    navigate(
+      `/calorie-counter/meal/${mealType.toLowerCase()}?date=${selectedDate}`
+    );
   };
 
   return {
@@ -74,10 +83,10 @@ export const useDiaryPage = () => {
     progress,
     selectedDate,
     setSelectedDate,
-    shiftSelectedDate: (days: number) => setSelectedDate((prev) => shiftDate(prev, days)),
+    shiftSelectedDate: (days: number) =>
+      setSelectedDate((prev) => shiftDate(prev, days)),
     summary,
     summaryError,
     today,
   };
 };
-

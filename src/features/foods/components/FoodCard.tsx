@@ -5,12 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { GlassCard, GlassChip } from "@/components/caloriex";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { saveFood } from "../../api/food.api";
-import { createFoodLogPayload } from "../../lib/food.mapper";
-import type { Food } from "../../types";
+import { saveFood } from "../api/food.api";
+import { createFoodLogPayload } from "../lib/food.mapper";
+import type { Food } from "../types";
 import { NutrientList } from "./NutrientList";
 import { UnitSelect } from "./UnitSelect";
 
@@ -68,8 +73,13 @@ export default function FoodCard({
               {food.description}
             </CardTitle>
             <div className="flex flex-wrap gap-2">
-              <GlassChip className="px-3 py-1 text-xs">{food.brandOwner || "General"}</GlassChip>
-              <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs">
+              <GlassChip className="px-3 py-1 text-xs">
+                {food.brandOwner || "General"}
+              </GlassChip>
+              <Badge
+                variant="secondary"
+                className="rounded-full px-3 py-1 text-xs"
+              >
                 {Math.round(totalGrams)} g total
               </Badge>
             </div>
@@ -91,7 +101,10 @@ export default function FoodCard({
       </CardHeader>
 
       <CardContent className="flex-grow p-5 pt-0">
-        <NutrientList nutrients={food.foodNutrients} calculate={calculateNutrient} />
+        <NutrientList
+          nutrients={food.foodNutrients}
+          calculate={calculateNutrient}
+        />
       </CardContent>
 
       <CardFooter className="flex flex-col gap-3 border-t border-white/50 bg-white/35 p-5 pt-4">
@@ -105,9 +118,10 @@ export default function FoodCard({
           <UnitSelect unit={unit} food={food} onUnitChange={handleUnitChange} />
         </div>
 
-        {saveError ? <p className="w-full text-xs text-red-700">{saveError}</p> : null}
+        {saveError ? (
+          <p className="w-full text-xs text-red-700">{saveError}</p>
+        ) : null}
       </CardFooter>
     </GlassCard>
   );
 }
-

@@ -7,14 +7,10 @@ import {
   getAllCustomFoods,
   getMyCustomFoods,
   getOtherCustomFoods,
-} from "../../api/food.api";
-import { mapCustomFoodToFood, toNumber } from "../../lib/foods.custom-foods";
-import type {
-  CustomFoodForm,
-  CustomFoodResponse,
-  Food,
-} from "../../types";
-import type { SavedFoodsScope } from "../../lib/foods.formatters";
+} from "../api/food.api";
+import { mapCustomFoodToFood, toNumber } from "../lib/foods.custom-foods";
+import type { CustomFoodForm, CustomFoodResponse, Food } from "../types";
+import type { SavedFoodsScope } from "../lib/foods.formatters";
 
 const EMPTY_CUSTOM_FOOD_FORM: CustomFoodForm = {
   name: "",
@@ -29,12 +25,12 @@ const getSavedFoodsByScope = async (savedScope: SavedFoodsScope) => {
     savedScope === "own"
       ? await getMyCustomFoods()
       : savedScope === "other"
-        ? await getOtherCustomFoods()
-        : await getAllCustomFoods();
+      ? await getOtherCustomFoods()
+      : await getAllCustomFoods();
 
   const items = Array.isArray(response)
     ? response
-    : ((response as { content?: CustomFoodResponse[] }).content ?? []);
+    : (response as { content?: CustomFoodResponse[] }).content ?? [];
 
   return items.map(mapCustomFoodToFood);
 };
@@ -70,7 +66,9 @@ export const useCustomFoods = ({
       try {
         setSavedFoods(await getSavedFoodsByScope(savedScope));
       } catch (error) {
-        setSavedError(error instanceof Error ? error.message : "Failed to load saved foods.");
+        setSavedError(
+          error instanceof Error ? error.message : "Failed to load saved foods."
+        );
         setSavedFoods([]);
       } finally {
         setSavedLoading(false);
@@ -83,7 +81,9 @@ export const useCustomFoods = ({
   const filteredSavedFoods = !savedSearchTerm.trim()
     ? savedFoods
     : savedFoods.filter((food) =>
-        food.description.toLowerCase().includes(savedSearchTerm.trim().toLowerCase())
+        food.description
+          .toLowerCase()
+          .includes(savedSearchTerm.trim().toLowerCase())
       );
 
   const createFood = async (event: FormEvent) => {
@@ -115,7 +115,9 @@ export const useCustomFoods = ({
       setSavedSearchTerm("");
       onCreated?.();
     } catch (error) {
-      setCreateError(error instanceof Error ? error.message : "Creation failed.");
+      setCreateError(
+        error instanceof Error ? error.message : "Creation failed."
+      );
     } finally {
       setCreateLoading(false);
     }
@@ -157,4 +159,3 @@ export const useCustomFoods = ({
     setSavedSearchTerm,
   };
 };
-

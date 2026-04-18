@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { searchFoods } from "../../api/usda.api";
-import { mapUsdaFoodToFood } from "../../lib/usda.mapper";
-import type { Food } from "../../types";
+import { searchFoods } from "../api/usda.api";
+import { mapUsdaFoodToFood } from "../lib/usda.mapper";
+import type { Food } from "../types";
 
 export const useUsdaFoodSearch = () => {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -51,4 +51,3 @@ export const useUsdaFoodSearch = () => {
     search,
   };
 };
-

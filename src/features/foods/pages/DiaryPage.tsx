@@ -1,16 +1,12 @@
 import { ChevronLeft, ChevronRight, Flame, Target } from "lucide-react";
 
-import {
-  CaloriexPage,
-  GlassMetric,
-  SummaryPanel,
-} from "@/components/caloriex";
+import { CaloriexPage, GlassMetric, SummaryPanel } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 
-import DiaryMealsList from "../components/diary/DiaryMealsList";
-import { useDiaryPage } from "../hooks/diary/useDiaryPage";
+import DiaryMealsList from "../components/DiaryMealsList";
+import { useDiaryPage } from "../hooks/useDiaryPage";
 
 export default function DiaryPage() {
   const {
@@ -30,7 +26,11 @@ export default function DiaryPage() {
   return (
     <CaloriexPage>
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
-        <SummaryPanel eyebrow="Daily summary" title="Calories and macros" icon={Target}>
+        <SummaryPanel
+          eyebrow="Daily summary"
+          title="Calories and macros"
+          icon={Target}
+        >
           <div className="space-y-6 p-6">
             <div className="flex flex-wrap items-center gap-3">
               <Button
@@ -74,7 +74,9 @@ export default function DiaryPage() {
               </Button>
             </div>
 
-            {summaryError ? <p className="text-sm text-red-700">{summaryError}</p> : null}
+            {summaryError ? (
+              <p className="text-sm text-red-700">{summaryError}</p>
+            ) : null}
 
             <div className="rounded-[28px] border border-emerald-200/70 bg-gradient-to-br from-emerald-50/90 via-white/80 to-cyan-50/90 p-5 backdrop-blur">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -107,7 +109,9 @@ export default function DiaryPage() {
               <GlassMetric
                 label="Carbs"
                 value={`${Math.round(summary.consumedCarbohydratesGrams)} g`}
-                description={`Goal ${Math.round(summary.targetCarbohydratesGrams)} g`}
+                description={`Goal ${Math.round(
+                  summary.targetCarbohydratesGrams
+                )} g`}
               />
               <GlassMetric
                 label="Fat"
@@ -119,7 +123,9 @@ export default function DiaryPage() {
             <div className="space-y-3 rounded-[28px] border border-white/60 bg-white/65 p-5 backdrop-blur">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium text-slate-950">Calorie progress</p>
+                  <p className="text-sm font-medium text-slate-950">
+                    Calorie progress
+                  </p>
                   <p className="text-sm text-slate-600">
                     {Math.round(summary.consumedCalories)} consumed of{" "}
                     {Math.round(summary.targetCalories)} kcal

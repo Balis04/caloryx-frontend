@@ -1,6 +1,11 @@
-import type { CaloriesSummaryResponse, MealTime } from "../../types";
+import type { CaloriesSummaryResponse, MealTime } from "../types";
 
-export const VALID_MEALS: MealTime[] = ["BREAKFAST", "LUNCH", "DINNER", "SNACK"];
+export const VALID_MEALS: MealTime[] = [
+  "BREAKFAST",
+  "LUNCH",
+  "DINNER",
+  "SNACK",
+];
 
 export const MEAL_LABELS: Record<MealTime, string> = {
   BREAKFAST: "Breakfast",
@@ -12,9 +17,21 @@ export const MEAL_LABELS: Record<MealTime, string> = {
 export type FoodsMainTab = "usda" | "create" | "saved";
 export type SavedFoodsScope = "own" | "other" | "all";
 
-export const DIARY_MEALS: Array<{ title: string; type: MealTime; accent: string }> = [
-  { title: "Breakfast", type: "BREAKFAST", accent: "from-amber-200/60 to-orange-100/50" },
-  { title: "Lunch", type: "LUNCH", accent: "from-emerald-200/60 to-teal-100/50" },
+export const DIARY_MEALS: Array<{
+  title: string;
+  type: MealTime;
+  accent: string;
+}> = [
+  {
+    title: "Breakfast",
+    type: "BREAKFAST",
+    accent: "from-amber-200/60 to-orange-100/50",
+  },
+  {
+    title: "Lunch",
+    type: "LUNCH",
+    accent: "from-emerald-200/60 to-teal-100/50",
+  },
   { title: "Dinner", type: "DINNER", accent: "from-sky-200/60 to-cyan-100/50" },
   { title: "Snacks", type: "SNACK", accent: "from-rose-200/60 to-pink-100/50" },
 ];
@@ -54,7 +71,10 @@ export const getOptionalValidDate = (value: string | null) => {
   return value;
 };
 
-export const getValidDateOrFallback = (value: string | null, fallback: string) => {
+export const getValidDateOrFallback = (
+  value: string | null,
+  fallback: string
+) => {
   if (!value || !isValidDateInput(value)) {
     return fallback;
   }
@@ -62,7 +82,9 @@ export const getValidDateOrFallback = (value: string | null, fallback: string) =
   return value;
 };
 
-export const mapCaloriesSummaryToFallback = (date: string): CaloriesSummaryResponse => ({
+export const mapCaloriesSummaryToFallback = (
+  date: string
+): CaloriesSummaryResponse => ({
   date,
   targetCalories: 2200,
   targetProteinGrams: 140,
@@ -88,17 +110,29 @@ export const getMealCalories = (
 ): { consumed: number; target: number } => {
   switch (mealType) {
     case "BREAKFAST":
-      return { consumed: summary.consumedBreakfastKcal, target: summary.targetBreakfastKcal };
+      return {
+        consumed: summary.consumedBreakfastKcal,
+        target: summary.targetBreakfastKcal,
+      };
     case "LUNCH":
-      return { consumed: summary.consumedLunchKcal, target: summary.targetLunchKcal };
+      return {
+        consumed: summary.consumedLunchKcal,
+        target: summary.targetLunchKcal,
+      };
     case "DINNER":
-      return { consumed: summary.consumedDinnerKcal, target: summary.targetDinnerKcal };
+      return {
+        consumed: summary.consumedDinnerKcal,
+        target: summary.targetDinnerKcal,
+      };
     case "SNACK":
-      return { consumed: summary.consumedSnackKcal, target: summary.targetSnackKcal };
+      return {
+        consumed: summary.consumedSnackKcal,
+        target: summary.targetSnackKcal,
+      };
     default:
       return { consumed: 0, target: 0 };
   }
 };
 
-export const toMealTitle = (mealTime: MealTime): string => MEAL_LABELS[mealTime] ?? mealTime;
-
+export const toMealTitle = (mealTime: MealTime): string =>
+  MEAL_LABELS[mealTime] ?? mealTime;

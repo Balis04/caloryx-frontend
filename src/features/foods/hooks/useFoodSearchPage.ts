@@ -5,8 +5,8 @@ import {
   getOptionalValidDate,
   type FoodsMainTab,
   VALID_MEALS,
-} from "../../lib/foods.formatters";
-import type { MealTime } from "../../types";
+} from "../lib/foods.formatters";
+import type { MealTime } from "../types";
 
 export const useFoodSearchPage = () => {
   const { mealTime } = useParams<{ mealTime: string }>();
@@ -15,7 +15,8 @@ export const useFoodSearchPage = () => {
 
   const normalizedMealParam = mealTime?.toUpperCase();
   const isValidMeal =
-    !!normalizedMealParam && VALID_MEALS.includes(normalizedMealParam as MealTime);
+    !!normalizedMealParam &&
+    VALID_MEALS.includes(normalizedMealParam as MealTime);
   const normalizedMeal = (normalizedMealParam as MealTime) ?? "BREAKFAST";
   const [activeTab, setActiveTab] = useState<FoodsMainTab>("usda");
 
@@ -27,4 +28,3 @@ export const useFoodSearchPage = () => {
     setActiveTab,
   };
 };
-

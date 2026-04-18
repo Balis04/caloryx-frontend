@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-import type { MealTime } from "../../types";
+import type { MealTime } from "../types";
 
 interface DiaryMealItem {
   accent: string;
@@ -68,7 +68,10 @@ export default function DiaryMealsList({
                 <span>{Math.round(meal.mealCalories.consumed)} kcal</span>
                 <span>{Math.round(meal.mealCalories.target)} kcal target</span>
               </div>
-              <Progress value={meal.mealProgress} className="h-2.5 bg-slate-200/80" />
+              <Progress
+                value={meal.mealProgress}
+                className="h-2.5 bg-slate-200/80"
+              />
             </div>
 
             <div className="flex items-center justify-end">
@@ -89,4 +92,3 @@ export default function DiaryMealsList({
     </div>
   );
 }
-

@@ -19,4 +19,3 @@ export const mapUsdaFoodToFood = (item: UsdaFoodSearchItem): Food => ({
   servingSize: item.servingSize,
   foodNutrients: buildNutrients(item),
 });
-
