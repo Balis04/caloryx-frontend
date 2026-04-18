@@ -1,29 +1,18 @@
 import { getProfile } from "@/features/profile/api/profile.api";
 import type { ProfileResponse } from "@/features/profile/types";
 import { useEffect, useState } from "react";
-import { createTrainingRequest } from "../api/training-request.api";
-import { mapTrainingRequestFormDataToRequest } from "../lib/training-request.mapper";
-import type { TrainingRequestFormData } from "@/features/training-requests/types";
-
-const createInitialFormData = (
-  profile?: ProfileResponse | null
-): TrainingRequestFormData => ({
-  weeklyWorkouts: "",
-  preferredSessionLength: "",
-  trainingLocation: "",
-  currentWeightKg: profile?.actualWeightKg ? String(profile.actualWeightKg) : "",
-  targetWeightKg: profile?.targetWeightKg ? String(profile.targetWeightKg) : "",
-  goal: profile?.goal ?? "",
-  activityLevel: profile?.activityLevel ?? "",
-  customerDescription: "",
-});
+import { createTrainingRequest } from "../api/training-request-create.api";
+import { createInitialTrainingRequestFormData } from "../lib/training-request.form";
+import { mapTrainingRequestFormDataToRequest } from "../lib/training-request-form.mapper";
+import { canSubmitTrainingRequestForm } from "../lib/training-request.validation";
+import type { TrainingRequestFormData } from "../types";
 
 export const useTrainingRequestForm = (
   coachProfileId: string | null
 ) => {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [formData, setFormData] = useState<TrainingRequestFormData>(
-    createInitialFormData()
+    createInitialTrainingRequestFormData()
   );
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +27,7 @@ export const useTrainingRequestForm = (
       try {
         const response = await getProfile();
         setProfile(response);
-        setFormData(createInitialFormData(response));
+        setFormData(createInitialTrainingRequestFormData(response));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load profile data.");
       } finally {
@@ -81,12 +70,6 @@ export const useTrainingRequestForm = (
     }
   };
 
-  const canSubmit =
-    formData.weeklyWorkouts.trim().length > 0 &&
-    formData.preferredSessionLength.trim().length > 0 &&
-    formData.trainingLocation.trim().length > 0 &&
-    formData.customerDescription.trim().length >= 20;
-
   return {
     profile,
     formData,
@@ -96,7 +79,7 @@ export const useTrainingRequestForm = (
     submitMessage,
     setField,
     submit,
-    canSubmit,
+    canSubmit: canSubmitTrainingRequestForm(formData),
   };
 };
 

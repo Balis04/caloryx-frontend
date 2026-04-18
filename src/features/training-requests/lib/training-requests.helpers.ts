@@ -51,7 +51,8 @@ export const getTrainingPlanDescription = (request: CoachTrainingRequest) =>
 export const getTrainingPlanFileName = (request: CoachTrainingRequest) =>
   request.fileName?.trim() || "";
 export const getTrainingPlanName = (request: CoachTrainingRequest) =>
-  request.planName?.trim() || getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
+  request.planName?.trim() ||
+  getTrainingPlanFileName(request).replace(/\.[^.]+$/, "");
 
 export const createTrainingPlanDraft = (
   request: CoachTrainingRequest
@@ -62,25 +63,6 @@ export const createTrainingPlanDraft = (
   existingFileName: getTrainingPlanFileName(request),
 });
 
-export const upsertRequest = (
-  list: CoachTrainingRequest[],
-  nextRequest: CoachTrainingRequest
-) => {
-  const hasMatch = list.some((request) => request.id === nextRequest.id);
-  if (!hasMatch) {
-    return [nextRequest, ...list];
-  }
-  return list.map((request) => (request.id === nextRequest.id ? nextRequest : request));
-};
-
-export const dedupeRequests = (requests: CoachTrainingRequest[]) => {
-  const byId = new Map<string, CoachTrainingRequest>();
-  requests.forEach((request) => {
-    byId.set(request.id, request);
-  });
-  return Array.from(byId.values());
-};
-
 export const openFile = (fileUrl: string) => {
   if (!fileUrl) {
     return;
@@ -90,4 +72,3 @@ export const openFile = (fileUrl: string) => {
     : `${API_BASE_URL}${fileUrl.startsWith("/") ? "" : "/"}${fileUrl}`;
   window.open(normalizedUrl, "_blank", "noopener,noreferrer");
 };
-

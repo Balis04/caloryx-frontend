@@ -3,8 +3,7 @@ import { CardContent } from "@/components/ui/card";
 import CoachRequestCard from "../components/CoachRequestCard";
 import TrainingRequestsHeader from "../components/TrainingRequestsHeader";
 import UserRequestCard from "../components/UserRequestCard";
-import { createTrainingPlanDraft } from "../lib/coach-training-requests.helpers";
-import { useCoachTrainingRequests } from "../hooks/useCoachTrainingRequests";
+import { useCoachTrainingRequestsPage } from "../hooks/useCoachTrainingRequestsPage";
 
 export default function CoachTrainingRequestsPage() {
   const {
@@ -13,8 +12,10 @@ export default function CoachTrainingRequestsPage() {
     decisionDescriptions,
     downloadingRequestId,
     downloadTrainingPlan,
+    emptyMessage,
     error,
     expandedApprovedRequestId,
+    getTrainingPlanDraft,
     isCoach,
     loading,
     profileLoading,
@@ -23,22 +24,13 @@ export default function CoachTrainingRequestsPage() {
     setCoachRequestFilter,
     setCoachViewMode,
     setDecisionDescription,
+    showCoachIncomingRequests,
     toggleApprovedRequestEditor,
-    trainingPlanDrafts,
     updateRequestStatus,
     updateTrainingPlanDraft,
     updatingRequestId,
     visibleRequests,
-  } = useCoachTrainingRequests();
-  const showCoachIncomingRequests = isCoach && coachViewMode === "coach";
-  const emptyMessage = showCoachIncomingRequests
-    ? {
-        pending: "There are currently no pending requests.",
-        approved: "There are currently no approved requests.",
-        rejected: "There are currently no rejected requests.",
-        closed: "There are currently no completed requests.",
-      }[coachRequestFilter]
-    : "You have not sent any training plan requests yet.";
+  } = useCoachTrainingRequestsPage();
 
   return (
     <CaloriexPage>
@@ -80,10 +72,10 @@ export default function CoachTrainingRequestsPage() {
                 ? visibleRequests.map((request) => (
                     <CoachRequestCard
                       key={request.id}
-                      approvedDraft={
-                        trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request)
+                      approvedDraft={getTrainingPlanDraft(request)}
+                      decisionDescription={
+                        decisionDescriptions[request.id] ?? request.coachResponse ?? ""
                       }
-                      decisionDescription={decisionDescriptions[request.id] ?? ""}
                       downloadingRequestId={downloadingRequestId}
                       expandedApprovedRequestId={expandedApprovedRequestId}
                       filter={coachRequestFilter}

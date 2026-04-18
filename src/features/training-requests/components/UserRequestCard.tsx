@@ -12,7 +12,7 @@ import {
   getTrainingPlanFileName,
   statusLabelMap,
   statusVariantMap,
-} from "../lib/coach-training-requests.helpers";
+} from "../lib/training-requests.helpers";
 import type { CoachTrainingRequest } from "@/features/training-requests/types";
 import RequestTextPanel from "./RequestTextPanel";
 

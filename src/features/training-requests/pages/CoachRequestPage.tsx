@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import {
   CaloriexPage,
   GlassCard,
@@ -11,8 +9,15 @@ import CoachSelectionCard from "../components/CoachSelectionCard";
 import { useCoachRequestPage } from "../hooks/useCoachRequestPage";
 
 export default function CoachRequestPage() {
-  const navigate = useNavigate();
-  const { coaches, selectedCoach, loading, error, selectCoach } = useCoachRequestPage();
+  const {
+    canContinue,
+    coaches,
+    selectedCoach,
+    loading,
+    error,
+    selectCoach,
+    openTrainingRequestForm,
+  } = useCoachRequestPage();
 
   return (
     <CaloriexPage>
@@ -53,13 +58,8 @@ export default function CoachRequestPage() {
 
           <CoachRequestNextStepPanel
             selectedCoach={selectedCoach}
-            onAction={() => {
-              if (!selectedCoach) {
-                return;
-              }
-
-              navigate(`/training-request/${selectedCoach.id}`);
-            }}
+            disabled={!canContinue}
+            onAction={openTrainingRequestForm}
           />
         </div>
       </section>

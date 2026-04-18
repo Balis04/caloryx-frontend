@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+
 import { getCoachDirectory } from "../api/coach-directory.api";
 import { mapCoachDirectoryResponsesToCards } from "../lib/coach-directory.mapper";
-import type { CoachCardData } from "@/features/training-requests/types";
+import type { CoachCardData } from "../types";
 
-export const useCoachRequestPage = () => {
+export const useCoachDirectoryList = () => {
   const [coaches, setCoaches] = useState<CoachCardData[]>([]);
-  const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,14 +28,9 @@ export const useCoachRequestPage = () => {
     void loadCoaches();
   }, []);
 
-  const selectedCoach = coaches.find((coach) => coach.id === selectedCoachId) ?? null;
-
   return {
     coaches,
-    selectedCoach,
-    loading,
     error,
-    selectCoach: (coachId: string) => setSelectedCoachId(coachId),
+    loading,
   };
 };
-
