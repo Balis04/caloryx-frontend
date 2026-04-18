@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays } from "lucide-react";
 
-import { coachProfileInputClassName } from "../../lib/coach-profile.formatters";
-import type { AvailabilitySlot } from "../../types";
+import { coachProfileInputClassName } from "../lib/coach-profile.formatters";
+import type { AvailabilitySlot } from "../types";
 
 export default function CoachProfileAvailabilitySection({
   availability,
@@ -19,11 +19,15 @@ export default function CoachProfileAvailabilitySection({
   ) => void;
 }) {
   return (
-    <SummaryPanel eyebrow="Schedule" title="Weekly availability" icon={CalendarDays}>
+    <SummaryPanel
+      eyebrow="Schedule"
+      title="Weekly availability"
+      icon={CalendarDays}
+    >
       <div className="grid gap-4 p-6">
         <p className="text-sm text-slate-600">
-          Required: enable at least one day and set a valid time range where the start
-          is earlier than the end.
+          Required: enable at least one day and set a valid time range where the
+          start is earlier than the end.
         </p>
         {availability.map((slot) => (
           <div
@@ -35,18 +39,28 @@ export default function CoachProfileAvailabilitySection({
                 type="checkbox"
                 checked={slot.enabled}
                 onChange={(event) =>
-                  setAvailabilityField(slot.dayOfWeek, "enabled", event.target.checked)
+                  setAvailabilityField(
+                    slot.dayOfWeek,
+                    "enabled",
+                    event.target.checked
+                  )
                 }
               />
               {slot.label}
             </label>
 
-            <Badge variant={slot.enabled ? "default" : "outline"} className="w-fit rounded-full">
+            <Badge
+              variant={slot.enabled ? "default" : "outline"}
+              className="w-fit rounded-full"
+            >
               {slot.enabled ? "Available" : "Unavailable"}
             </Badge>
 
             <div className="space-y-2">
-              <Label htmlFor={`${slot.dayOfWeek}-from`} className="text-xs uppercase tracking-[0.24em] text-slate-500">
+              <Label
+                htmlFor={`${slot.dayOfWeek}-from`}
+                className="text-xs uppercase tracking-[0.24em] text-slate-500"
+              >
                 Start
               </Label>
               <Input
@@ -55,14 +69,21 @@ export default function CoachProfileAvailabilitySection({
                 disabled={!slot.enabled}
                 value={slot.from}
                 onChange={(event) =>
-                  setAvailabilityField(slot.dayOfWeek, "from", event.target.value)
+                  setAvailabilityField(
+                    slot.dayOfWeek,
+                    "from",
+                    event.target.value
+                  )
                 }
                 className={coachProfileInputClassName}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor={`${slot.dayOfWeek}-until`} className="text-xs uppercase tracking-[0.24em] text-slate-500">
+              <Label
+                htmlFor={`${slot.dayOfWeek}-until`}
+                className="text-xs uppercase tracking-[0.24em] text-slate-500"
+              >
                 End
               </Label>
               <Input
@@ -71,7 +92,11 @@ export default function CoachProfileAvailabilitySection({
                 disabled={!slot.enabled}
                 value={slot.until}
                 onChange={(event) =>
-                  setAvailabilityField(slot.dayOfWeek, "until", event.target.value)
+                  setAvailabilityField(
+                    slot.dayOfWeek,
+                    "until",
+                    event.target.value
+                  )
                 }
                 className={coachProfileInputClassName}
               />
@@ -82,4 +107,3 @@ export default function CoachProfileAvailabilitySection({
     </SummaryPanel>
   );
 }
-

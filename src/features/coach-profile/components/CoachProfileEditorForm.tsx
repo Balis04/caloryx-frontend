@@ -1,19 +1,16 @@
-import {
-  CaloriexPage,
-  NoticeCard,
-} from "@/components/caloriex";
+import { CaloriexPage, NoticeCard } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-import { openCoachCertificate } from "../../lib/coach-profile.certificates";
-import { getCurrencyLabel } from "../../lib/coach-profile.formatters";
-import { getCoachProfileValidationState } from "../../lib/coach-profile.validation";
+import { openCoachCertificate } from "../lib/coach-profile.certificates";
+import { getCurrencyLabel } from "../lib/coach-profile.formatters";
+import { getCoachProfileValidationState } from "../lib/coach-profile.validation";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
   PendingCoachCertificateUpload,
-} from "../../types";
-import CoachProfileStatusNotices from "../shared/CoachProfileStatusNotices";
+} from "../types";
+import CoachProfileStatusNotices from "./CoachProfileStatusNotices";
 import CoachProfileAvailabilitySection from "./CoachProfileAvailabilitySection";
 import CoachProfileCertificatesSection from "./CoachProfileCertificatesSection";
 import CoachProfileIntroSection from "./CoachProfileIntroSection";
@@ -149,7 +146,9 @@ export default function CoachProfileEditorForm({
               deletingCertificateId={deletingCertificateId}
               onFileChange={onFileChange}
               onDownload={openCoachCertificate}
-              onDelete={(certificateId) => void onDeleteCertificate(certificateId)}
+              onDelete={(certificateId) =>
+                void onDeleteCertificate(certificateId)
+              }
             />
             <CoachProfilePendingCertificatesPanel
               pendingCertificates={pendingCertificates}
@@ -176,4 +175,3 @@ export default function CoachProfileEditorForm({
     </CaloriexPage>
   );
 }
-

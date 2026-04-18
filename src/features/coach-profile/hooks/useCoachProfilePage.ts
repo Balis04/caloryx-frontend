@@ -1,63 +1,21 @@
-import { useEffect, useState } from "react";
-import { ApiError } from "@/lib/api-client";
+import { useEffect, useMemo, useState } from "react";
 import { getMyCoachProfile } from "../api/coach-profile.api";
-import { mapCoachProfileResponseToFormData } from "../lib/coach-profile.mapper";
-import { initialCoachProfileFormData } from "../lib/coach-profile.form";
-import type {
-  CoachProfileFormData,
-  CoachProfileResponse,
-} from "../types";
-
-interface CoachProfilePageState {
-  coachProfileId: string | null;
-  errorMessage: string | null;
-  formData: CoachProfileFormData;
-  hasCoachProfile: boolean;
-  isForbidden: boolean;
-}
-
-const createEmptyCoachProfileState = (
-  overrides: Partial<CoachProfilePageState> = {}
-): CoachProfilePageState => ({
-  coachProfileId: null,
-  errorMessage: null,
-  formData: initialCoachProfileFormData,
-  hasCoachProfile: false,
-  isForbidden: false,
-  ...overrides,
-});
-
-const mapCoachProfileResponseToState = (
-  response: CoachProfileResponse
-): CoachProfilePageState => ({
-  coachProfileId: response.id,
-  errorMessage: null,
-  formData: mapCoachProfileResponseToFormData(response),
-  hasCoachProfile: true,
-  isForbidden: false,
-});
-
-const mapCoachProfileErrorToState = (error: unknown): CoachProfilePageState => {
-  if (error instanceof ApiError && (error.status === 400 || error.status === 404)) {
-    return createEmptyCoachProfileState();
-  }
-
-  if (error instanceof ApiError && error.status === 403) {
-    return createEmptyCoachProfileState({
-      errorMessage: error.message,
-      isForbidden: true,
-    });
-  }
-
-  return createEmptyCoachProfileState({
-    errorMessage:
-      error instanceof Error ? error.message : "Failed to load coach profile.",
-  });
-};
+import {
+  formatPriceRange,
+  getTrainingFormatLabel,
+} from "../lib/coach-profile.formatters";
+import {
+  createEmptyCoachProfileState,
+  mapCoachProfileErrorToState,
+  mapCoachProfileResponseToState,
+  type CoachProfileLoadState,
+} from "../lib/coach-profile.state";
 
 export const useCoachProfilePage = () => {
   const [loading, setLoading] = useState(true);
-  const [state, setState] = useState<CoachProfilePageState>(createEmptyCoachProfileState());
+  const [state, setState] = useState<CoachProfileLoadState>(
+    createEmptyCoachProfileState()
+  );
 
   useEffect(() => {
     const loadCoachProfile = async () => {
@@ -76,9 +34,33 @@ export const useCoachProfilePage = () => {
     void loadCoachProfile();
   }, []);
 
+  const viewModel = useMemo(() => {
+    const downloadableCertificates = state.formData.certificates.filter(
+      (certificate) => certificate.fileUrl
+    );
+    const activeAvailability = state.formData.availability
+      .filter((slot) => slot.enabled)
+      .map((slot) => `${slot.label} ${slot.from}-${slot.until}`);
+    const trainingFormatLabel = getTrainingFormatLabel(
+      state.formData.sessionFormat
+    );
+    const priceRange = formatPriceRange(
+      state.formData.priceFrom,
+      state.formData.priceTo,
+      state.formData.currency
+    );
+
+    return {
+      activeAvailability,
+      downloadableCertificates,
+      priceRange,
+      trainingFormatLabel,
+    };
+  }, [state.formData]);
+
   return {
     ...state,
     loading,
+    ...viewModel,
   };
 };
-

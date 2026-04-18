@@ -1,7 +1,7 @@
 import { ReadonlyField, SummaryPanel } from "@/components/caloriex";
 import { FileText, Shield, Users } from "lucide-react";
 
-import type { CoachCertificate } from "../../types";
+import type { CoachCertificate } from "../types";
 
 export function CoachProfileOfferPanel({
   startedCoachingAt,
@@ -17,8 +17,16 @@ export function CoachProfileOfferPanel({
   return (
     <SummaryPanel eyebrow="Offer" title="Basic information" icon={Shield}>
       <div className="grid gap-4 p-6 md:grid-cols-2">
-        <ReadonlyField label="Coaching since" value={startedCoachingAt} fallback="-" />
-        <ReadonlyField label="Training format" value={trainingFormatLabel} fallback="-" />
+        <ReadonlyField
+          label="Coaching since"
+          value={startedCoachingAt}
+          fallback="-"
+        />
+        <ReadonlyField
+          label="Training format"
+          value={trainingFormatLabel}
+          fallback="-"
+        />
         <ReadonlyField
           label="Capacity"
           value={maxCapacity ? `${maxCapacity} active clients` : ""}
@@ -40,7 +48,11 @@ export function CoachProfilePublicInfoPanel({
   activeAvailability: string[];
 }) {
   return (
-    <SummaryPanel eyebrow="Public info" title="What users will read" icon={Users}>
+    <SummaryPanel
+      eyebrow="Public info"
+      title="What users will read"
+      icon={Users}
+    >
       <div className="grid gap-4 p-6">
         <ReadonlyField label="Description" value={description} fallback="-" />
         <ReadonlyField label="Contact note" value={contactNote} fallback="-" />
@@ -87,4 +99,3 @@ export function CoachProfileCertificatesPanel({
     </SummaryPanel>
   );
 }
-

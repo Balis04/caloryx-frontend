@@ -2,8 +2,8 @@ import { SummaryPanel } from "@/components/caloriex";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText } from "lucide-react";
-import { coachProfileInputClassName } from "../../lib/coach-profile.formatters";
-import type { PendingCoachCertificateUpload } from "../../types";
+import { coachProfileInputClassName } from "../lib/coach-profile.formatters";
+import type { PendingCoachCertificateUpload } from "../types";
 
 interface CoachProfilePendingCertificatesPanelProps {
   pendingCertificates: PendingCoachCertificateUpload[];
@@ -22,7 +22,11 @@ export default function CoachProfilePendingCertificatesPanel({
   const minDate = "1900-01-01";
 
   return (
-    <SummaryPanel eyebrow="Staging" title="Pending certificate uploads" icon={FileText}>
+    <SummaryPanel
+      eyebrow="Staging"
+      title="Pending certificate uploads"
+      icon={FileText}
+    >
       <div className="space-y-4 p-6">
         {pendingCertificates.length > 0 ? (
           <div className="grid gap-3">
@@ -111,7 +115,8 @@ export default function CoachProfilePendingCertificatesPanel({
                 </div>
 
                 <p className="text-xs text-slate-500">
-                  Every staged certificate must include a name, issuer, and issue date.
+                  Every staged certificate must include a name, issuer, and
+                  issue date.
                 </p>
               </div>
             ))}
@@ -125,4 +130,3 @@ export default function CoachProfilePendingCertificatesPanel({
     </SummaryPanel>
   );
 }
-

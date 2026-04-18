@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download, FileText, Trash2 } from "lucide-react";
 
-import { coachProfileInputClassName } from "../../lib/coach-profile.formatters";
+import { coachProfileInputClassName } from "../lib/coach-profile.formatters";
 import type { ChangeEvent } from "react";
-import type { CoachCertificate } from "../../types";
+import type { CoachCertificate } from "../types";
 
 interface CoachProfileCertificatesSectionProps {
   downloadableCertificates: CoachCertificate[];
@@ -26,10 +26,17 @@ export default function CoachProfileCertificatesSection({
   onDelete,
 }: CoachProfileCertificatesSectionProps) {
   return (
-    <SummaryPanel eyebrow="Documents" title="Certificates and documents" icon={FileText}>
+    <SummaryPanel
+      eyebrow="Documents"
+      title="Certificates and documents"
+      icon={FileText}
+    >
       <div className="space-y-4 p-6">
         <div className="space-y-2">
-          <Label htmlFor="certificates" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="certificates"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Upload PDF files
           </Label>
           <Input
@@ -62,7 +69,9 @@ export default function CoachProfileCertificatesSection({
                     </p>
                     {certificate.issuer || certificate.issuedAt ? (
                       <p className="truncate text-xs text-slate-500">
-                        {[certificate.issuer, certificate.issuedAt].filter(Boolean).join(" | ")}
+                        {[certificate.issuer, certificate.issuedAt]
+                          .filter(Boolean)
+                          .join(" | ")}
                       </p>
                     ) : null}
                   </div>
@@ -73,7 +82,9 @@ export default function CoachProfileCertificatesSection({
                       variant="outline"
                       size="sm"
                       onClick={() => onDownload(certificate)}
-                      disabled={saving || deletingCertificateId === certificate.id}
+                      disabled={
+                        saving || deletingCertificateId === certificate.id
+                      }
                       className="gap-2 rounded-full border-white/70 bg-white/70"
                     >
                       <Download className="h-4 w-4" />
@@ -88,7 +99,9 @@ export default function CoachProfileCertificatesSection({
                       className="gap-2 rounded-full"
                     >
                       <Trash2 className="h-4 w-4" />
-                      {deletingCertificateId === certificate.id ? "Deleting..." : "Delete"}
+                      {deletingCertificateId === certificate.id
+                        ? "Deleting..."
+                        : "Delete"}
                     </Button>
                   </div>
                 </div>
@@ -104,4 +117,3 @@ export default function CoachProfileCertificatesSection({
     </SummaryPanel>
   );
 }
-

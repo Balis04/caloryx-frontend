@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CoachProfileEditorForm from "../components/edit/CoachProfileEditorForm";
+import CoachProfileEditorForm from "../components/CoachProfileEditorForm";
 import { useCoachProfileEditForm } from "../hooks/useCoachProfileEditForm";
 
 export default function EditCoachProfilePage() {

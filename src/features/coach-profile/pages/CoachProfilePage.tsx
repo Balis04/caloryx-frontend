@@ -2,39 +2,31 @@ import { CaloriexPage, NoticeCard } from "@/components/caloriex";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import CoachProfileCreatePromptPanel from "../components/create/CoachProfileCreatePromptPanel";
-import CoachProfileStatusNotices from "../components/shared/CoachProfileStatusNotices";
-import CoachProfileNextStepPanel from "../components/view/CoachProfileNextStepPanel";
-import CoachProfileOverviewCard from "../components/view/CoachProfileOverviewCard";
+import CoachProfileCreatePromptPanel from "../components/CoachProfileCreatePromptPanel";
+import CoachProfileStatusNotices from "../components/CoachProfileStatusNotices";
+import CoachProfileNextStepPanel from "../components/CoachProfileNextStepPanel";
+import CoachProfileOverviewCard from "../components/CoachProfileOverviewCard";
 import {
   CoachProfileCertificatesPanel,
   CoachProfileOfferPanel,
   CoachProfilePublicInfoPanel,
-} from "../components/view/CoachProfileReadonlyPanels";
+} from "../components/CoachProfileReadonlyPanels";
 import { useCoachProfilePage } from "../hooks/useCoachProfilePage";
 import { openCoachCertificate } from "../lib/coach-profile.certificates";
-import {
-  formatPriceRange,
-  getTrainingFormatLabel,
-} from "../lib/coach-profile.formatters";
 
 export default function CoachProfilePage() {
   const navigate = useNavigate();
-  const { formData, loading, errorMessage, isForbidden, hasCoachProfile } =
-    useCoachProfilePage();
-
-  const downloadableCertificates = formData.certificates.filter(
-    (certificate) => certificate.fileUrl
-  );
-  const activeAvailability = formData.availability
-    .filter((slot) => slot.enabled)
-    .map((slot) => `${slot.label} ${slot.from}-${slot.until}`);
-  const trainingFormatLabel = getTrainingFormatLabel(formData.sessionFormat);
-  const priceRange = formatPriceRange(
-    formData.priceFrom,
-    formData.priceTo,
-    formData.currency
-  );
+  const {
+    activeAvailability,
+    downloadableCertificates,
+    formData,
+    loading,
+    errorMessage,
+    isForbidden,
+    hasCoachProfile,
+    priceRange,
+    trainingFormatLabel,
+  } = useCoachProfilePage();
 
   if (loading) {
     return (
@@ -140,4 +132,3 @@ export default function CoachProfilePage() {
     </CaloriexPage>
   );
 }
-

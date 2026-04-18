@@ -16,12 +16,8 @@ import {
   coachProfileTextareaClassName,
   CURRENCY_OPTIONS,
   TRAINING_FORMAT_OPTIONS,
-} from "../../lib/coach-profile.formatters";
-import type {
-  CoachProfileFormData,
-  Currency,
-  TrainingFormat,
-} from "../../types";
+} from "../lib/coach-profile.formatters";
+import type { CoachProfileFormData, Currency, TrainingFormat } from "../types";
 
 export default function CoachProfileIntroSection({
   formData,
@@ -37,10 +33,17 @@ export default function CoachProfileIntroSection({
   const minDate = "1900-01-01";
 
   return (
-    <SummaryPanel eyebrow="Positioning" title="Introduction and coaching setup" icon={Shield}>
+    <SummaryPanel
+      eyebrow="Positioning"
+      title="Introduction and coaching setup"
+      icon={Shield}
+    >
       <div className="grid gap-5 p-6 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="startedCoachingAt" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="startedCoachingAt"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             When did you start coaching? *
           </Label>
           <Input
@@ -49,20 +52,30 @@ export default function CoachProfileIntroSection({
             min={minDate}
             max={today}
             value={formData.startedCoachingAt}
-            onChange={(event) => setField("startedCoachingAt", event.target.value)}
+            onChange={(event) =>
+              setField("startedCoachingAt", event.target.value)
+            }
             className={coachProfileInputClassName}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="sessionFormat" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="sessionFormat"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Training format *
           </Label>
           <Select
             value={formData.sessionFormat}
-            onValueChange={(value) => setField("sessionFormat", value as TrainingFormat | "")}
+            onValueChange={(value) =>
+              setField("sessionFormat", value as TrainingFormat | "")
+            }
           >
-            <SelectTrigger id="sessionFormat" className={coachProfileSelectClassName}>
+            <SelectTrigger
+              id="sessionFormat"
+              className={coachProfileSelectClassName}
+            >
               <SelectValue placeholder="Select a format" />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +89,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="description" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="description"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Short description *
           </Label>
           <textarea
@@ -89,7 +105,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="maxCapacity" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="maxCapacity"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Maximum capacity *
           </Label>
           <Input
@@ -104,14 +123,22 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="currency" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="currency"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Currency *
           </Label>
           <Select
             value={formData.currency}
-            onValueChange={(value) => setField("currency", value as Currency | "")}
+            onValueChange={(value) =>
+              setField("currency", value as Currency | "")
+            }
           >
-            <SelectTrigger id="currency" className={coachProfileSelectClassName}>
+            <SelectTrigger
+              id="currency"
+              className={coachProfileSelectClassName}
+            >
               <SelectValue placeholder="Select a currency" />
             </SelectTrigger>
             <SelectContent>
@@ -125,7 +152,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="priceFrom" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="priceFrom"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Price from *
           </Label>
           <Input
@@ -140,7 +170,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="priceTo" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="priceTo"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Price to *
           </Label>
           <Input
@@ -155,7 +188,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="contactNote" className="text-xs uppercase tracking-[0.24em] text-slate-500">
+          <Label
+            htmlFor="contactNote"
+            className="text-xs uppercase tracking-[0.24em] text-slate-500"
+          >
             Contact note *
           </Label>
           <textarea
@@ -168,11 +204,10 @@ export default function CoachProfileIntroSection({
         </div>
 
         <p className="text-xs text-slate-500 md:col-span-2">
-          Fields marked with * are required before you can create or update the coach
-          profile.
+          Fields marked with * are required before you can create or update the
+          coach profile.
         </p>
       </div>
     </SummaryPanel>
   );
 }
-
