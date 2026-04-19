@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "@/app-shell";
 
-export function AppShell() {
+import { Navbar } from "@/components/navbar/Navbar";
+
+export function AppLayout() {
   return (
     <>
       <Navbar />

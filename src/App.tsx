@@ -7,7 +7,7 @@ import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirectPage from "./features/auth/pages/AuthRedirectPage";
 import FoodSearchPage from "./features/foods/pages/FoodSearchPage";
 import { Outlet } from "react-router-dom";
-import { AppShell } from "@/app/app-shell";
+import { AppLayout } from "@/components/layout/AppLayout";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
 import RedirectIfOnboarded from "./guards/RedirectIfOnboarded";
@@ -27,7 +27,7 @@ const CommunityTrainingPlansPage = lazy(
 function App() {
   return (
     <Routes>
-      <Route element={<AppShell />}>
+      <Route element={<AppLayout />}>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route
