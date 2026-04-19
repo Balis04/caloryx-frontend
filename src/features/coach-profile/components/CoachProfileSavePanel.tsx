@@ -6,7 +6,6 @@ import { ArrowRight, Save } from "lucide-react";
 export default function CoachProfileSavePanel({
   hasCoachProfile,
   canSave,
-  missingFields,
   saving,
   deletingCertificateId,
   pendingCertificatesValid,
@@ -14,10 +13,7 @@ export default function CoachProfileSavePanel({
   onSave,
 }: {
   hasCoachProfile: boolean;
-  pendingCertificateCount: number;
-  currencyLabel: string;
   canSave: boolean;
-  missingFields: string[];
   saving: boolean;
   deletingCertificateId: string | null;
   pendingCertificatesValid: boolean;
@@ -39,22 +35,10 @@ export default function CoachProfileSavePanel({
         </div>
 
         <div className="space-y-3">
-          {!canSave || !pendingCertificatesValid ? (
+          {!pendingCertificatesValid ? (
             <div className="rounded-2xl border border-amber-300/70 bg-amber-50/70 p-4 text-sm text-amber-900">
-              <p className="font-medium">
-                Complete the required fields before saving.
-              </p>
-              {missingFields.length > 0 ? (
-                <p className="mt-2">
-                  Missing: {missingFields.join(", ")}.
-                </p>
-              ) : null}
-              {!pendingCertificatesValid ? (
-                <p className="mt-2">
-                  Every staged certificate needs a certificate name, issuer, and issue
-                  date before upload.
-                </p>
-              ) : null}
+              Every staged certificate needs a certificate name, issuer, and
+              issue date before upload.
             </div>
           ) : null}
 

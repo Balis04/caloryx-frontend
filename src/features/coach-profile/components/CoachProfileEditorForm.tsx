@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 import { openCoachCertificate } from "../lib/coach-profile.certificates";
-import { getCurrencyLabel } from "../lib/coach-profile.formatters";
-import { getCoachProfileValidationState } from "../lib/coach-profile.validation";
 import type {
   AvailabilitySlot,
   CoachProfileFormData,
@@ -76,7 +74,6 @@ export default function CoachProfileEditorForm({
   const downloadableCertificates = formData.certificates.filter(
     (certificate) => certificate.fileUrl
   );
-  const validationState = getCoachProfileValidationState(formData);
 
   const handleSave = async () => {
     const saved = await onSave();
@@ -159,10 +156,7 @@ export default function CoachProfileEditorForm({
           <div className="space-y-6">
             <CoachProfileSavePanel
               hasCoachProfile={hasCoachProfile}
-              pendingCertificateCount={pendingCertificates.length}
-              currencyLabel={getCurrencyLabel(formData.currency)}
               canSave={canSave}
-              missingFields={validationState.missingFields}
               saving={saving}
               deletingCertificateId={deletingCertificateId}
               pendingCertificatesValid={pendingCertificatesValid}

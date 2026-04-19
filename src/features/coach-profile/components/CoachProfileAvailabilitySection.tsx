@@ -26,7 +26,7 @@ export default function CoachProfileAvailabilitySection({
     >
       <div className="grid gap-4 p-6">
         <p className="text-sm text-slate-600">
-          Required: enable at least one day and set a valid time range where the
+          * Enable at least one day and set a valid time range where the
           start is earlier than the end.
         </p>
         {availability.map((slot) => (
@@ -61,7 +61,7 @@ export default function CoachProfileAvailabilitySection({
                 htmlFor={`${slot.dayOfWeek}-from`}
                 className="text-xs uppercase tracking-[0.24em] text-slate-500"
               >
-                Start
+                Start *
               </Label>
               <Input
                 id={`${slot.dayOfWeek}-from`}
@@ -84,7 +84,7 @@ export default function CoachProfileAvailabilitySection({
                 htmlFor={`${slot.dayOfWeek}-until`}
                 className="text-xs uppercase tracking-[0.24em] text-slate-500"
               >
-                End
+                End *
               </Label>
               <Input
                 id={`${slot.dayOfWeek}-until`}
