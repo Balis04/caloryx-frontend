@@ -1,18 +1,13 @@
 import { CaloriexPage, GlassCard } from "@/components/caloriex";
 import { CardContent } from "@/components/ui/card";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ProfileEditorWorkspace from "../components/ProfileEditorWorkspace";
+import ProfileEditorForm from "../components/ProfileEditorForm";
 import { useProfileEditForm } from "../hooks/useProfileEditForm";
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
-  const { loading, setField, values, loadProfile, saveProfile, canSave } =
+  const { loading, setField, values, saveProfile, canSave } =
     useProfileEditForm();
-
-  useEffect(() => {
-    void loadProfile();
-  }, [loadProfile]);
 
   const handleSave = async () => {
     if (await saveProfile()) navigate("/profile");
@@ -33,7 +28,7 @@ export default function EditProfilePage() {
   }
 
   return (
-    <ProfileEditorWorkspace
+    <ProfileEditorForm
       values={values}
       setField={setField}
       onSave={handleSave}

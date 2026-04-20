@@ -1,20 +1,18 @@
-import { useCallback, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/use-auth";
-import { useProfileApi } from "../api/profile.api";
+import { getProfile, updateProfile } from "../api/profile.api";
 import {
-  mapProfileDtoToModel,
-  mapProfileFormValuesToUpdateRequest,
-  mapProfileToFormValues,
+  mapProfileFormValuesToRequest,
+  mapProfileResponseToFormValues,
 } from "../lib/profile.mapper";
 import { canSaveProfileForm } from "../lib/profile.validation";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
-} from "../model/profile.form";
+} from "../lib/profile.form";
 
 export const useProfileEditForm = () => {
-  const { getProfile, updateProfile } = useProfileApi();
   const { refreshAuth } = useAuth();
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState<ProfileFormValues>(
@@ -22,47 +20,50 @@ export const useProfileEditForm = () => {
   );
   const navigate = useNavigate();
 
-  const loadProfile = useCallback(async () => {
-    setLoading(true);
+  useEffect(() => {
+    const loadProfile = async () => {
+      setLoading(true);
 
-    try {
-      const response = await getProfile();
-      const profile = mapProfileDtoToModel(response);
-      setValues(mapProfileToFormValues(profile));
-    } catch (error: unknown) {
-      console.error("Load error:", error);
-      navigate("/register");
-    } finally {
-      setLoading(false);
-    }
-  }, [getProfile, navigate]);
+      try {
+        const response = await getProfile();
+        setValues(mapProfileResponseToFormValues(response));
+      } catch (error: unknown) {
+        console.error("Load error:", error);
+        navigate("/register");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const saveProfile = useCallback(async () => {
+    void loadProfile();
+  }, [navigate]);
+
+  const saveProfile = async () => {
     try {
-      await updateProfile(mapProfileFormValuesToUpdateRequest(values));
+      await updateProfile(mapProfileFormValuesToRequest(values));
       await refreshAuth();
       return true;
     } catch (error) {
       console.error("Save error:", error);
       return false;
     }
-  }, [refreshAuth, updateProfile, values]);
+  };
 
-  const setField = useCallback(
-    <K extends keyof ProfileFormValues>(key: K, value: ProfileFormValues[K]) => {
-      setValues((prev) => ({ ...prev, [key]: value }));
-    },
-    []
-  );
+  const setField = <K extends keyof ProfileFormValues>(
+    key: K,
+    value: ProfileFormValues[K]
+  ) => {
+    setValues((prev) => ({ ...prev, [key]: value }));
+  };
 
-  const canSave = useMemo(() => canSaveProfileForm(values), [values]);
+  const canSave = canSaveProfileForm(values);
 
   return {
     loading,
     values,
     setField,
-    loadProfile,
     saveProfile,
     canSave,
   };
 };
+

@@ -1,4 +1,4 @@
-import type { ProfileFormValues } from "../model/profile.form";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 export const canSaveProfileForm = (values: ProfileFormValues) => {
   const requiredFields: (keyof ProfileFormValues)[] = [
@@ -39,3 +39,4 @@ export const canSaveProfileForm = (values: ProfileFormValues) => {
     Number(values.weeklyGoalKg) >= 0
   );
 };
+

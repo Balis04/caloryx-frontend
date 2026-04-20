@@ -14,13 +14,13 @@ import {
 } from "@/shared/constants/user-options";
 import { User } from "lucide-react";
 import type { UserRole, Gender } from "@/shared/types/profile.types";
-import type { ProfileEditData } from "../types/profile.types";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 interface Props {
-  userProfile: ProfileEditData;
-  setField: <K extends keyof ProfileEditData>(
+  userProfile: ProfileFormValues;
+  setField: <K extends keyof ProfileFormValues>(
     key: K,
-    value: ProfileEditData[K]
+    value: ProfileFormValues[K]
   ) => void;
 }
 
@@ -115,3 +115,4 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
     </SummaryPanel>
   );
 };
+

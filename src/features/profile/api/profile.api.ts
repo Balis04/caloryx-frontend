@@ -1,26 +1,20 @@
-import { useApi } from "@/hooks/useApi";
-import { useCallback } from "react";
+import { apiClient } from "@/lib/api-client";
 import type {
-  ProfileResponseDto,
-  UpdateProfileRequestDto,
-} from "./profile.dto";
+  ProfileResponse,
+  UpdateProfileRequest,
+} from "../types";
 
-export const useProfileApi = () => {
-  const { request } = useApi();
+export const getProfile = () => apiClient<ProfileResponse>("/api/user/profile");
 
-  const getProfile = useCallback(
-    () => request<ProfileResponseDto>("/api/user/profile"),
-    [request]
-  );
+export const createProfile = (data: UpdateProfileRequest) =>
+  apiClient<ProfileResponse>("/api/user/profile", {
+    method: "POST",
+    body: data,
+  });
 
-  const updateProfile = useCallback(
-    (data: UpdateProfileRequestDto) =>
-      request<ProfileResponseDto>("/api/user/profile", {
-        method: "PUT",
-        body: data,
-      }),
-    [request]
-  );
+export const updateProfile = (data: UpdateProfileRequest) =>
+  apiClient<ProfileResponse>("/api/user/profile", {
+    method: "PUT",
+    body: data,
+  });
 
-  return { getProfile, updateProfile };
-};

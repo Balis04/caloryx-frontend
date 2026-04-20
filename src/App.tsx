@@ -1,23 +1,24 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import RegisterPage from "./features/register/pages/RegisterPage";
+import CreateProfilePage from "./features/profile/pages/CreateProfilePage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import AuthRedirectPage from "./features/auth/pages/AuthRedirectPage";
 import FoodSearchPage from "./features/foods/pages/FoodSearchPage";
 import { Outlet } from "react-router-dom";
-import { AppShell } from "@/app/app-shell";
+import { AppLayout } from "@/components/layout/AppLayout";
 import RequireAuth from "./guards/RequireAuth";
 import RequireOnboarding from "./guards/RequireOnboarding";
+import RedirectIfOnboarded from "./guards/RedirectIfOnboarded";
 import DiaryPage from "./features/foods/pages/DiaryPage";
 import MealTimeDetailsPage from "./features/foods/pages/MealTimeDetailsPage";
-import CoachRequestPage from "./features/training-requests/request/pages/CoachRequestPage";
+import CoachRequestPage from "./features/training-requests/pages/CoachRequestPage";
 import CoachProfilePage from "./features/coach-profile/pages/CoachProfilePage";
 import EditCoachProfilePage from "./features/coach-profile/pages/EditCoachProfilePage";
 import RequireCoach from "./guards/RequireCoach";
-import TrainingRequestFormPage from "./features/training-requests/request/pages/TrainingRequestFormPage";
-import CoachTrainingRequestsPage from "./features/training-requests/coach-requests/pages/CoachTrainingRequestsPage";
+import TrainingRequestFormPage from "./features/training-requests/pages/TrainingRequestFormPage";
+import CoachTrainingRequestsPage from "./features/training-requests/pages/CoachTrainingRequestsPage";
 
 const CommunityTrainingPlansPage = lazy(
   () => import("./features/community-training-plans/pages/CommunityTrainingPlansPage")
@@ -26,7 +27,7 @@ const CommunityTrainingPlansPage = lazy(
 function App() {
   return (
     <Routes>
-      <Route element={<AppShell />}>
+      <Route element={<AppLayout />}>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route
@@ -48,7 +49,14 @@ function App() {
             </RequireAuth>
           }
         >
-          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/register"
+            element={
+              <RedirectIfOnboarded>
+                <CreateProfilePage />
+              </RedirectIfOnboarded>
+            }
+          />
 
           {/* AUTH + ONBOARDING IS KELL */}
           <Route

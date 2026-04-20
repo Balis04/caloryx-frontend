@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import CoachProfileEditorWorkspace from "../components/edit/CoachProfileEditorWorkspace";
-import { useCoachProfileEditor } from "../hooks/useCoachProfileEditor";
+import CoachProfileEditorForm from "../components/CoachProfileEditorForm";
+import { useCoachProfileEditForm } from "../hooks/useCoachProfileEditForm";
 
 export default function EditCoachProfilePage() {
   const navigate = useNavigate();
@@ -22,15 +22,17 @@ export default function EditCoachProfilePage() {
     updatePendingCertificate,
     onCertificateFilesSelected,
     canSave,
-  } = useCoachProfileEditor();
+    pendingCertificatesValid,
+  } = useCoachProfileEditForm();
 
   return (
-    <CoachProfileEditorWorkspace
+    <CoachProfileEditorForm
       formData={formData}
       loading={loading}
       saving={saving}
       canSave={canSave}
       deletingCertificateId={deletingCertificateId}
+      pendingCertificatesValid={pendingCertificatesValid}
       statusMessage={statusMessage}
       errorMessage={errorMessage}
       isForbidden={isForbidden}

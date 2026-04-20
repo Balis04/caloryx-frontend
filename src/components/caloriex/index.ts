@@ -1,12 +1,10 @@
 export { CaloriexPage } from "./layout/CaloriexPage";
-export { PageHero } from "./layout/PageHero";
 export { SummaryPanel } from "./layout/SummaryPanel";
 export { AccentButton } from "./feature/AccentButton";
 export { FeatureCard } from "./feature/FeatureCard";
 export { GlassCard, GlassCardSoft } from "./primitives/GlassCard";
 export { GlassChip } from "./primitives/GlassChip";
 export { GlassMetric } from "./primitives/GlassMetric";
-export { HeroBadge } from "./primitives/HeroBadge";
 export { NoticeCard } from "./primitives/NoticeCard";
 export { ReadonlyField } from "./primitives/ReadonlyField";
 export type { AccentTone } from "./theme/accent-tones";

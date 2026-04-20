@@ -1,16 +1,30 @@
 import {
   AccentButton,
+  NoticeCard,
   ReadonlyField,
   SummaryPanel,
 } from "@/components/caloriex";
 import { ArrowRight, Save, Sparkles } from "lucide-react";
-import type { ProfileEditorSavePanelProps } from "../types/profile-editor.types";
+import type { ProfileFormValues } from "../lib/profile.form";
+
+interface ProfileEditorSavePanelProps {
+  values: ProfileFormValues;
+  roleLabel: string;
+  canSave: boolean;
+  onSave: () => Promise<void>;
+  error?: string | null;
+  saveLabel?: string;
+  disabledLabel?: string;
+}
 
 export default function ProfileEditorSavePanel({
   values,
   roleLabel,
   canSave,
   onSave,
+  error,
+  saveLabel = "Save profile",
+  disabledLabel = "Complete required fields",
 }: ProfileEditorSavePanelProps) {
   return (
     <SummaryPanel eyebrow="Review" title="Before saving" icon={Sparkles}>
@@ -18,6 +32,7 @@ export default function ProfileEditorSavePanel({
         <ReadonlyField label="Full name" value={values.fullName} fallback="Add your name" />
         <ReadonlyField label="Birth date" value={values.birthDate} fallback="Pick a date" />
         <ReadonlyField label="Role" value={roleLabel} fallback="Choose a role" />
+        {error ? <NoticeCard tone="danger">{error}</NoticeCard> : null}
         <AccentButton
           tone={canSave ? "emerald" : "sky"}
           onClick={() => void onSave()}
@@ -26,7 +41,7 @@ export default function ProfileEditorSavePanel({
         >
           <span className="flex items-center gap-2">
             <Save className="h-4 w-4" />
-            {canSave ? "Save profile" : "Complete required fields"}
+            {canSave ? saveLabel : disabledLabel}
           </span>
           <ArrowRight className="h-4 w-4" />
         </AccentButton>
@@ -34,3 +49,4 @@ export default function ProfileEditorSavePanel({
     </SummaryPanel>
   );
 }
+

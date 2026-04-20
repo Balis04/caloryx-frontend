@@ -1,19 +1,14 @@
 import type {
-  ProfileResponseDto,
-  UpdateProfileRequestDto,
-} from "../api/profile.dto";
+  ProfileResponse,
+  UpdateProfileRequest,
+} from "../types";
 import {
   initialProfileFormValues,
   type ProfileFormValues,
-} from "../model/profile.form";
-import type { Profile } from "../model/profile.model";
+} from "../lib/profile.form";
 
-export const mapProfileDtoToModel = (dto: ProfileResponseDto): Profile => ({
-  ...dto,
-});
-
-export const mapProfileToFormValues = (
-  profile: Profile | null | undefined
+export const mapProfileResponseToFormValues = (
+  profile: ProfileResponse | null | undefined
 ): ProfileFormValues => {
   if (!profile) {
     return initialProfileFormValues;
@@ -34,9 +29,9 @@ export const mapProfileToFormValues = (
   };
 };
 
-export const mapProfileFormValuesToUpdateRequest = (
+export const mapProfileFormValuesToRequest = (
   values: ProfileFormValues
-): UpdateProfileRequestDto => {
+): UpdateProfileRequest => {
   const { userRole, ...restValues } = values;
   return {
     ...restValues,
@@ -48,3 +43,4 @@ export const mapProfileFormValuesToUpdateRequest = (
     weeklyGoalKg: Number(values.weeklyGoalKg),
   };
 };
+

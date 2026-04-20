@@ -1,19 +1,19 @@
 import type {
-  CoachProfileCertificateDto,
-  CoachProfileResponseDto,
-  SaveCoachProfileRequestDto,
-} from "../api/coach-profile.dto";
+  CoachProfileCertificateResponse,
+  CoachProfileResponse,
+  SaveCoachProfileRequest,
+} from "../types";
 import {
-  createInitialAvailability,
+  initialAvailability,
   initialCoachProfileFormData,
-} from "../model/coach-profile.form";
+} from "../lib/coach-profile.form";
 import type {
   CoachCertificate,
   CoachProfileFormData,
-} from "../types/coach-profile.types";
+} from "../types";
 
-export const mapCoachCertificateDtoToModel = (
-  certificate: CoachProfileCertificateDto,
+export const mapCoachCertificateResponseToModel = (
+  certificate: CoachProfileCertificateResponse,
   index: number
 ): CoachCertificate => {
   if (typeof certificate === "string") {
@@ -41,23 +41,27 @@ export const mapCoachCertificateDtoToModel = (
 };
 
 export const mapCoachProfileResponseToFormData = (
-  data: CoachProfileResponseDto
+  data: CoachProfileResponse
 ): CoachProfileFormData => ({
   ...initialCoachProfileFormData,
   description: data.shortDescription ?? initialCoachProfileFormData.description,
-  startedCoachingAt: data.trainingStartedAt ?? initialCoachProfileFormData.startedCoachingAt,
-  maxCapacity: String(data.maxCapacity ?? initialCoachProfileFormData.maxCapacity),
-  sessionFormat: data.trainingFormat ?? initialCoachProfileFormData.sessionFormat,
+  startedCoachingAt:
+    data.trainingStartedAt ?? initialCoachProfileFormData.startedCoachingAt,
+  maxCapacity: String(
+    data.maxCapacity ?? initialCoachProfileFormData.maxCapacity
+  ),
+  sessionFormat:
+    data.trainingFormat ?? initialCoachProfileFormData.sessionFormat,
   priceFrom: String(data.priceFrom ?? initialCoachProfileFormData.priceFrom),
   priceTo: String(data.priceTo ?? initialCoachProfileFormData.priceTo),
   currency: data.currency ?? initialCoachProfileFormData.currency,
   contactNote: data.contactNote ?? initialCoachProfileFormData.contactNote,
   certificates: Array.isArray(data.certificates)
-    ? data.certificates.map(mapCoachCertificateDtoToModel)
+    ? data.certificates.map(mapCoachCertificateResponseToModel)
     : initialCoachProfileFormData.certificates,
   availability:
     Array.isArray(data.availabilities) && data.availabilities.length > 0
-      ? createInitialAvailability().map((defaultSlot) => {
+      ? initialAvailability().map((defaultSlot) => {
           const matchingSlot = data.availabilities?.find(
             (slot) => slot.dayOfWeek === defaultSlot.dayOfWeek
           );
@@ -70,12 +74,12 @@ export const mapCoachProfileResponseToFormData = (
             until: matchingSlot?.endTime ?? defaultSlot.until,
           };
         })
-      : createInitialAvailability(),
+      : initialAvailability(),
 });
 
 export const mapCoachProfileFormDataToRequest = (
   formData: CoachProfileFormData
-): SaveCoachProfileRequestDto => ({
+): SaveCoachProfileRequest => ({
   trainingStartedAt: formData.startedCoachingAt,
   shortDescription: formData.description,
   trainingFormat: formData.sessionFormat,
@@ -92,3 +96,4 @@ export const mapCoachProfileFormDataToRequest = (
   })),
   certificates: [],
 });
+

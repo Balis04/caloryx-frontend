@@ -1,20 +1,11 @@
-import { useApi } from "@/hooks/useApi";
-import { useCallback } from "react";
-import type { UsdaFoodSearchItem } from "../model/food.model";
+import { apiClient } from "@/lib/api-client";
+import type { UsdaFoodSearchItem } from "../types";
 
-export const useUsdaApi = () => {
-  const { request } = useApi();
+export const searchFoods = async (product: string, brand: string) => {
+  const params = new URLSearchParams();
+  if (product) params.append("query", product);
+  if (brand) params.append("brand", brand);
 
-  const fetchFoodsFromProxy = useCallback(
-    async (product: string, brand: string) => {
-      const params = new URLSearchParams();
-      if (product) params.append("query", product);
-      if (brand) params.append("brand", brand);
-
-      return request<UsdaFoodSearchItem[]>(`/api/foods/search?${params.toString()}`);
-    },
-    [request]
-  );
-
-  return { fetchFoodsFromProxy };
+  return apiClient<UsdaFoodSearchItem[]>(`/api/foods/search?${params.toString()}`);
 };
+

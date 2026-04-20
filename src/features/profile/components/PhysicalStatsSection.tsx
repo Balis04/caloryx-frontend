@@ -1,7 +1,6 @@
 import { SummaryPanel } from "@/components/caloriex";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProfileEditData } from "../types/profile.types";
 import {
   Select,
   SelectContent,
@@ -15,18 +14,21 @@ import {
 } from "@/shared/constants/user-options";
 import type { ActivityLevel, Goal } from "@/shared/types/profile.types";
 import { Activity } from "lucide-react";
+import type { ProfileFormValues } from "../lib/profile.form";
 
 interface PhysicalStatsProps {
-  userProfile: ProfileEditData;
-  setField: <K extends keyof ProfileEditData>(
+  userProfile: ProfileFormValues;
+  setField: <K extends keyof ProfileFormValues>(
     key: K,
-    value: ProfileEditData[K]
+    value: ProfileFormValues[K]
   ) => void;
+  showActualWeight?: boolean;
 }
 
 export const PhysicalStatsSection = ({
   userProfile,
   setField,
+  showActualWeight = true,
 }: PhysicalStatsProps) => {
   const inputClassName =
     "h-12 rounded-2xl border-white/60 bg-white/70 shadow-sm backdrop-blur focus-visible:ring-slate-900/20";
@@ -69,23 +71,25 @@ export const PhysicalStatsSection = ({
             />
           </div>
 
-          <div className="grid gap-2">
-            <Label
-              htmlFor="actualWeightKg"
-              className="text-xs uppercase tracking-[0.24em] text-slate-500"
-            >
-              Current weight (kg)
-            </Label>
-            <Input
-              id="actualWeightKg"
-              type="number"
-              step="0.1"
-              min="0.1"
-              value={userProfile.actualWeightKg}
-              onChange={(e) => setField("actualWeightKg", e.target.value)}
-              className={inputClassName}
-            />
-          </div>
+          {showActualWeight ? (
+            <div className="grid gap-2">
+              <Label
+                htmlFor="actualWeightKg"
+                className="text-xs uppercase tracking-[0.24em] text-slate-500"
+              >
+                Current weight (kg)
+              </Label>
+              <Input
+                id="actualWeightKg"
+                type="number"
+                step="0.1"
+                min="0.1"
+                value={userProfile.actualWeightKg}
+                onChange={(e) => setField("actualWeightKg", e.target.value)}
+                className={inputClassName}
+              />
+            </div>
+          ) : null}
 
           <div className="grid gap-2">
             <Label
@@ -171,3 +175,4 @@ export const PhysicalStatsSection = ({
     </SummaryPanel>
   );
 };
+

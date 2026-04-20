@@ -8,8 +8,14 @@ import {
   detectCommunityPlanVariant,
   formatCommunityPlanDate,
   formatCommunityPlanFileSize,
-} from "../lib/community-training-plans.presentation";
-import type { CommunityPlansGridProps } from "../types/community-training-plans.types";
+} from "../lib/community-training-plans.formatters";
+import type { CommunityTrainingPlan } from "../types";
+
+interface CommunityPlansGridProps {
+  error: string | null;
+  isLoading: boolean;
+  plans: CommunityTrainingPlan[];
+}
 
 export default function CommunityPlansGrid({
   error,
@@ -109,3 +115,4 @@ export default function CommunityPlansGrid({
     </div>
   );
 }
+

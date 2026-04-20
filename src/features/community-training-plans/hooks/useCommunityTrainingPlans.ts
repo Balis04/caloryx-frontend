@@ -1,50 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { useCommunityTrainingPlansApi } from "../api/community-training-plans.api";
+import { getCommunityTrainingPlans } from "../api/community-training-plans.api";
 import {
   COMMUNITY_PLAN_SORT_ORDER,
   detectCommunityPlanVariant,
-} from "../lib/community-training-plans.presentation";
-import type { CommunityTrainingPlan } from "../types/community-training-plan.types";
+} from "../lib/community-training-plans.formatters";
+import type { CommunityTrainingPlan } from "../types";
 
 export const useCommunityTrainingPlans = () => {
-  const { getCommunityTrainingPlans } = useCommunityTrainingPlansApi();
   const [plans, setPlans] = useState<CommunityTrainingPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-
     const loadPlans = async () => {
       try {
         const data = await getCommunityTrainingPlans();
 
-        if (!isMounted) {
-          return;
-        }
-
         setPlans(data);
         setError(null);
       } catch (err) {
-        if (!isMounted) {
-          return;
-        }
-
         setError(err instanceof Error ? err.message : "Failed to load community plans.");
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     void loadPlans();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [getCommunityTrainingPlans]);
+  }, []);
 
   const sortedPlans = useMemo(
     () =>
@@ -60,9 +43,7 @@ export const useCommunityTrainingPlans = () => {
   return {
     error,
     isLoading,
-    plans,
     sortedPlans,
   };
 };
 
-export type UseCommunityTrainingPlansResult = ReturnType<typeof useCommunityTrainingPlans>;
