@@ -9,7 +9,6 @@ import { useMealTimeDetailsPage } from "../hooks/useMealTimeDetailsPage";
 
 export default function MealTimeDetailsPage() {
   const {
-    actionError,
     actionType,
     activeFoodId,
     beginEdit,
@@ -18,7 +17,6 @@ export default function MealTimeDetailsPage() {
     consumed,
     editingAmount,
     editingFoodId,
-    error,
     foods,
     handleDelete,
     isLoading,
@@ -46,9 +44,8 @@ export default function MealTimeDetailsPage() {
             {isLoading ? (
               <p className="text-sm text-slate-600">Loading meal details...</p>
             ) : null}
-            {error ? <p className="text-sm text-red-700">{error}</p> : null}
 
-            {!isLoading && !error ? (
+            {!isLoading ? (
               <>
                 <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                   <GlassMetric
@@ -110,14 +107,12 @@ export default function MealTimeDetailsPage() {
         </SummaryPanel>
 
         <MealFoodsList
-          actionError={actionError}
           actionType={actionType}
           activeFoodId={activeFoodId}
           beginEdit={beginEdit}
           cancelEdit={cancelEdit}
           editingAmount={editingAmount}
           editingFoodId={editingFoodId}
-          error={error}
           foods={foods}
           handleDelete={handleDelete}
           isLoading={isLoading}

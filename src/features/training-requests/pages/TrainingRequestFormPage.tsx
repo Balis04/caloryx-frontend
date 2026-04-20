@@ -17,14 +17,6 @@ export default function TrainingRequestFormPage() {
           </GlassCard>
         ) : null}
 
-        {(trainingRequestFormPage.error || trainingRequestFormPage.coachesError) && (
-          <GlassCard className="mb-6 border-red-300/70 bg-red-50/70">
-            <CardContent className="p-4 text-sm text-red-700">
-              {trainingRequestFormPage.error ?? trainingRequestFormPage.coachesError}
-            </CardContent>
-          </GlassCard>
-        )}
-
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_360px]">
           <TrainingRequestFormSection
             formData={trainingRequestFormPage.formData}

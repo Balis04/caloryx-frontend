@@ -8,7 +8,6 @@ import type {
   CoachProfileFormData,
   PendingCoachCertificateUpload,
 } from "../types";
-import CoachProfileStatusNotices from "./CoachProfileStatusNotices";
 import CoachProfileAvailabilitySection from "./CoachProfileAvailabilitySection";
 import CoachProfileCertificatesSection from "./CoachProfileCertificatesSection";
 import CoachProfileIntroSection from "./CoachProfileIntroSection";
@@ -22,8 +21,6 @@ interface CoachProfileEditorFormProps {
   canSave: boolean;
   pendingCertificatesValid: boolean;
   deletingCertificateId: string | null;
-  statusMessage: string | null;
-  errorMessage: string | null;
   isForbidden: boolean;
   hasCoachProfile: boolean;
   pendingCertificates: PendingCoachCertificateUpload[];
@@ -56,8 +53,6 @@ export default function CoachProfileEditorForm({
   canSave,
   pendingCertificatesValid,
   deletingCertificateId,
-  statusMessage,
-  errorMessage,
   isForbidden,
   hasCoachProfile,
   pendingCertificates,
@@ -106,7 +101,7 @@ export default function CoachProfileEditorForm({
             <ArrowLeft className="mr-2 h-3 w-3" />
             Back to profile
           </Button>
-          <NoticeCard tone="danger">{errorMessage ?? "Forbidden"}</NoticeCard>
+          <NoticeCard>Coach profile access is not available for this account.</NoticeCard>
         </section>
       </CaloriexPage>
     );
@@ -124,11 +119,6 @@ export default function CoachProfileEditorForm({
           <ArrowLeft className="mr-2 h-3 w-3" />
           {hasCoachProfile ? "Back to coach profile" : "Back to profile"}
         </Button>
-
-        <CoachProfileStatusNotices
-          errorMessage={errorMessage}
-          statusMessage={statusMessage}
-        />
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_360px]">
           <div className="space-y-6">

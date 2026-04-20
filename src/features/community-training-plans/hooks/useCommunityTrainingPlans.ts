@@ -10,7 +10,6 @@ import type { CommunityTrainingPlan } from "../types";
 export const useCommunityTrainingPlans = () => {
   const [plans, setPlans] = useState<CommunityTrainingPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPlans = async () => {
@@ -18,9 +17,8 @@ export const useCommunityTrainingPlans = () => {
         const data = await getCommunityTrainingPlans();
 
         setPlans(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load community plans.");
+      } catch {
+        setPlans([]);
       } finally {
         setIsLoading(false);
       }
@@ -41,7 +39,6 @@ export const useCommunityTrainingPlans = () => {
   );
 
   return {
-    error,
     isLoading,
     sortedPlans,
   };

@@ -30,7 +30,6 @@ export default function FoodCard({
 }) {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const [amount, setAmount] = useState(100);
   const [unit, setUnit] = useState<"g" | "serv">("g");
 
@@ -45,7 +44,6 @@ export default function FoodCard({
 
   const handleSave = async () => {
     setIsSaving(true);
-    setSaveError(null);
 
     try {
       const payload = createFoodLogPayload(
@@ -57,8 +55,6 @@ export default function FoodCard({
       );
       await saveFood(payload);
       navigate("/calorie-counter");
-    } catch (e: unknown) {
-      setSaveError(e instanceof Error ? e.message : "Sikertelen mentes.");
     } finally {
       setIsSaving(false);
     }
@@ -117,10 +113,6 @@ export default function FoodCard({
           />
           <UnitSelect unit={unit} food={food} onUnitChange={handleUnitChange} />
         </div>
-
-        {saveError ? (
-          <p className="w-full text-xs text-red-700">{saveError}</p>
-        ) : null}
       </CardFooter>
     </GlassCard>
   );

@@ -5,7 +5,7 @@ import { useCoachDirectoryList } from "./useCoachDirectoryList";
 
 export const useCoachRequestPage = () => {
   const navigate = useNavigate();
-  const { coaches, error, loading } = useCoachDirectoryList();
+  const { coaches, loading } = useCoachDirectoryList();
   const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
 
   const selectedCoach = coaches.find((coach) => coach.id === selectedCoachId) ?? null;
@@ -14,7 +14,6 @@ export const useCoachRequestPage = () => {
     coaches,
     selectedCoach,
     loading,
-    error,
     canContinue: selectedCoach !== null,
     selectCoach: (coachId: string) => setSelectedCoachId(coachId),
     openTrainingRequestForm: () => {

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CoachProfileCreatePromptPanel from "../components/CoachProfileCreatePromptPanel";
-import CoachProfileStatusNotices from "../components/CoachProfileStatusNotices";
 import CoachProfileNextStepPanel from "../components/CoachProfileNextStepPanel";
 import CoachProfileOverviewCard from "../components/CoachProfileOverviewCard";
 import {
@@ -21,7 +20,6 @@ export default function CoachProfilePage() {
     downloadableCertificates,
     formData,
     loading,
-    errorMessage,
     isForbidden,
     hasCoachProfile,
     priceRange,
@@ -51,7 +49,7 @@ export default function CoachProfilePage() {
             <ArrowLeft className="mr-2 h-3 w-3" />
             Back to profile
           </Button>
-          <NoticeCard tone="danger">{errorMessage ?? "Forbidden"}</NoticeCard>
+          <NoticeCard>Coach profile access is not available for this account.</NoticeCard>
         </section>
       </CaloriexPage>
     );
@@ -70,10 +68,6 @@ export default function CoachProfilePage() {
             <ArrowLeft className="mr-2 h-3 w-3" />
             Back to profile
           </Button>
-          <CoachProfileStatusNotices
-            errorMessage={errorMessage}
-            statusMessage={null}
-          />
           <CoachProfileCreatePromptPanel
             onStart={() => navigate("/coach-profile/edit")}
           />
@@ -85,10 +79,6 @@ export default function CoachProfilePage() {
   return (
     <CaloriexPage>
       <section className="relative container mx-auto px-6 pb-12 md:pb-16">
-        <CoachProfileStatusNotices
-          errorMessage={errorMessage}
-          statusMessage={null}
-        />
         <Button
           variant="ghost"
           size="sm"

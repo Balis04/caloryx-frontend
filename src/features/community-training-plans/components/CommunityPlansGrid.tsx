@@ -1,7 +1,7 @@
 import { ArrowDownToLine, Clock3, Scale } from "lucide-react";
 
 import { AccentButton, FeatureCard, GlassCard } from "@/components/caloriex";
-import { CardContent, CardHeader } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 
 import { getCommunityTrainingPlanDownloadUrl } from "../api/community-training-plans.api";
 import {
@@ -12,13 +12,11 @@ import {
 import type { CommunityTrainingPlan } from "../types";
 
 interface CommunityPlansGridProps {
-  error: string | null;
   isLoading: boolean;
   plans: CommunityTrainingPlan[];
 }
 
 export default function CommunityPlansGrid({
-  error,
   isLoading,
   plans,
 }: CommunityPlansGridProps) {
@@ -36,19 +34,6 @@ export default function CommunityPlansGrid({
           </GlassCard>
         ))}
       </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <GlassCard className="border-red-200/70 bg-white/70">
-        <CardHeader>
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Community plans are currently unavailable
-          </h2>
-          <p className="text-sm text-slate-600">{error}</p>
-        </CardHeader>
-      </GlassCard>
     );
   }
 

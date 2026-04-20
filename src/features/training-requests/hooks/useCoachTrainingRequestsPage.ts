@@ -35,12 +35,10 @@ export const useCoachTrainingRequestsPage = () => {
     setDecisionDescription,
     submitRequestStatus,
     updatingRequestId,
-    error: requestStatusError,
   } = coachRequestStatusForm;
   const {
     downloadingRequestId,
     downloadTrainingPlan,
-    error: trainingPlanError,
     expandedApprovedRequestId,
     getTrainingPlanDraft,
     openTrainingPlanEditor,
@@ -98,7 +96,6 @@ export const useCoachTrainingRequestsPage = () => {
     downloadingRequestId,
     downloadTrainingPlan,
     emptyMessage,
-    error: trainingRequestsList.error ?? requestStatusError ?? trainingPlanError,
     expandedApprovedRequestId,
     getTrainingPlanDraft,
     isCoach,

@@ -9,8 +9,6 @@ export default function EditCoachProfilePage() {
     loading,
     saving,
     deletingCertificateId,
-    statusMessage,
-    errorMessage,
     isForbidden,
     hasCoachProfile,
     setField,
@@ -33,8 +31,6 @@ export default function EditCoachProfilePage() {
       canSave={canSave}
       deletingCertificateId={deletingCertificateId}
       pendingCertificatesValid={pendingCertificatesValid}
-      statusMessage={statusMessage}
-      errorMessage={errorMessage}
       isForbidden={isForbidden}
       hasCoachProfile={hasCoachProfile}
       pendingCertificates={pendingCertificates}

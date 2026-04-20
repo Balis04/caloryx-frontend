@@ -18,19 +18,13 @@ export const useDiaryPage = () => {
   const [summary, setSummary] = useState<CaloriesSummaryResponse>(
     mapCaloriesSummaryToFallback(today)
   );
-  const [summaryError, setSummaryError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadSummary = async () => {
-      setSummaryError(null);
-
       try {
         const data = await getSummaryByDate(selectedDate);
         setSummary(data);
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to fetch summary.";
-        setSummaryError(message);
+      } catch {
         setSummary(mapCaloriesSummaryToFallback(selectedDate));
       }
     };
@@ -85,7 +79,6 @@ export const useDiaryPage = () => {
     shiftSelectedDate: (days: number) =>
       setSelectedDate((prev) => shiftDate(prev, days)),
     summary,
-    summaryError,
     today,
   };
 };

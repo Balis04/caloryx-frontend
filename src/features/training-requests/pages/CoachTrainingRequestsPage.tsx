@@ -13,7 +13,6 @@ export default function CoachTrainingRequestsPage() {
     downloadingRequestId,
     downloadTrainingPlan,
     emptyMessage,
-    error,
     expandedApprovedRequestId,
     getTrainingPlanDraft,
     isCoach,
@@ -42,12 +41,6 @@ export default function CoachTrainingRequestsPage() {
         ) : null}
 
         <div className="space-y-6">
-          {error ? (
-            <GlassCard className="border-red-300/70 bg-red-50/70">
-              <CardContent className="p-4 text-sm text-red-700">{error}</CardContent>
-            </GlassCard>
-          ) : null}
-
           <TrainingRequestsHeader
             coachRequestFilter={coachRequestFilter}
             coachViewMode={coachViewMode}

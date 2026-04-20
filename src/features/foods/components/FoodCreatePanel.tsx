@@ -34,7 +34,7 @@ function NutrientInput({ id, label, value, onChange }: NutrientInputProps) {
 }
 
 interface Props {
-  createError: string | null;
+  canSave: boolean;
   createLoading: boolean;
   newFood: CustomFoodForm;
   onCreateFood: (event: FormEvent) => Promise<void>;
@@ -42,7 +42,7 @@ interface Props {
 }
 
 export default function FoodCreatePanel({
-  createError,
+  canSave,
   createLoading,
   newFood,
   onCreateFood,
@@ -110,14 +110,10 @@ export default function FoodCreatePanel({
             }
           />
 
-          {createError ? (
-            <p className="text-sm text-red-700 md:col-span-2">{createError}</p>
-          ) : null}
-
           <div className="flex justify-end md:col-span-2">
             <Button
               type="submit"
-              disabled={createLoading}
+              disabled={createLoading || !canSave}
               className="rounded-full px-6"
             >
               {createLoading ? (

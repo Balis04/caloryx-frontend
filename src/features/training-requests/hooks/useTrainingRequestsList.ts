@@ -62,21 +62,14 @@ export const useTrainingRequestsList = ({
 }) => {
   const [requests, setRequests] = useState<TrainingRequestsListData>(emptyData);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     setLoading(true);
-    setError(null);
 
     try {
       setRequests(await buildRequestData(isCoach));
-    } catch (loadError) {
+    } catch {
       setRequests(emptyData());
-      setError(
-        loadError instanceof Error
-          ? loadError.message
-          : "Failed to load requests."
-      );
     } finally {
       setLoading(false);
     }
@@ -91,7 +84,6 @@ export const useTrainingRequestsList = ({
   }, [enabled, reload]);
 
   return {
-    error,
     loading,
     reload,
     requests,

@@ -18,7 +18,6 @@ interface Props {
   consumedDate?: string;
   foods: Food[];
   normalizedMeal: MealTime;
-  savedError: string | null;
   savedLoading: boolean;
   savedScope: SavedFoodsScope;
   savedSearchTerm: string;
@@ -33,7 +32,6 @@ export default function FoodSavedPanel({
   foods,
   normalizedMeal,
   onDeleteSavedFood,
-  savedError,
   savedLoading,
   savedScope,
   savedSearchTerm,
@@ -83,10 +81,6 @@ export default function FoodSavedPanel({
               className="h-11 border-white/70 bg-white/75"
             />
           </div>
-
-          {savedError ? (
-            <p className="text-sm text-red-700">{savedError}</p>
-          ) : null}
         </CardContent>
       </GlassCard>
 

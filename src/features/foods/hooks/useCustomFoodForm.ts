@@ -14,17 +14,12 @@ export const useCustomFoodForm = ({
   onCreated,
 }: UseCustomFoodFormOptions = {}) => {
   const [form, setForm] = useState<CustomFoodForm>(initialCustomFoodForm);
-  const [createError, setCreateError] = useState<string | null>(null);
   const [createLoading, setCreateLoading] = useState(false);
+  const canSave = validateCustomFoodForm(form) === null;
 
   const createFood = async (event: FormEvent) => {
     event.preventDefault();
-    setCreateError(null);
-
-    const validationError = validateCustomFoodForm(form);
-
-    if (validationError) {
-      setCreateError(validationError);
+    if (!canSave) {
       return;
     }
 
@@ -40,17 +35,13 @@ export const useCustomFoodForm = ({
       });
       setForm(initialCustomFoodForm);
       onCreated?.();
-    } catch (error) {
-      setCreateError(
-        error instanceof Error ? error.message : "Creation failed."
-      );
     } finally {
       setCreateLoading(false);
     }
   };
 
   return {
-    createError,
+    canSave,
     createFood,
     createLoading,
     form,

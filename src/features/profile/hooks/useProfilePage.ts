@@ -16,20 +16,15 @@ export const useProfilePage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadProfile = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await getProfile();
         setProfile(response);
-      } catch (loadError) {
-        setError(
-          loadError instanceof Error ? loadError.message : "Ismeretlen hiba"
-        );
+      } catch {
         setProfile(null);
       } finally {
         setLoading(false);
@@ -67,7 +62,6 @@ export const useProfilePage = () => {
   return {
     profile: viewModel,
     loading,
-    error,
     onEditProfile: () => navigate("/profile/edit"),
     onOpenCoachProfile: () => navigate("/coach-profile"),
   };

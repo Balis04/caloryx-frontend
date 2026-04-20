@@ -17,7 +17,6 @@ interface ProfileEditorFormProps {
   ) => void;
   onSave: () => Promise<void>;
   canSave: boolean;
-  error?: string | null;
   backPath?: string;
   backLabel?: string;
   saveLabel?: string;
@@ -30,7 +29,6 @@ export default function ProfileEditorForm({
   setField,
   onSave,
   canSave,
-  error,
   backPath = "/profile",
   backLabel = "Back to profile",
   saveLabel,
@@ -69,7 +67,6 @@ export default function ProfileEditorForm({
               roleLabel={roleLabel}
               canSave={canSave}
               onSave={onSave}
-              error={error}
               saveLabel={saveLabel}
               disabledLabel={disabledSaveLabel}
             />

@@ -9,14 +9,12 @@ import type { Dispatch, SetStateAction } from "react";
 import type { FoodLogResponse } from "../types";
 
 interface MealFoodListProps {
-  actionError: string | null;
   actionType: "update" | "delete" | null;
   activeFoodId: string | null;
   editingAmount: string;
   editingFoodId: string | null;
   foods: FoodLogResponse[];
   isLoading: boolean;
-  error: string | null;
   mealTitle: string;
   beginEdit: (food: FoodLogResponse) => void;
   cancelEdit: () => void;
@@ -38,14 +36,12 @@ function MiniMetric({ label, value }: { label: string; value: string }) {
 }
 
 export default function MealFoodsList({
-  actionError,
   actionType,
   activeFoodId,
   beginEdit,
   cancelEdit,
   editingAmount,
   editingFoodId,
-  error,
   foods,
   handleDelete,
   isLoading,
@@ -54,13 +50,10 @@ export default function MealFoodsList({
   saveEdit,
   setEditingAmount,
 }: MealFoodListProps) {
-  return (
-    <>
-      {actionError ? (
-        <p className="mt-6 text-sm text-red-700">{actionError}</p>
-      ) : null}
+  const canSaveEdit = Number(editingAmount) > 0;
 
-      <div className="mt-6 space-y-4">
+  return (
+    <div className="mt-6 space-y-4">
         {foods.map((food) => {
           const isActive = activeFoodId === food.id;
           const isEditing = editingFoodId === food.id;
@@ -124,7 +117,7 @@ export default function MealFoodsList({
                     <>
                       <Button
                         onClick={() => void saveEdit(food.id)}
-                        disabled={isActive}
+                        disabled={isActive || !canSaveEdit}
                         className="rounded-full"
                       >
                         {isActive && actionType === "update" ? (
@@ -169,10 +162,21 @@ export default function MealFoodsList({
                 </div>
               </CardContent>
             </GlassCard>
+            
           );
         })}
-
-        {!isLoading && !error && foods.length === 0 ? (
+        <GlassCard className="justify-center py-4">
+          <div className="flex flex-col items-center gap-3">
+            <Button 
+              onClick={openAddFood} 
+              className="rounded-full px-8 py-6 text-lg font-medium transition-all hover:scale-105 active:scale-95 shadow-lg"
+            >
+              <Plus className="mr-2 h-5 w-5" />
+              Add food
+            </Button>
+          </div>
+        </GlassCard>
+        {!isLoading && foods.length === 0 ? (
           <GlassCard>
             <CardContent className="py-16 text-center">
               <p className="text-lg font-semibold text-slate-950">
@@ -192,6 +196,5 @@ export default function MealFoodsList({
           </GlassCard>
         ) : null}
       </div>
-    </>
   );
 }

@@ -34,7 +34,6 @@ export const useSavedFoodsList = ({
 }: UseSavedFoodsListOptions) => {
   const [savedFoods, setSavedFoods] = useState<Food[]>([]);
   const [savedLoading, setSavedLoading] = useState(false);
-  const [savedError, setSavedError] = useState<string | null>(null);
   const [savedScope, setSavedScope] = useState<SavedFoodsScope>("own");
   const [savedSearchTerm, setSavedSearchTerm] = useState("");
   const [activeDeleteId, setActiveDeleteId] = useState<string | null>(null);
@@ -46,14 +45,10 @@ export const useSavedFoodsList = ({
 
     const loadSavedFoods = async () => {
       setSavedLoading(true);
-      setSavedError(null);
 
       try {
         setSavedFoods(await getSavedFoodsByScope(savedScope));
-      } catch (error) {
-        setSavedError(
-          error instanceof Error ? error.message : "Failed to load saved foods."
-        );
+      } catch {
         setSavedFoods([]);
       } finally {
         setSavedLoading(false);
@@ -77,14 +72,12 @@ export const useSavedFoodsList = ({
     }
 
     setActiveDeleteId(foodId);
-    setSavedError(null);
 
     try {
       await deleteCustomFood(foodId);
       setSavedFoods(await getSavedFoodsByScope("own"));
       setSavedScope("own");
-    } catch (error) {
-      setSavedError(error instanceof Error ? error.message : "Delete failed.");
+    } catch {
     } finally {
       setActiveDeleteId(null);
     }
@@ -100,7 +93,6 @@ export const useSavedFoodsList = ({
     deleteSavedFood,
     filteredSavedFoods,
     resetSavedFoodsFilters,
-    savedError,
     savedLoading,
     savedScope,
     savedSearchTerm,

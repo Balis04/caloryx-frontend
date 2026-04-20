@@ -35,13 +35,6 @@ export default function CoachProfileSavePanel({
         </div>
 
         <div className="space-y-3">
-          {!pendingCertificatesValid ? (
-            <div className="rounded-2xl border border-amber-300/70 bg-amber-50/70 p-4 text-sm text-amber-900">
-              Every staged certificate needs a certificate name, issuer, and
-              issue date before upload.
-            </div>
-          ) : null}
-
           {onCancel ? (
             <Button
               variant="outline"

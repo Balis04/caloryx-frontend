@@ -16,20 +16,15 @@ export const useTrainingRequestForm = (
   );
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadProfile = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await getProfile();
         setProfile(response);
         setFormData(createInitialTrainingRequestFormData(response));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load profile data.");
       } finally {
         setLoading(false);
       }
@@ -47,23 +42,18 @@ export const useTrainingRequestForm = (
 
   const submit = async () => {
     if (!coachProfileId) {
-      setError("The selected coach ID is missing.");
       return false;
     }
 
     setSubmitting(true);
-    setError(null);
-    setSubmitMessage(null);
 
     try {
       await createTrainingRequest(
         coachProfileId,
         mapTrainingRequestFormDataToRequest(formData)
       );
-      setSubmitMessage("Your training plan request was sent successfully to the coach.");
       return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to send the request.");
+    } catch {
       return false;
     } finally {
       setSubmitting(false);
@@ -75,8 +65,6 @@ export const useTrainingRequestForm = (
     formData,
     loading,
     submitting,
-    error,
-    submitMessage,
     setField,
     submit,
     canSubmit: canSubmitTrainingRequestForm(formData),

@@ -21,7 +21,6 @@ export const useCoachProfileEditForm = () => {
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const {
     coachProfileId,
@@ -34,7 +33,6 @@ export const useCoachProfileEditForm = () => {
   useEffect(() => {
     const loadCoachProfile = async () => {
       setLoading(true);
-      setStatusMessage(null);
 
       try {
         const response = await getMyCoachProfile();
@@ -112,11 +110,6 @@ export const useCoachProfileEditForm = () => {
       } else {
         setProfileState(mapCoachProfileResponseToState(response));
       }
-      setStatusMessage(
-        coachProfileId
-          ? "Coach profile updated successfully."
-          : "Coach profile created successfully."
-      );
       return true;
     } catch (error) {
       setProfileState((current) => ({
@@ -130,7 +123,6 @@ export const useCoachProfileEditForm = () => {
   };
 
   const deleteCertificateById = async (certificateId: string) => {
-    setStatusMessage(null);
     setProfileState((current) => ({ ...current, errorMessage: null }));
 
     const result = await pendingCertificatesForm.deleteCertificate(
@@ -138,7 +130,6 @@ export const useCoachProfileEditForm = () => {
     );
 
     if (result.ok) {
-      setStatusMessage("Certificate deleted successfully.");
       return true;
     }
 
@@ -167,7 +158,6 @@ export const useCoachProfileEditForm = () => {
     saving,
     setAvailabilityField,
     setField,
-    statusMessage,
     updatePendingCertificate: pendingCertificatesForm.updatePendingCertificate,
   };
 };

@@ -14,7 +14,6 @@ export default function CoachRequestPage() {
     coaches,
     selectedCoach,
     loading,
-    error,
     selectCoach,
     openTrainingRequestForm,
   } = useCoachRequestPage();
@@ -30,12 +29,6 @@ export default function CoachRequestPage() {
           </GlassCard>
         ) : null}
 
-        {error ? (
-          <GlassCard className="border-amber-300/70 bg-amber-50/70">
-            <CardContent className="p-6 text-sm text-amber-900">{error}</CardContent>
-          </GlassCard>
-        ) : null}
-
         <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_360px]">
           <div className="grid gap-6 sm:grid-cols-2 2xl:grid-cols-3">
             {coaches.map((coach) => (
@@ -47,7 +40,7 @@ export default function CoachRequestPage() {
               />
             ))}
 
-            {!loading && !error && coaches.length === 0 ? (
+            {!loading && coaches.length === 0 ? (
               <GlassCard className="sm:col-span-2 2xl:col-span-3">
                 <CardContent className="p-6 text-sm text-slate-600">
                   No coach profiles are currently available.

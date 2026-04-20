@@ -20,7 +20,6 @@ export const useApprovedTrainingPlanForm = () => {
   const [savingApprovedRequestId, setSavingApprovedRequestId] = useState<
     string | null
   >(null);
-  const [error, setError] = useState<string | null>(null);
 
   const getTrainingPlanDraft = useCallback(
     (request: CoachTrainingRequest) =>
@@ -57,18 +56,15 @@ export const useApprovedTrainingPlanForm = () => {
         trainingPlanDrafts[request.id] ?? createTrainingPlanDraft(request);
 
       if (request.status !== "APPROVED") {
-        setError("Training plan can only be uploaded for approved requests.");
         return;
       }
 
       if (!draft.file) {
-        setError("Select a PDF or DOCX file to upload the training plan.");
         return;
       }
       const file = draft.file;
 
       setSavingApprovedRequestId(request.id);
-      setError(null);
 
       try {
         const formData = new FormData();
@@ -93,12 +89,6 @@ export const useApprovedTrainingPlanForm = () => {
           },
         }));
         await onRequestsChanged();
-      } catch (saveError) {
-        setError(
-          saveError instanceof Error
-            ? saveError.message
-            : "Failed to upload the training plan."
-        );
       } finally {
         setSavingApprovedRequestId(null);
       }
@@ -109,7 +99,6 @@ export const useApprovedTrainingPlanForm = () => {
   const downloadTrainingPlan = useCallback(
     async (request: CoachTrainingRequest) => {
       setDownloadingRequestId(request.id);
-      setError(null);
 
       try {
         const { blob, fileName } = await downloadTrainingPlanFile(request.id);
@@ -121,12 +110,6 @@ export const useApprovedTrainingPlanForm = () => {
         link.click();
         link.remove();
         URL.revokeObjectURL(downloadUrl);
-      } catch (downloadError) {
-        setError(
-          downloadError instanceof Error
-            ? downloadError.message
-            : "Failed to download the training plan."
-        );
       } finally {
         setDownloadingRequestId(null);
       }
@@ -137,7 +120,6 @@ export const useApprovedTrainingPlanForm = () => {
   return {
     downloadTrainingPlan,
     downloadingRequestId,
-    error,
     expandedApprovedRequestId,
     getTrainingPlanDraft,
     openTrainingPlanEditor,

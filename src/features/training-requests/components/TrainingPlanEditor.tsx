@@ -30,6 +30,10 @@ export default function TrainingPlanEditor({
   request,
 }: Props) {
   const hasExistingFile = Boolean(draft.existingFileName);
+  const hasPlanName = draft.planName.trim().length > 0;
+  const hasPlanDescription = draft.planDescription.trim().length > 0;
+  const hasSelectedFile = Boolean(draft.file);
+  const canSave = hasPlanName && hasPlanDescription && hasSelectedFile && !isSaving;
   const planNameId = `training-plan-name-${request.id}`;
   const planDescriptionId = `training-plan-description-${request.id}`;
   const planFileId = `training-plan-file-${request.id}`;
@@ -77,7 +81,7 @@ export default function TrainingPlanEditor({
           <div className="space-y-4">
             <div className="space-y-2">
               <label htmlFor={planNameId} className="text-sm font-medium text-slate-900">
-                Training plan name
+                Training plan name *
               </label>
               <Input
                 id={planNameId}
@@ -92,7 +96,7 @@ export default function TrainingPlanEditor({
 
             <div className="space-y-2">
               <label htmlFor={planDescriptionId} className="text-sm font-medium text-slate-900">
-                Training plan description
+                Training plan description *
               </label>
               <textarea
                 id={planDescriptionId}
@@ -108,7 +112,7 @@ export default function TrainingPlanEditor({
 
             <div className="space-y-2">
               <label htmlFor={planFileId} className="text-sm font-medium text-slate-900">
-                PDF or DOCX file
+                PDF or DOCX file *
               </label>
               <Input
                 id={planFileId}
@@ -123,7 +127,7 @@ export default function TrainingPlanEditor({
               <p className="text-xs text-slate-500">Accepted formats: `.pdf`, `.docx`</p>
             </div>
 
-            {hasExistingFile || draft.file ? (
+            {hasExistingFile || hasSelectedFile ? (
               <div className="rounded-3xl border border-white/60 bg-white/70 p-4">
                 <p className="text-sm font-medium text-slate-950">Selected or current file</p>
                 <p className="mt-2 text-sm text-slate-600">
@@ -133,7 +137,7 @@ export default function TrainingPlanEditor({
             ) : null}
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <Button type="button" className="gap-2 rounded-full" disabled={isSaving} onClick={onSave}>
+              <Button type="button" className="gap-2 rounded-full" disabled={!canSave} onClick={onSave}>
                 <Upload className="h-4 w-4" />
                 {isSaving ? "Saving..." : "Save training plan"}
               </Button>

@@ -54,19 +54,19 @@ export default function TrainingRequestFormSection({
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="weeklyWorkouts">How many sessions per week do you want?</Label>
+              <Label htmlFor="weeklyWorkouts">How many sessions per week do you want? *</Label>
               <Input id="weeklyWorkouts" type="number" min="1" placeholder="e.g. 3" className={fieldClassName} value={formData.weeklyWorkouts} onChange={(event) => onFieldChange("weeklyWorkouts", event.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="preferredSessionLength">Session length in minutes</Label>
+              <Label htmlFor="preferredSessionLength">Session length in minutes *</Label>
               <Input id="preferredSessionLength" type="number" min="15" placeholder="e.g. 60" className={fieldClassName} value={formData.preferredSessionLength} onChange={(event) => onFieldChange("preferredSessionLength", event.target.value)} />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="trainingLocation">Where would you like to train?</Label>
+              <Label htmlFor="trainingLocation">Where would you like to train? *</Label>
               <Input id="trainingLocation" placeholder="e.g. gym, home, outdoors" className={fieldClassName} value={formData.trainingLocation} onChange={(event) => onFieldChange("trainingLocation", event.target.value)} />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="customerDescription">Short description for the coach</Label>
+              <Label htmlFor="customerDescription">Short description for the coach *</Label>
               <textarea id="customerDescription" value={formData.customerDescription} onChange={(event) => onFieldChange("customerDescription", event.target.value)} placeholder="Describe your goals, experience level, any injuries, or anything else the coach should know." className="min-h-36 w-full rounded-[24px] border border-white/70 bg-white/70 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none backdrop-blur transition focus-visible:ring-2 focus-visible:ring-sky-300/60" />
             </div>
           </div>

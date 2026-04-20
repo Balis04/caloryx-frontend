@@ -21,11 +21,15 @@ export const getAppLinks = (isCoach: boolean): NavItem[] => [
   { to: "/profile", label: "Profile", icon: UserCircle2 },
   { to: "/calorie-counter", label: "Calories", icon: Salad },
   {
-    to: isCoach ? "/training-requests" : "/training-request",
-    label: isCoach ? "Requests" : "Coaches",
+    to: isCoach ? "/coach-profile" : "/training-request",
+    label: isCoach ? "Coach" : "Coaches",
     icon: Users,
   },
-  ...(isCoach ? [{ to: "/coach-profile", label: "Coach", icon: Dumbbell }] : []),
+  {
+    to: "/training-requests",
+    label: "Requests",
+    icon: Dumbbell,
+  },
 ];
 
 export const isNavItemActive = (pathname: string, item: NavItem) =>

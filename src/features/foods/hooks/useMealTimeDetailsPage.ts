@@ -28,14 +28,12 @@ export const useMealTimeDetailsPage = () => {
   const [summary, setSummary] = useState<MealTimeSummaryResponse | null>(null);
   const [foods, setFoods] = useState<FoodLogResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [activeFoodId, setActiveFoodId] = useState<string | null>(null);
   const [actionType, setActionType] = useState<"update" | "delete" | null>(
     null
   );
   const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
   const [editingAmount, setEditingAmount] = useState<string>("");
-  const [actionError, setActionError] = useState<string | null>(null);
 
   const isValidMeal = Boolean(
     normalizedMeal && VALID_MEALS.includes(normalizedMeal)
@@ -48,16 +46,12 @@ export const useMealTimeDetailsPage = () => {
       }
 
       setIsLoading(true);
-      setError(null);
 
       try {
         const data = await getMealTimeSummary(date, normalizedMeal);
         setSummary(data);
         setFoods(data.foods ?? []);
-      } catch (e) {
-        const message =
-          e instanceof Error ? e.message : "Failed to load meal details.";
-        setError(message);
+      } catch {
         setSummary(null);
         setFoods([]);
       } finally {
@@ -76,13 +70,11 @@ export const useMealTimeDetailsPage = () => {
   const beginEdit = (food: FoodLogResponse) => {
     setEditingFoodId(food.id);
     setEditingAmount(String(food.amount));
-    setActionError(null);
   };
 
   const cancelEdit = () => {
     setEditingFoodId(null);
     setEditingAmount("");
-    setActionError(null);
   };
 
   const reloadMealDetails = async () => {
@@ -99,20 +91,16 @@ export const useMealTimeDetailsPage = () => {
     const newAmount = Number(editingAmount);
 
     if (Number.isNaN(newAmount) || newAmount <= 0) {
-      setActionError("Amount must be a positive number.");
       return;
     }
 
     setActiveFoodId(foodId);
     setActionType("update");
-    setActionError(null);
 
     try {
       await updateFoodAmount(foodId, newAmount);
       await reloadMealDetails();
       cancelEdit();
-    } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Update failed.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
@@ -122,7 +110,6 @@ export const useMealTimeDetailsPage = () => {
   const handleDelete = async (foodId: string) => {
     setActiveFoodId(foodId);
     setActionType("delete");
-    setActionError(null);
 
     try {
       await deleteFood(foodId);
@@ -131,8 +118,6 @@ export const useMealTimeDetailsPage = () => {
       if (editingFoodId === foodId) {
         cancelEdit();
       }
-    } catch (e) {
-      setActionError(e instanceof Error ? e.message : "Delete failed.");
     } finally {
       setActiveFoodId(null);
       setActionType(null);
@@ -140,7 +125,6 @@ export const useMealTimeDetailsPage = () => {
   };
 
   return {
-    actionError,
     actionType,
     activeFoodId,
     beginEdit,
@@ -149,7 +133,6 @@ export const useMealTimeDetailsPage = () => {
     date,
     editingAmount,
     editingFoodId,
-    error,
     foods,
     isLoading,
     isValidMeal,

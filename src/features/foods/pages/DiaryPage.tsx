@@ -19,7 +19,6 @@ export default function DiaryPage() {
     setSelectedDate,
     shiftSelectedDate,
     summary,
-    summaryError,
     today,
   } = useDiaryPage();
 
@@ -73,10 +72,6 @@ export default function DiaryPage() {
                 Today
               </Button>
             </div>
-
-            {summaryError ? (
-              <p className="text-sm text-red-700">{summaryError}</p>
-            ) : null}
 
             <div className="rounded-[28px] border border-emerald-200/70 bg-gradient-to-br from-emerald-50/90 via-white/80 to-cyan-50/90 p-5 backdrop-blur">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

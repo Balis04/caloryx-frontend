@@ -43,12 +43,10 @@ export const useTrainingRequestFormPage = () => {
 
   return {
     activityLevelLabel,
-    coachesError: coachDirectory.error,
     coachesLoading: coachDirectory.loading,
     formData: trainingRequestForm.formData,
     goalLabel,
     loading: trainingRequestForm.loading,
-    error: trainingRequestForm.error,
     canSubmit: trainingRequestForm.canSubmit,
     selectedCoach,
     setField: trainingRequestForm.setField,

@@ -7,7 +7,7 @@ import ProfileOverviewSection from "../components/ProfileOverviewSection";
 import { useProfilePage } from "../hooks/useProfilePage";
 
 export default function ProfilePage() {
-  const { profile, loading, error, onEditProfile, onOpenCoachProfile } =
+  const { profile, loading, onEditProfile, onOpenCoachProfile } =
     useProfilePage();
 
   if (loading) {
@@ -28,9 +28,9 @@ export default function ProfilePage() {
     return (
       <CaloriexPage>
         <section className="container mx-auto px-6 py-16">
-          <GlassCard className="border-red-300/70 bg-red-50/70">
-            <CardContent className="p-6 text-sm text-red-700">
-              Failed to load profile{error ? `: ${error}` : "."}
+          <GlassCard>
+            <CardContent className="p-6 text-sm text-slate-600">
+              Profile details are not available right now.
             </CardContent>
           </GlassCard>
         </section>

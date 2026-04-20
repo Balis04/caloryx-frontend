@@ -57,7 +57,7 @@ export default function FoodSearchPage() {
 
           <TabsContent value="create" className="mt-8">
             <FoodCreatePanel
-              createError={customFoodForm.createError}
+              canSave={customFoodForm.canSave}
               createLoading={customFoodForm.createLoading}
               newFood={customFoodForm.form}
               onCreateFood={customFoodForm.createFood}
@@ -72,7 +72,6 @@ export default function FoodSearchPage() {
               foods={savedFoodsList.filteredSavedFoods}
               normalizedMeal={normalizedMeal}
               onDeleteSavedFood={savedFoodsList.deleteSavedFood}
-              savedError={savedFoodsList.savedError}
               savedLoading={savedFoodsList.savedLoading}
               savedScope={savedFoodsList.savedScope}
               savedSearchTerm={savedFoodsList.savedSearchTerm}

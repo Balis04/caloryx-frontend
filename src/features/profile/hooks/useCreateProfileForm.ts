@@ -15,7 +15,6 @@ export const useCreateProfileForm = () => {
   const [values, setValues] = useState<ProfileFormValues>(
     initialProfileFormValues
   );
-  const [error, setError] = useState<string | null>(null);
 
   const setField = <K extends keyof ProfileFormValues>(
     key: K,
@@ -28,8 +27,6 @@ export const useCreateProfileForm = () => {
   };
 
   const saveProfile = async () => {
-    setError(null);
-
     try {
       const payload = mapProfileFormValuesToRequest({
         ...values,
@@ -40,10 +37,7 @@ export const useCreateProfileForm = () => {
       await refreshAuth();
       navigate("/profile");
       return true;
-    } catch (saveError) {
-      setError(
-        saveError instanceof Error ? saveError.message : "Network error."
-      );
+    } catch {
       return false;
     }
   };
@@ -55,7 +49,6 @@ export const useCreateProfileForm = () => {
       ...values,
       actualWeightKg: values.startWeightKg,
     }),
-    error,
     saveProfile,
   };
 };

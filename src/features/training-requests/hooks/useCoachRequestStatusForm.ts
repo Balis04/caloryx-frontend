@@ -11,7 +11,6 @@ export const useCoachRequestStatusForm = () => {
   const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(
     null
   );
-  const [error, setError] = useState<string | null>(null);
 
   const setDecisionDescription = useCallback((requestId: string, value: string) => {
     setDecisionDescriptions((current) => ({
@@ -28,19 +27,14 @@ export const useCoachRequestStatusForm = () => {
       onRequestsChanged: () => Promise<void>
     ) => {
       if (status === "PENDING" || status === "CLOSED") {
-        setError("Only APPROVED or REJECTED status updates are allowed.");
         return false;
       }
 
       if (!coachResponse.trim()) {
-        setError(
-          "A status comment is required when approving or rejecting a request."
-        );
         return false;
       }
 
       setUpdatingRequestId(trainingRequestId);
-      setError(null);
 
       try {
         await updateCoachTrainingRequestStatus(
@@ -55,12 +49,7 @@ export const useCoachRequestStatusForm = () => {
 
         await onRequestsChanged();
         return true;
-      } catch (updateError) {
-        setError(
-          updateError instanceof Error
-            ? updateError.message
-            : "Failed to update status."
-        );
+      } catch {
         return false;
       } finally {
         setUpdatingRequestId(null);
@@ -71,7 +60,6 @@ export const useCoachRequestStatusForm = () => {
 
   return {
     decisionDescriptions,
-    error,
     setDecisionDescription,
     submitRequestStatus,
     updatingRequestId,
