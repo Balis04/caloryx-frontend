@@ -40,7 +40,7 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
             htmlFor="fullName"
             className="text-xs uppercase tracking-[0.24em] text-slate-500"
           >
-            Full name
+            Full name *
           </Label>
           <Input
             id="fullName"
@@ -55,7 +55,7 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
             htmlFor="birthDate"
             className="text-xs uppercase tracking-[0.24em] text-slate-500"
           >
-            Birth date
+            Birth date *
           </Label>
           <Input
             id="birthDate"
@@ -71,7 +71,7 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
         <div className="grid gap-5 md:grid-cols-2">
           <div className="grid gap-2">
             <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
-              Gender
+              Gender *
             </Label>
             <Select
               value={userProfile.gender ?? ""}
@@ -92,7 +92,7 @@ export const BasicInfoSection = ({ userProfile, setField }: Props) => {
 
           <div className="grid gap-2">
             <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
-              Role
+              Role *
             </Label>
             <Select
               value={userProfile.userRole ?? ""}

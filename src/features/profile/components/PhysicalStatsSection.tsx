@@ -40,7 +40,7 @@ export const PhysicalStatsSection = ({
       <div className="grid gap-5 p-6">
         <div className="grid gap-2">
           <Label htmlFor="heightCm" className="text-xs uppercase tracking-[0.24em] text-slate-500">
-            Height (cm)
+            Height (cm) *
           </Label>
           <Input
             id="heightCm"
@@ -58,7 +58,7 @@ export const PhysicalStatsSection = ({
               htmlFor="startWeightKg"
               className="text-xs uppercase tracking-[0.24em] text-slate-500"
             >
-              Starting weight (kg)
+              Starting weight (kg) *
             </Label>
             <Input
               id="startWeightKg"
@@ -77,7 +77,7 @@ export const PhysicalStatsSection = ({
                 htmlFor="actualWeightKg"
                 className="text-xs uppercase tracking-[0.24em] text-slate-500"
               >
-                Current weight (kg)
+                Current weight (kg) *
               </Label>
               <Input
                 id="actualWeightKg"
@@ -96,7 +96,7 @@ export const PhysicalStatsSection = ({
               htmlFor="targetWeightKg"
               className="text-xs uppercase tracking-[0.24em] text-slate-500"
             >
-              Target weight (kg)
+              Target weight (kg) *
             </Label>
             <Input
               id="targetWeightKg"
@@ -114,7 +114,7 @@ export const PhysicalStatsSection = ({
               htmlFor="weeklyGoalKg"
               className="text-xs uppercase tracking-[0.24em] text-slate-500"
             >
-              Weekly target (kg)
+              Weekly target (kg) *
             </Label>
             <Input
               id="weeklyGoalKg"
@@ -131,7 +131,7 @@ export const PhysicalStatsSection = ({
         <div className="grid gap-5 md:grid-cols-2">
           <div className="grid gap-2">
             <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
-              Primary goal
+              Primary goal *
             </Label>
             <Select
               value={userProfile.goal ?? ""}
@@ -152,7 +152,7 @@ export const PhysicalStatsSection = ({
 
           <div className="grid gap-2">
             <Label className="text-xs uppercase tracking-[0.24em] text-slate-500">
-              Activity level
+              Activity level *
             </Label>
             <Select
               value={userProfile.activityLevel ?? ""}

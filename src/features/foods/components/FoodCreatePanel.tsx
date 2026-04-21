@@ -65,7 +65,7 @@ export default function FoodCreatePanel({
           className="grid grid-cols-1 gap-4 md:grid-cols-2"
         >
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="food-name">Name</Label>
+            <Label htmlFor="food-name">Name *</Label>
             <Input
               id="food-name"
               value={newFood.name}
@@ -79,7 +79,7 @@ export default function FoodCreatePanel({
 
           <NutrientInput
             id="food-calories"
-            label="Calories (kcal / 100 g)"
+            label="Calories (kcal / 100 g) *"
             value={newFood.calories}
             onChange={(value) =>
               onNewFoodChange((prev) => ({ ...prev, calories: value }))
@@ -87,7 +87,7 @@ export default function FoodCreatePanel({
           />
           <NutrientInput
             id="food-protein"
-            label="Protein (g / 100 g)"
+            label="Protein (g / 100 g) *"
             value={newFood.protein}
             onChange={(value) =>
               onNewFoodChange((prev) => ({ ...prev, protein: value }))
@@ -95,7 +95,7 @@ export default function FoodCreatePanel({
           />
           <NutrientInput
             id="food-carbs"
-            label="Carbohydrates (g / 100 g)"
+            label="Carbohydrates (g / 100 g) *"
             value={newFood.carbohydrates}
             onChange={(value) =>
               onNewFoodChange((prev) => ({ ...prev, carbohydrates: value }))
@@ -103,7 +103,7 @@ export default function FoodCreatePanel({
           />
           <NutrientInput
             id="food-fat"
-            label="Fat (g / 100 g)"
+            label="Fat (g / 100 g) *"
             value={newFood.fat}
             onChange={(value) =>
               onNewFoodChange((prev) => ({ ...prev, fat: value }))

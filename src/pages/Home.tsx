@@ -94,10 +94,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <footer className="relative mt-auto border-t border-white/40 py-6 text-center text-sm text-slate-500 backdrop-blur">
-        {"\u00A9"} {new Date().getFullYear()} CalorieX
-      </footer>
     </CaloriexPage>
   );
 }

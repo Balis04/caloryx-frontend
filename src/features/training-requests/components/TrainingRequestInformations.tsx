@@ -1,7 +1,7 @@
 import { GlassMetric } from "@/components/caloriex";
 import type { CoachTrainingRequest } from "@/features/training-requests/types";
 
-export default function TrainingRequestMetrics({ request }: { request: CoachTrainingRequest }) {
+export default function TrainingRequestInformations({ request }: { request: CoachTrainingRequest }) {
   return (
     <div className="grid gap-3 md:grid-cols-3">
       <GlassMetric label="Weekly sessions" value={`${request.weeklyTrainingCount}`} description="Planned training frequency per week." />

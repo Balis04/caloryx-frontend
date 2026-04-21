@@ -20,7 +20,7 @@ import type {
 } from "@/features/training-requests/types";
 import RequestTextPanel from "./RequestTextPanel";
 import TrainingPlanEditor from "./TrainingPlanEditor";
-import TrainingRequestMetrics from "./TrainingRequestMetrics";
+import TrainingRequestInformations from "./TrainingRequestInformations";
 
 interface Props {
   approvedDraft: TrainingPlanDraft;
@@ -78,7 +78,7 @@ export default function CoachRequestCard(props: Props) {
         </div>
       </CardHeader>
       <CardContent className="space-y-5 p-6">
-        <TrainingRequestMetrics request={request} />
+        <TrainingRequestInformations request={request} />
         <div className="grid gap-4 xl:grid-cols-2">
           <RequestTextPanel label="Client note" value={request.requestDescription} />
           <RequestTextPanel label="Status comment" value={decisionDescription || "No status comment yet."} />
@@ -108,7 +108,7 @@ export default function CoachRequestCard(props: Props) {
           <>
             <GlassCardSoft>
               <CardContent className="p-5 text-sm">
-                <label htmlFor={`decision-description-${request.id}`} className="text-xs uppercase tracking-[0.32em] text-slate-500">Status comment</label>
+                <label htmlFor={`decision-description-${request.id}`} className="text-xs uppercase tracking-[0.32em] text-slate-500">Status comment *</label>
                 <textarea id={`decision-description-${request.id}`} className="mt-3 min-h-28 w-full rounded-3xl border border-white/70 bg-white/80 px-4 py-3 text-sm outline-none ring-offset-background placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" placeholder="Explain why you approved or rejected the request." value={decisionDescription} onChange={(event) => onDecisionDescriptionChange(event.target.value)} disabled={isUpdating} />
                 <p className="mt-3 text-xs text-slate-500">A comment is required when changing the status, and the user will be able to see it.</p>
               </CardContent>
